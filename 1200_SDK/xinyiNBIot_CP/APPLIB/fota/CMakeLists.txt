@@ -1,0 +1,17 @@
+
+file(GLOB_RECURSE C_SOURCES 
+    "${CMAKE_CURRENT_SOURCE_DIR}/common/src/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/common/src/*.s"
+    "${CMAKE_CURRENT_SOURCE_DIR}/common/src/*.S"
+    "${CMAKE_CURRENT_SOURCE_DIR}/xy_fota/src/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/xy_fota/src/*.s"
+    "${CMAKE_CURRENT_SOURCE_DIR}/xy_fota/src/*.S"
+)
+
+set(INCLUDE_DIRS 
+    "${CMAKE_CURRENT_SOURCE_DIR}/common/inc"
+    "${CMAKE_CURRENT_SOURCE_DIR}/xy_fota/inc"
+)
+
+set(PRJ_SRC_LIST ${PRJ_SRC_LIST} ${C_SOURCES} PARENT_SCOPE)
+set(BASE_INCLUDE_DIRS ${BASE_INCLUDE_DIRS} ${INCLUDE_DIRS} PARENT_SCOPE)

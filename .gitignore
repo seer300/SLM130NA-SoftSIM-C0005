@@ -1,0 +1,15 @@
+1200_SDK/Allbins/
+1200_SDK/TOOLS/
+1200_SDK/buildtools/
+1200_SDK/xinyiNBIot_AP/.build/
+1200_SDK/xinyiNBIot_AP/.ignore/
+1200_SDK/xinyiNBIot_CP/.build/
+1200_SDK/xinyiNBIot_CP/.ignore/
+*.mimgx
+V1200FB10002R00C0005/AP_ELF/
+V1200FB10002R00C0005/CP_ELF/
+*.pdf
+*.o
+*.a
+*.pyc
+1200_SDK/xinyiNBIot_AP/SYSAPP/system/inc/timestamp.h

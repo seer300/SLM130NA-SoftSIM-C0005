@@ -1,0 +1,147 @@
+{
+	"model": "XY2100",
+	"configVersion": "2.0.0",
+	"internal": {
+		"Images": [
+			"ap_boot.img",
+			"cp_boot.img",
+			"arm.img",
+			"cp.img"
+		],
+		"NVs": [
+			[
+				"factoryNV.img",
+				"flashEreaseEnable"
+			],
+			[
+				"rfnv.img",
+				"flashEreaseEnable"
+			]
+		],
+        "imgs": [
+			[
+				"ap_boot.img",
+				2,
+				0,
+				0,
+				0
+			],
+			[
+				"cp_boot.img",
+				3,
+				0,
+				0,
+				0
+			],
+			[
+				"arm.img",
+				0,
+				0,
+				0,
+				0
+			],
+			[
+				"cp.img",
+				1,
+				0,
+				0,
+				0
+			],
+			[
+				"factoryNV.img",
+				4,
+				0,
+				0,
+				0
+			]
+		],
+		"imgHeader": "0x30004000",
+		"check_version": "1",
+		"FLASH_BYTES_M": "2",
+		"RF_DEBUG_ADDR":  "0x301DC800"
+	},
+	
+	"memmap": {
+		"partitions": [
+			[
+				"CP_Version1",
+				"0x30000000",
+				"0x1000",
+				1
+			],
+			[
+				"first_boot",
+				"0x30001000",
+				"0x4000",
+				1
+			],
+			[
+				"erase_partition0",
+				"0x30005000",
+				"0x1000",
+				0
+			],
+			[
+				"secboot_prime",
+				"0x30006000",
+				"0x7000",
+				1
+			],
+			[
+				"secboot_backup",
+				"0x3000D000",
+				"0x7000",
+				1
+			],
+			[
+				"rf_nv",
+				"0x30014000",
+				"0x2000",
+				2
+			],
+			[
+				"factory_nv",
+				"0x30016000",
+				"0x1000",
+				1
+			],
+			[
+				"CP_Version2",
+				"0x30017000",
+				"0x15D000",
+				1
+			],
+			[
+				"arm",
+				"0x30174000",
+				"0x6F000",
+				1
+			],
+			[
+				"erase_partition1",
+				"0x301E3000",
+				"0x2000",
+				0
+			],
+			[
+				"factory_nv",
+				"0x301E5000",
+				"0x1000",
+				0
+			],
+			[
+				"erase_partition2",
+				"0x301E6000",
+				"0xA000",
+				0
+			],
+			[
+				"user_nv",
+				"0x301F0000",
+				"0x10000",
+				1
+			]
+
+		]
+	}
+}
