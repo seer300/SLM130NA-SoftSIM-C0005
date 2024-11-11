@@ -6,7 +6,8 @@
 			"ap_boot.img",
 			"cp_boot.img",
 			"arm.img",
-			"cp.img"
+			"cp.img",
+			"littlefs.img"
 		],
 		"NVs": [
 			[
