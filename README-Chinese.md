@@ -15,4 +15,8 @@
 编译成功后，`1200_SDK/Allbins`目录下即为编译产物
 
 ## 打包固件
-待完善
+在`SLM130NA-C0005/1200_SDK`目录下，运行`cp_AllbinsF.bat`脚本  
+
+该脚本会将`Allbins`下的`arm.img cp.img loginfo.info`三个文件拷贝到`SLM130NA-C0005\V1200FB10002R00C0005\allbins`目录下  
+
+启动LogView软件，执行打包流程。路径选择`SLM130NA-C0005\V1200FB10002R00C0005\allbins`目录即可
