@@ -149,7 +149,7 @@ void nd6_ra_timeout_handler(void* arg)
   struct netif *netif = (struct netif *)arg;
   netif->rs_count = LWIP_ND6_MAX_MULTICAST_SOLICIT;
   nd6_ra_timer_flag = 0;
-  xy_printf(0,XYAPP, WARN_LOG, "ra timeout");
+  xy_printf(0,XYAPP, WARN_LOG, "");
   sys_untimeout(nd6_ra_timeout_handler, arg);
 }
 

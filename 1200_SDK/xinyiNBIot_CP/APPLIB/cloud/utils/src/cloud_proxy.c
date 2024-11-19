@@ -76,7 +76,7 @@ proxy_send_callback cdpProxySendProc_test(uint8_t req_type,uint8_t* paramList, u
 	
 		if (at_parse_param("%d,%d,%s", paramList,&dataType, &dataLen, data) != AT_OK || dataType == -1 ||(dataLen!=-1 && data== NULL))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY] parse error\r\n");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret = CLOUD_PROXY_ERR;
 		}
 		if(ret == CLOUD_PROXY_SUCCESS)
@@ -89,7 +89,7 @@ proxy_send_callback cdpProxySendProc_test(uint8_t req_type,uint8_t* paramList, u
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		ret = CLOUD_PROXY_ERR;
 	}
 	
@@ -111,7 +111,7 @@ proxy_config_callback cdpProxyConfigProc_test(uint8_t req_type,uint8_t* paramLis
 
 	    if (at_parse_param(",%s,%d,%d", paramList,serverIP, &serverPort, &lifetime) != AT_OK)
 	    {
-	    	xy_printf(0,XYAPP, WARN_LOG, "[CDPDEMO]Err:  cdpProxyConfig failed");
+	    	xy_printf(0,XYAPP, WARN_LOG, "");
 	    	ret = CLOUD_PROXY_ERR;
 	    }
 

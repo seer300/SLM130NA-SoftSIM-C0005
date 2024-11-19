@@ -92,7 +92,7 @@ bool cdp_send_data(char *data, int len, int msg_type, uint8_t seq_num)
 		//cdp不在运行且不是在业务删除过程中，则发数据触发注册
 		if(cdp_task_delete_sem == NULL && cdp_create_lwm2m_task(-1))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_data] cdp_create_lwm2m_task failed");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 		}
 #endif
 			
@@ -111,7 +111,7 @@ bool cdp_send_data(char *data, int len, int msg_type, uint8_t seq_num)
 		//只有在19/0/0取消订阅或者rst包后，才需要另起线程删除cdp业务并重新发起注册, 其他场景不需要此操作;
 		if(g_cdp_session_info->cdp_lwm2m_event_status == 11 && cdp_restart_task())
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_data] cdp_restart_lwm2m_task failed");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 		}
 #endif
 		return 0;
@@ -254,7 +254,7 @@ int at_NCDPOPEN_req(char *at_buf, char **prsp_cmd)
 		
         if(cdp_create_lwm2m_task(-1))
         {
-        	xy_printf(0, XYAPP, WARN_LOG, "registed failed!");
+        	xy_printf(0, XYAPP, WARN_LOG, "");
 			ret = ATERR_NOT_ALLOWED;
 			goto free_out;
         }
@@ -290,7 +290,7 @@ int at_NCDPCLOSE_req(char *at_buf, char **prsp_cmd)
 
 	if(cdp_delete_lwm2m_task() == 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "deregisted failed!");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		return ATERR_NOT_ALLOWED;
 	}
     return AT_END;   	
@@ -764,12 +764,12 @@ int at_QLWSREGIND_req(char *at_buf, char **prsp_cmd)
     {
     	if(strcmp((const char *)get_cdp_server_ip_addr_str(), "") == 0)
     	{
-    		xy_printf(0,XYAPP, WARN_LOG, "cdp server addr is empty!");
+    		xy_printf(0,XYAPP, WARN_LOG, "");
 			return  (ATERR_NOT_ALLOWED);
     	}
         else if(cdp_create_lwm2m_task(lifetime))
         {
-        	xy_printf(0,XYAPP, WARN_LOG, "registed failed!");
+        	xy_printf(0,XYAPP, WARN_LOG, "");
 #if VER_BC95
 			return AT_END;
 #else
@@ -781,7 +781,7 @@ int at_QLWSREGIND_req(char *at_buf, char **prsp_cmd)
     {
         if(cdp_delete_lwm2m_task() == 0)
         {
-        	xy_printf(0,XYAPP, WARN_LOG, "deregisted failed!");
+        	xy_printf(0,XYAPP, WARN_LOG, "");
 			return  (ATERR_NOT_ALLOWED);
        	}
     }
@@ -1429,7 +1429,7 @@ int at_QCFG_req(char *at_buf, char **prsp_cmd)
 					xy_lwm2m_server_t *targetP = context->serverList;
 					if((context != NULL && context->state != STATE_READY) || targetP == NULL || targetP->status != XY_STATE_REGISTERED)
 					{
-						xy_printf(0,XYAPP, WARN_LOG, "cdp current status is error!");
+						xy_printf(0,XYAPP, WARN_LOG, "");
 						return (ATERR_NOT_ALLOWED);
 					}
 

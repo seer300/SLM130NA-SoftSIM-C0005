@@ -18,7 +18,7 @@ void user_get_Manufacturer(char *manufacturer, int size)
 	if (size > (int)(strlen("Open Mobile Alliance")))
 		sprintf(manufacturer, "Open Mobile Alliance");
     else
-		xy_printf(0,PLATFORM, WARN_LOG, "[user_get_Manufacturer]error!");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 	return;
 }
 
@@ -28,7 +28,7 @@ void user_get_SNumber(char *serial_number, int size)
     if (size > (int)(strlen("345000123")))
         sprintf(serial_number, "345000123");
     else
-        xy_printf(0,PLATFORM, WARN_LOG, "[user_get_SNumber]error!");
+        xy_printf(0,PLATFORM, WARN_LOG, "");
     return;
 }
 

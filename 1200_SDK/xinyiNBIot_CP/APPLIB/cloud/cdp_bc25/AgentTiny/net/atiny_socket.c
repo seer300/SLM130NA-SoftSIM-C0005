@@ -174,7 +174,7 @@ int atiny_dtls_shakehand(mbedtls_ssl_context *ssl, const dtls_shakehand_info_s *
 
     if (server_fd == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"connect failed! mode %d", info->client_or_server);
+        xy_printf(0,XYAPP, WARN_LOG,"%d", info->client_or_server);
         ret = MBEDTLS_ERR_NET_CONNECT_FAILED;
         goto exit_fail;
     }
@@ -222,7 +222,7 @@ int atiny_dtls_shakehand(mbedtls_ssl_context *ssl, const dtls_shakehand_info_s *
 
     if (ret != 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"mbedtls_ssl_handshake failed: -0x%x", -ret);
+        xy_printf(0,XYAPP, WARN_LOG,"%x", -ret);
         goto exit_fail;
     }
 
@@ -233,11 +233,11 @@ int atiny_dtls_shakehand(mbedtls_ssl_context *ssl, const dtls_shakehand_info_s *
         {
             char vrfy_buf[512];
             mbedtls_x509_crt_verify_info(vrfy_buf, sizeof(vrfy_buf), "  ! ", flags);
-            xy_printf(0,XYAPP, WARN_LOG,"cert verify failed: %s", vrfy_buf);
+            xy_printf(0,XYAPP, WARN_LOG,"%s", vrfy_buf);
             goto exit_fail;
         }
         else
-            xy_printf(0,XYAPP, WARN_LOG,"cert verify succeed");
+            xy_printf(0,XYAPP, WARN_LOG,"");
     }
 #endif
 
@@ -507,7 +507,7 @@ void *atiny_net_connect(const char *host, const char *port, int proto)
 		{
 		    close(ctx->fd);
 		    ctx->fd = -1;
-			xy_printf(0,XYAPP, WARN_LOG, "[atiny_net_connect] flag err");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			goto ERR_PROC;
 		}
 	}
@@ -530,7 +530,7 @@ void *atiny_net_connect(const char *host, const char *port, int proto)
     {
         close(ctx->fd);
         ctx->fd = -1;
-        xy_printf(0, XYAPP, WARN_LOG, "[atiny_net_connect] connect err");
+        xy_printf(0, XYAPP, WARN_LOG, "");
         goto ERR_PROC;
     }
     

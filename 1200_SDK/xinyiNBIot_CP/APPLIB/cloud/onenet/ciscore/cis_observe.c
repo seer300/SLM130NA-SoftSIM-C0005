@@ -460,7 +460,7 @@ coap_status_t observe_handleRequest(st_context_t * contextP,st_uri_t * uriP,
 		if (isObserveRepeat)
 		{
 			LOGD("repeat observe request 0x%x", observeMid);
-			xy_printf(0,XYAPP, WARN_LOG, "repeat observe request 0x%x", observeMid);
+			xy_printf(0,XYAPP, WARN_LOG, "%x", observeMid);
 		}
 		else
 		{

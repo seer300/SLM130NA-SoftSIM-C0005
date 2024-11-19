@@ -177,7 +177,7 @@ int32_t ctlw_cloud_send_data(uint8_t *data, ctiot_send_mode_e sendMode, int32_t 
     if(ctiot_send(data, sendMode, resultBuf) != CTIOT_NB_SUCCESS)
     {
         ret = CTIOT_NB_FAILED;
-        xy_printf(0,XYAPP, WARN_LOG, "[ctlw_send]: ctiot_send failed!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         goto exit;
     }
 

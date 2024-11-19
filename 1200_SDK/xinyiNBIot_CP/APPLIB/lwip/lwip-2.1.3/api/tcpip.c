@@ -256,7 +256,7 @@ tcpip_inpkt(struct pbuf *p, struct netif *inp, netif_input_fn input_fn)
 
   msg = (struct tcpip_msg *)memp_malloc(MEMP_TCPIP_MSG_INPKT);
   if (msg == NULL) {
-    xy_printf(0,XYAPP, WARN_LOG, "input ip packet malloc fail");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return ERR_MEM;
   }
 
@@ -266,7 +266,7 @@ tcpip_inpkt(struct pbuf *p, struct netif *inp, netif_input_fn input_fn)
   msg->msg.inp.input_fn = input_fn;
   if (sys_mbox_trypost(&tcpip_mbox, msg) != ERR_OK) {
     memp_free(MEMP_TCPIP_MSG_INPKT, msg);
-  	xy_printf(0,XYAPP, WARN_LOG, "tcpip mbox full, drop input packet");
+  	xy_printf(0,XYAPP, WARN_LOG, "");
     return ERR_MEM;
   }
   return ERR_OK;

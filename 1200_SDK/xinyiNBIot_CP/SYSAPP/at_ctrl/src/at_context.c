@@ -107,7 +107,7 @@ bool deregister_at_context(int fd)
 	{
 		if (temp->node->fd == fd)
 		{
-			xy_printf(0,PLATFORM, WARN_LOG, "deregister at context fd[%d] from at dict", fd);
+			xy_printf(0,PLATFORM, WARN_LOG, "%d", fd);
 			if (temp->next != NULL)
 			{
 				temp->next->pre = temp->pre;

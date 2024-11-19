@@ -304,7 +304,7 @@ void system_init(void)
 	}
 #endif
 
-    PrintLog(0,PLATFORM,WARN_LOG,"Nbiot-1200, PowerOnReason %d, PowerOnSubReason:%d", Get_Boot_Reason(), Get_Boot_Sub_Reason());
+    PrintLog(0,PLATFORM,WARN_LOG,"%d%d", Get_Boot_Reason(), Get_Boot_Sub_Reason());
 
 	cloud_init();
 
@@ -337,10 +337,10 @@ void system_init(void)
 #if DEEPSLEEP_ADVANCE_TIME_CALCULTATE
 	g_db_DeepSleep_Recovery_timer = UTC_RECORD_TIMER;
 	g_db_DeepSleep_Recovery_cnt = UTCClkCntConvert(UTC_RECORD_CNT);
-	PrintLog(0,PLATFORM,WARN_LOG,"LPM_DEEPSLEEP cp_main:(%x, %d) rf_sido:(%x, %d) mpu_protect_init:(%x, %d) rtc_init:(%x, %d) IpcMsg_init:(%x, %d) nv_restore:(%x, %d)", g_db_cp_main_timer,g_db_cp_main_cnt,g_db_rf_sido_timer,g_db_rf_sido_cnt,g_db_mpu_protect_init_timer,g_db_mpu_protect_init_cnt,g_db_rtc_init_timer,g_db_rtc_init_cnt,g_db_IpcMsg_init_timer,g_db_IpcMsg_init_cnt,g_db_nv_restore_timer,g_db_nv_restore_cnt);
-    PrintLog(0,PLATFORM,WARN_LOG,"LPM_DEEPSLEEP diag_communication_init:(%x, %d) at_uart_init:(%x, %d) fs_lock_init:(%x, %d) rf_uart_init:(%x, %d) nvRfInit:(%x, %d) adc_init:(%x, %d) PhyInit:(%x, %d)", g_db_diag_communication_init_timer,g_db_diag_communication_init_cnt,g_db_at_uart_init_timer,g_db_at_uart_init_cnt,g_db_fs_lock_init_timer,g_db_fs_lock_init_cnt,g_db_rf_uart_init_timer,g_db_rf_uart_init_cnt,g_db_nvRfInit_timer,g_db_nvRfInit_cnt,g_db_adc_init_timer,g_db_adc_init_cnt,g_db_PhyInit_timer,g_db_PhyInit_cnt);
-    PrintLog(0,PLATFORM,WARN_LOG,"LPM_DEEPSLEEP worklock_init:(%x, %d) atc_ap_task_init:(%x, %d) at_init:(%x, %d) net_led_init:(%x, %d) xy_srand:(%x, %d) xy_proxy_init:(%x, %d) icm_task_init:(%x, %d)", g_db_worklock_init_timer,g_db_worklock_init_cnt,g_db_atc_ap_task_init_timer,g_db_atc_ap_task_init_cnt,g_db_at_init_timer,g_db_at_init_cnt,g_db_net_led_init_timer,g_db_net_led_init_cnt,g_db_xy_srand_timer,g_db_xy_srand_cnt,g_db_xy_proxy_init_timer,g_db_xy_proxy_init_cnt,g_db_icm_task_init_timer,g_db_icm_task_init_cnt);
-	PrintLog(0,PLATFORM,WARN_LOG,"LPM_DEEPSLEEP flash_task_init:(%x, %d) wdt_init:(%x, %d) PsInit:(%x, %d) cloud_init:(%x, %d) LPM_Init:(%x, %d) Freq32k_Init_Process:(%x, %d) DeepSleep_Recovery:(%x, %d)", g_db_flash_task_init_timer,g_db_flash_task_init_cnt,g_db_wdt_init_timer,g_db_wdt_init_cnt,g_db_PsInit_timer,g_db_PsInit_cnt,g_db_cloud_init_timer,g_db_cloud_init_cnt,g_db_LPM_Init_timer,g_db_LPM_Init_cnt,g_db_Freq32k_Init_Process_timer,g_db_Freq32k_Init_Process_cnt,g_db_DeepSleep_Recovery_timer,g_db_DeepSleep_Recovery_cnt);
+	PrintLog(0,PLATFORM,WARN_LOG,"%x%d%x%d%x%d%x%d%x%d%x%d", g_db_cp_main_timer,g_db_cp_main_cnt,g_db_rf_sido_timer,g_db_rf_sido_cnt,g_db_mpu_protect_init_timer,g_db_mpu_protect_init_cnt,g_db_rtc_init_timer,g_db_rtc_init_cnt,g_db_IpcMsg_init_timer,g_db_IpcMsg_init_cnt,g_db_nv_restore_timer,g_db_nv_restore_cnt);
+    PrintLog(0,PLATFORM,WARN_LOG,"%x%d%x%d%x%d%x%d%x%d%x%d%x%d", g_db_diag_communication_init_timer,g_db_diag_communication_init_cnt,g_db_at_uart_init_timer,g_db_at_uart_init_cnt,g_db_fs_lock_init_timer,g_db_fs_lock_init_cnt,g_db_rf_uart_init_timer,g_db_rf_uart_init_cnt,g_db_nvRfInit_timer,g_db_nvRfInit_cnt,g_db_adc_init_timer,g_db_adc_init_cnt,g_db_PhyInit_timer,g_db_PhyInit_cnt);
+    PrintLog(0,PLATFORM,WARN_LOG,"%x%d%x%d%x%d%x%d%x%d%x%d%x%d", g_db_worklock_init_timer,g_db_worklock_init_cnt,g_db_atc_ap_task_init_timer,g_db_atc_ap_task_init_cnt,g_db_at_init_timer,g_db_at_init_cnt,g_db_net_led_init_timer,g_db_net_led_init_cnt,g_db_xy_srand_timer,g_db_xy_srand_cnt,g_db_xy_proxy_init_timer,g_db_xy_proxy_init_cnt,g_db_icm_task_init_timer,g_db_icm_task_init_cnt);
+	PrintLog(0,PLATFORM,WARN_LOG,"%x%d%x%d%x%d%x%d%x%d%x%d%x%d", g_db_flash_task_init_timer,g_db_flash_task_init_cnt,g_db_wdt_init_timer,g_db_wdt_init_cnt,g_db_PsInit_timer,g_db_PsInit_cnt,g_db_cloud_init_timer,g_db_cloud_init_cnt,g_db_LPM_Init_timer,g_db_LPM_Init_cnt,g_db_Freq32k_Init_Process_timer,g_db_Freq32k_Init_Process_cnt,g_db_DeepSleep_Recovery_timer,g_db_DeepSleep_Recovery_cnt);
 #endif
 
 

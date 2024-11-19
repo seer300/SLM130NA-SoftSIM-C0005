@@ -160,7 +160,7 @@ void Lpm_Msg_NvWrite(void)
 
 		/*出厂NV中，只有RF自校准NV改变才写FLASH*/
 
-#if (MODULE_VER == 0 && BAN_WRITE_FLASH == 1)
+#if (MODULE_VER == 0 && BAN_WRITE_FLASH != 0)
         if(lpm_nv_write->buff[i].dest_addr == NV_FLASH_FACTORY_BASE)
             xy_ftl_write(lpm_nv_write->buff[i].dest_addr,(void *)lpm_nv_write->buff[i].src_addr,lpm_nv_write->buff[i].size);
         else
@@ -551,7 +551,7 @@ void normal_deepsleep_wfi(int lpuart_keep)
 	PRCM_LPUA_PWR_Ctl(LPUA_DEEPSLEEP_MODE_OFF); //off in deepsleep
 	
 	/*8k retension mem受CP核的BAK_MEM_OFF_RETMEM_FLAG控制*/
-#if BAN_WRITE_FLASH	
+#if (MODULE_VER==0)
 	PRCM_SramPowerModeSet(CP_SRAM0 | CP_SRAM1, SRAM_POWER_MODE_OFF_DSLEEP); 
 #else
 	PRCM_SramPowerModeSet(CP_SRAM0 | CP_SRAM1 | SH_SRAM64K, SRAM_POWER_MODE_OFF_DSLEEP); 

@@ -80,7 +80,7 @@ void dm_netif_event_callback(PsStateChangeEvent event)
 	int uicc_type = UICC_UNKNOWN;
 	
 	xy_get_UICC_TYPE(&uicc_type);
-	xy_printf(0,XYAPP, INFO_LOG, "dm_netif_event_callback, netif up,uicc_type=%d\n",uicc_type);
+	xy_printf(0,XYAPP, INFO_LOG, "%d",uicc_type);
 
 	switch(uicc_type)
 	{
@@ -134,19 +134,19 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 
 		if(g_dm_TskHandle != NULL)//DM运行状态,不允许进行参数设置
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,dm task is running,not allow setting!");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 		}
 
 		if(dm_context_init() != DM_PROC_SUCCESS)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,dm_context_init err");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret = DM_AT_INITIALIZE_ERR;
 			goto req_exit;
 		}
 
 		if(at_parse_param("%d(0-2)", at_buf, &set_mode) != AT_OK)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,at_parse_param set_mode err");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret = DM_AT_PARAMS_VALUE_ERR;
 			goto req_exit;
 		}
@@ -169,7 +169,7 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 
 				if(at_parse_param(",%1d(0|1),%1d(1|2), %1d[0-10], %2d[1800-7200], %d[86400-5184000], %41s[], %2d[1-65535]", at_buf, &dm_switch,&setting_uicc_owner,&retry_num, &retry_time, &uni_reg_time, host, &port) != AT_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,at_parse_param DM_SET_SETTING_CFG,err!");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 					ret = DM_AT_PARAMS_VALUE_ERR;
 					goto req_exit;
 				}
@@ -177,7 +177,7 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 				//检测setting_owner与当前sim卡运营商是否匹配
 				if(dm_check_if_setting_owner_valid(setting_uicc_owner) == false)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,DM_SET_SETTING_CFG,dm_check_if_setting_owner_valid err!");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 					ret = DM_AT_SETTING_TYPE_ERR;
 					goto req_exit;					
 				}
@@ -190,7 +190,7 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 				{
 					if(dm_check_if_dm_host_valid(host) == false)//检测host值是否合法
 					{
-						xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,dm_check_if_dm_host_valid err!");
+						xy_printf(0,XYAPP, WARN_LOG, "");
 						ret = DM_AT_PARAMS_VALUE_ERR;
 						goto req_exit;
 					}
@@ -213,14 +213,14 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 
 				if(at_parse_param(", %3s[], %5s[], %31s[], %21s[], %33s[], %16s[]", at_buf, regver, uetype, swver, modver, osver, imei) != AT_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "at_XYDMCFG_req,DM_SET_JSON_PARAMS params err");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 					ret = DM_AT_PARAMS_VALUE_ERR;
 					goto req_exit;
 				}
 
 				if(dm_check_if_cfg_uicc_owner_match_uicc_type() == false)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,case %d dm_check_if_cfg_uicc_owner_match_uicc_type err",set_mode);
+					xy_printf(0,XYAPP, WARN_LOG, "%d",set_mode);
 					ret = DM_AT_SETTING_TYPE_ERR;
 					goto req_exit;
 				}
@@ -245,7 +245,7 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 				{
 					if(dm_get_imei_def_str(imei) == DM_PROC_FAILED)
 					{
-						xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,dm_get_imei_def_str err");
+						xy_printf(0,XYAPP, WARN_LOG, "");
 						ret = DM_AT_PARAMS_VALUE_ERR;
 						goto req_exit;
 					}
@@ -264,21 +264,21 @@ int at_XYDMCFG_req(char *at_buf, char **prsp_cmd)
 
 				if (at_parse_param(",%401s", at_buf, jsonStr) != AT_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "at_XYDMCFG_req,at_parse_param jsonstr params err");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 					ret = DM_AT_PARAMS_VALUE_ERR;
 					goto req_exit;
 				}
 
 				if(dm_check_if_cfg_uicc_owner_match_uicc_type() == false)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,case %d dm_check_if_cfg_uicc_owner_match_uicc_type err",set_mode);
+					xy_printf(0,XYAPP, WARN_LOG, "%d",set_mode);
 					ret = DM_AT_SETTING_TYPE_ERR;
 					goto req_exit;
 				}
 				
 				if(dm_set_others_json_context(jsonStr) != DM_PROC_SUCCESS)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[at_XYDMCFG_req],dm_set_others_json_context err!");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 					ret = DM_AT_PARAMS_VALUE_ERR;
 					goto req_exit;
 				}
@@ -310,7 +310,7 @@ req_exit:
 		if(dm_context_init() != DM_PROC_SUCCESS)
 		{
 			*prsp_cmd = AT_ERR_BUILD(DM_AT_INITIALIZE_ERR);
-			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]at_XYDMCFG_req,dm_context_init err!");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 
 			return AT_END;
 		}

@@ -669,7 +669,7 @@ char *at_get_prefix_and_param(char *at_cmd, char *at_prefix, uint8_t *type)
 			else
 			{
 				param = NULL;
-				xy_printf(0,PLATFORM, WARN_LOG, "AT_CMD error!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			}
 		}
 		//ATD
@@ -707,7 +707,7 @@ char *at_get_prefix_and_param(char *at_cmd, char *at_prefix, uint8_t *type)
 			}
 			else
 			{
-				xy_printf(0,PLATFORM, WARN_LOG, "AT_CMD error!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			}
 		}
 		else if ((end = strchr(head, '\r')) != NULL)
@@ -720,7 +720,7 @@ char *at_get_prefix_and_param(char *at_cmd, char *at_prefix, uint8_t *type)
 			}
 			else
 			{
-				xy_printf(0,PLATFORM, WARN_LOG, "AT_CMD error!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			}
 		}
 		else
@@ -761,7 +761,7 @@ char *at_get_prefix_for_URC(char *at_cmd, char *at_prefix)
 			}
 			else
 			{
-				xy_printf(0,PLATFORM, WARN_LOG, "AT_CMD error!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			}
 		}
 		else if ((end = strchr(head, '\r')) != NULL)
@@ -774,7 +774,7 @@ char *at_get_prefix_for_URC(char *at_cmd, char *at_prefix)
 			}
 			else
 			{
-				xy_printf(0,PLATFORM, WARN_LOG, "AT_CMD error!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			}
 		}
 		else

@@ -128,7 +128,7 @@ void cdp_bak_svrInfo(xy_lwm2m_server_t * server, cdp_session_info_t *cdp_session
 
     //目前支持V4/V6
 	if(0 == xy_socket_local_info(fd, NULL, &cdp_session_info->net_info.local_port))
-		xy_printf(0,XYAPP, WARN_LOG, "xy_socket_local_info failed");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	
 	xy_get_ipaddr(cdp_session_info->net_info.remote_ip.type, &cdp_session_info->net_info.local_ip);
 	
@@ -145,7 +145,7 @@ void cdp_bak_svrInfo(xy_lwm2m_server_t * server, cdp_session_info_t *cdp_session
 //状态机恢复至READY同时将NV注册信息跟新至链表
 int cdp_resume_session_info(lwm2m_context_t  * contextP)
 {
-	//xy_printf(0,XYAPP, WARN_LOG, "[CDP]resume cdp reginfo~");
+	//xy_printf(0,XYAPP, WARN_LOG, "");
 
 	lwm2m_observed_t *observedP;
 	cdp_lwm2m_observed_t *backup_observed;
@@ -166,7 +166,7 @@ int cdp_resume_session_info(lwm2m_context_t  * contextP)
 	{
 		targetP->sessionH = lwm2m_connect_server(targetP->secObjInstID, contextP->userData, false);	
         if(NULL == targetP->sessionH ){
-            xy_printf(0,XYAPP, WARN_LOG, "[CDP]resume cdp reginfo: sessionH error");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return -1;
         }
 		targetP->status = XY_STATE_REGISTERED;
@@ -241,7 +241,7 @@ int cdp_resume_session_info(lwm2m_context_t  * contextP)
 //该接口内部禁止调用xy_printf，可调用send_debug_by_at_uart
 int cdp_bak_obsvInfo(lwm2m_context_t* context, cdp_session_info_t * cdp_session_info)
 {
-	//xy_printf(0,XYAPP, WARN_LOG, "[CDP]backup observe info~");
+	//xy_printf(0,XYAPP, WARN_LOG, "");
 
 	lwm2m_observed_t *observed;
 	cdp_lwm2m_observed_t *tempObserved;
@@ -383,20 +383,20 @@ int cdp_resume_task()
 
 	if(!xy_tcpip_is_ok())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp] resume fail,tcpip is not ok.");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return RESUME_OTHER_ERROR;
     }
 
 	if(g_cdp_session_info->regtime == 0)
  	{
- 		xy_printf(0, XYAPP, WARN_LOG, "cdp recover failed, regtime is 0\r\n");
+ 		xy_printf(0, XYAPP, WARN_LOG, "");
     	return RESUME_OTHER_ERROR;
  	}
 
 	//若QCFG设置不为0，而会话保存为0，则认为lifetime保存异常
 	if(g_cdp_config_data->cdp_lifetime != 0 && g_cdp_session_info->lifetime == 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "[CDP]error: cdp session error");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		return RESUME_OTHER_ERROR;
 	}
 
@@ -404,7 +404,7 @@ int cdp_resume_task()
     if((g_cdp_session_info->lifetime != 0  && (g_cdp_session_info->regtime + g_cdp_session_info->lifetime <= current_sec))
         || current_sec <= g_cdp_session_info->regtime)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CDP]error:cdp expired, pre_update_time:%d lifetime:%d curtime:%d\n",
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d%d",
             g_cdp_session_info->regtime, g_cdp_session_info->lifetime, current_sec);
         return RESUME_LIFETIME_TIMEOUT;
     }
@@ -419,7 +419,7 @@ int cdp_resume_task()
 	if (!cdp_create_lwm2m_task(g_cdp_session_info->lifetime))
 	{
 		osSemaphoreAcquire(cdp_recovery_sem, osWaitForever);
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP]recovery cdp wait SemaphoreAcquire");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_OK;
 	}
 
@@ -450,12 +450,12 @@ void cdp_notice_update_process(void)
 
 void cdp_attach_resume_process()
 {
-    xy_printf(0,XYAPP, WARN_LOG, "\r\n dynamic start cdp\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     send_debug_by_at_uart("+DBGINFO:[CDP] attach_resume\r\n");
 	cdp_module_init();
     if(strcmp((const char *)get_cdp_server_ip_addr_str(), "") == 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"cdp server addr is empty!");
+        xy_printf(0,XYAPP, WARN_LOG,"");
     }
     else
 	{
@@ -543,7 +543,7 @@ void cdp_netif_up_resume_process(void *param)
 	//ip_need_change :IP_IS_CHANGED表示需要判断IP地址是否发生变化；IP_NO_CHANGED表示不需要判断IP地址是否发生变化
     if(ip_need_change == IP_IS_CHANGED && cdp_is_ip_changed() == IP_NO_CHANGED)
 	{
-		xy_printf(0, XYAPP, WARN_LOG,"[cdp_netif_up_resume_process] check ip nochanged,exit");
+		xy_printf(0, XYAPP, WARN_LOG,"");
 		g_cdp_resume_TskHandle= NULL;
     	osThreadExit();
 	}
@@ -552,7 +552,7 @@ void cdp_netif_up_resume_process(void *param)
 #if VER_BC95
 	if(cdp_delete_task() == XY_ERR)
 	{
-		xy_printf(0, XYAPP, WARN_LOG,"[cdp_netif_up_resume_process] delete cdp task failed!,exit");
+		xy_printf(0, XYAPP, WARN_LOG,"");
 		g_cdp_resume_TskHandle= NULL;
     	osThreadExit();
 	}
@@ -560,7 +560,7 @@ void cdp_netif_up_resume_process(void *param)
 	app_delay_lock(1000);
 	if(cdp_create_lwm2m_task(g_cdp_config_data->cdp_lifetime))
 	{
-		xy_printf(0, XYAPP, WARN_LOG,"[cdp_netif_up_resume_process] create cdp task failed!,exit");
+		xy_printf(0, XYAPP, WARN_LOG,"");
 		g_cdp_resume_TskHandle= NULL;
     	osThreadExit();
 	}
@@ -602,7 +602,7 @@ void cdp_resume_timer_create(void)
 	
    	if(lifetime <= 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG,"[cdp_resume_timer_create] lifetime is 0\r\n");
+		xy_printf(0, XYAPP, WARN_LOG,"");
 		return;
 	}
 	
@@ -668,7 +668,7 @@ void cdp_ota_state_hook(int state)
     default:
         break;
     }
-    xy_printf(0, PLATFORM, WARN_LOG, "[cdp_ota_state_hook]state:%d", state);
+    xy_printf(0, PLATFORM, WARN_LOG, "%d", state);
     return;
 }
 #endif

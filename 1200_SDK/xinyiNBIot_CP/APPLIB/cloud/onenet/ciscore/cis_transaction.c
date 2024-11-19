@@ -539,7 +539,7 @@ bool transaction_send(st_context_t * contextP,
             }
             else
             {
-                xy_printf(0,XYAPP, WARN_LOG, "[cis] PS data delay, retrans discard");
+                xy_printf(0,XYAPP, WARN_LOG, "");
             }
 
 			/*     result = cisnet_write((cisnet_t)targetSessionH, transacP->buffer, transacP->buffer_len);

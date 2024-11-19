@@ -1719,7 +1719,7 @@ void dns_clear_cache(char *hostname)
   struct dns_table_entry *entry;
   if (hostname == NULL)
   {
-    xy_printf(0,XYAPP, WARN_LOG, "clear all dns cache");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     for (; i < DNS_TABLE_SIZE; i++)
     {
       entry = &dns_table[i];
@@ -1732,7 +1732,7 @@ void dns_clear_cache(char *hostname)
   }
   else
   {
-    xy_printf(0,XYAPP, WARN_LOG, "clear dns cache:%s", hostname);
+    xy_printf(0,XYAPP, WARN_LOG, "%s", hostname);
     for (; i < DNS_TABLE_SIZE; i++)
     {
       entry = &dns_table[i];

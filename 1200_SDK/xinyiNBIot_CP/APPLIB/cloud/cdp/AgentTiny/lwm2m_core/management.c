@@ -411,7 +411,7 @@ uint8_t xy_dm_handleRequest(lwm2m_context_t *contextP,
 				}
 				else
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "recv the same mid,mid1:%d,mid2:%d",coap_msgid , message->mid);
+					xy_printf(0,XYAPP, WARN_LOG, "%d%d",coap_msgid , message->mid);
 					return NO_ERROR;
 				}
 			}

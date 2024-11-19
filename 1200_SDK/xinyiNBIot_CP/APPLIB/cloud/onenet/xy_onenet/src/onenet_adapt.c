@@ -72,7 +72,7 @@ uint32_t cissys_getFwVersion(uint8_t **version)
     unsigned int len = 0;
     sprintf(tmpVersion, "%s", g_softap_fac_nv->versionExt);
 
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] get fwVersion:%s", *version);
+    xy_printf(0,XYAPP, WARN_LOG, "%s", *version);
 
     len = strlen(tmpVersion);
     return len;
@@ -89,7 +89,7 @@ uint32_t cissys_getFwBatteryLevel()
 {
     //TO DO
     uint32_t btLevel = xy_getVbatCapacity();
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] battery level:%u",btLevel);
+    xy_printf(0,XYAPP, WARN_LOG, "%u",btLevel);
     return btLevel;
 }
 
@@ -98,7 +98,7 @@ uint32_t cissys_getFwBatteryVoltage()
 {
     //TO DO
     uint32_t btVoltage = xy_getVbat();
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] battery Voltage:%u(mv)",btVoltage);
+    xy_printf(0,XYAPP, WARN_LOG, "%u",btVoltage);
 
     return btVoltage;
 }
@@ -107,7 +107,7 @@ uint32_t cissys_getFwBatteryVoltage()
 uint32_t cissys_getFwAvailableMemory()
 {
     uint32_t availableMemory = cloud_get_ResveredMem();
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] available Memory:%u(Byte)",availableMemory);
+    xy_printf(0,XYAPP, WARN_LOG, "%u",availableMemory);
 
     return availableMemory;
 }
@@ -118,7 +118,7 @@ uint32_t cissys_getRadioSignalStrength()
     //TO DO
     int radioSignalStrength = -1;
     xy_get_RSSI(&radioSignalStrength);
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] RadioSignal Strength:%u",radioSignalStrength);
+    xy_printf(0,XYAPP, WARN_LOG, "%u",radioSignalStrength);
 
     return (uint32_t)radioSignalStrength;
 }
@@ -185,12 +185,12 @@ uint32_t    cissys_writeFwBytes(uint32_t size, uint8_t * buffer, cissys_callback
 #if CIS_ENABLE_UPDATE
     if(context->fw_request.block1_more == 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]last fota pkt");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
 #endif
 
     rcv_size = rcv_size + size;
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS]block size:%d, had rcv_size:%d", size, rcv_size);
+    xy_printf(0,XYAPP, WARN_LOG, "%d%d", size, rcv_size);
 
     cb->onEvent((cissys_event_t)cissys_event_write_success, NULL, cb->userData, 0);
     return 1;
@@ -236,7 +236,7 @@ int cissys_getFwSavedBytes()
 bool cissys_setFwUpdateResult(uint8_t result)
 {
     s_cis_fwRes = result;
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] fw result:%d", result);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", result);
     if(result != FOTA_RESULT_DISCONNECT)
     {
         if(cis_fota_timer_overdue != NULL)
@@ -300,13 +300,13 @@ bool cissys_setFwState(uint8_t state)
 
     if(s_cis_fwState == state)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS] fw state:%d, no need to set");
+        xy_printf(0,XYAPP, WARN_LOG, "%d");
         return 0;
     }
 
 
     s_cis_fwState = state;
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS] fw state:%d", state);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", state);
 
     switch (state)
     {
@@ -333,7 +333,7 @@ bool cissys_setFwState(uint8_t state)
         case  FOTA_STATE_DOWNLOADED:
             // g_FOTAing_flag = 1;
             //ota_set_state(XY_FOTA_DOWNLOADED);
-            xy_printf(0,XYAPP, WARN_LOG, "[CIS]switch to FOTA DOWNLOADED STATE");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             break;
         case  FOTA_STATE_UPDATING:
             // g_FOTAing_flag = 1;
@@ -393,7 +393,7 @@ cis_ret_t cissys_init(void *context,const cis_cfg_sys_t* cfg,cissys_callback_t* 
     st_context_t *contextP = (st_context_t *)context;
     if(contextP == NULL)
         return CIS_RET_ERROR;
-    //xy_printf(0,XYAPP, WARN_LOG, "[~~~~~~]init fw callback");
+    //xy_printf(0,XYAPP, WARN_LOG, "");
     contextP->g_fotacallback.onEvent = event_cb->onEvent;
     contextP->g_fotacallback.userData = event_cb->userData;
 
@@ -445,7 +445,7 @@ void cissys_fault(uint16_t id)
 {
     (void) id;
 
-    xy_printf(0,XYAPP, WARN_LOG, "cissys_fault");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 }
 uint32_t cissys_rand()
 {
@@ -480,7 +480,7 @@ uint8_t     cissys_getSN(char* buffer,uint32_t maxlen)
 
     xy_get_SN(buffer, maxlen);
 
-    //xy_printf(0,XYAPP, WARN_LOG, "TEST  SN: %s", buffer);
+    //xy_printf(0,XYAPP, WARN_LOG, "%s", buffer);
     return strlen(buffer);
 }
 
@@ -500,7 +500,7 @@ static int create_cisnet_sock(cisnet_t ctx)
 
     if ((ctx->sock = xy_socket_by_host2(ctx->host, Sock_IPv46, IPPROTO_UDP, g_onenet_session_info->net_info.local_port, ctx->port, remote_addr)) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]create cisnet sock error[%d]\r\n", ctx->sock);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", ctx->sock);
         ret = XY_ERR;
     }
     else
@@ -541,10 +541,10 @@ void cis_sock_recv_thread(void* lpParam)
             */
         //[XY]Add for onenet loop
         result = select(sock + 1, &readfds, &writefds, &exceptfds, &tv);
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]select result(%d): %d %s\n", result, errno, strerror(errno));
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d%s", result, errno, strerror(errno));
         if (result < 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "Error in select(): %d %s\n", errno, strerror(errno));
+            xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
             goto TAG_END;
         }
         else if (result > 0)
@@ -570,7 +570,7 @@ void cis_sock_recv_thread(void* lpParam)
                 if (numBytes < 0)
                 {
                     if(errno == 0)continue;
-                    xy_printf(0,XYAPP, WARN_LOG, "Error in recvfrom(): %d %s\n", errno, strerror(errno));
+                    xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
                 }
                 else if (numBytes > 0)
                 {
@@ -588,7 +588,7 @@ void cis_sock_recv_thread(void* lpParam)
                         inet_ntop(saddr->sin_family, &saddr->sin_addr, str_addr, INET6_ADDRSTRLEN);
                         port = saddr->sin_port;
                     }
-                    xy_printf(0,XYAPP, WARN_LOG, "[CIS] %d bytes received from [%s]:%d \n", numBytes, str_addr, ntohs(port));
+                    xy_printf(0,XYAPP, WARN_LOG, "%d%s%d", numBytes, str_addr, ntohs(port));
                     if(strcmp(netctx->host, str_addr) != 0)
                     {
                         osMutexAcquire(g_onenet_mutex, osWaitForever);
@@ -616,7 +616,7 @@ void cis_sock_recv_thread(void* lpParam)
         }
     }
 TAG_END:
-    xy_printf(0,XYAPP, WARN_LOG, "socket recv thread exit..\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     close(sock);
     //netctx->cis_sock_recv_thread_id = -1;
     netctx->cis_sock_recv_thread_id = NULL;
@@ -632,7 +632,7 @@ TAG_END:
  ******************************************************************************/
 cis_ret_t cisnet_init(void *context,const cisnet_config_t* config,cisnet_callback_t cb)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "cisnet_init\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     cis_memcpy(&((struct st_cis_context *)context)->netConfig,config,sizeof(cisnet_config_t));
     ((struct st_cis_context *)context)->netCallback.onEvent = cb.onEvent;
      //vTaskDelay(1000);
@@ -642,14 +642,14 @@ cis_ret_t cisnet_init(void *context,const cisnet_config_t* config,cisnet_callbac
 
 cis_ret_t cisnet_create(cisnet_t* netctx,const char* host,void* context)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "cisnet_create\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     st_context_t * ctx = (st_context_t *)context;
 
     //if (ctx->netAttached != 1) return CIS_RET_ERROR;
 
     cisnet_t pctx = (cisnet_t)cissys_malloc(sizeof(struct st_cisnet_context));
     if (pctx == NULL) {
-        xy_printf(0,XYAPP, WARN_LOG, "Cannot malloc cisnet_t");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_ERROR;
     }
     memset(pctx, 0, sizeof(struct st_cisnet_context));
@@ -662,7 +662,7 @@ cis_ret_t cisnet_create(cisnet_t* netctx,const char* host,void* context)
     pctx->cis_sock_recv_thread_id = NULL;
 
     if (create_cisnet_sock(pctx) < 0) {
-        xy_printf(0,XYAPP, WARN_LOG, "Cannot create socket");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         cissys_free(pctx);
         return CIS_RET_ERROR;
     }
@@ -676,7 +676,7 @@ cis_ret_t cisnet_create(cisnet_t* netctx,const char* host,void* context)
 void cisnet_destroy(cisnet_t netctx)
 {
     struct st_net_packet *temp, *node;
-    xy_printf(0,XYAPP, WARN_LOG, "cisnet_destroy\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     if (netctx->context) {
         //close(netctx->sock); // let the sock die naturally, close the sock in recv thread before thread exits
         netctx->context = NULL;
@@ -699,7 +699,7 @@ cis_ret_t cisnet_connect(cisnet_t netctx)
 {
     osThreadAttr_t task_attr = {0};
 
-    xy_printf(0,XYAPP, WARN_LOG, "cisnet_connect\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     //char cis_sock_recv_thread_name[32] = {0};
     st_context_t* net_context = (st_context_t*)netctx->context;
     netctx->state = 1;
@@ -737,7 +737,7 @@ cis_ret_t cisnet_connect(cisnet_t netctx)
 
 cis_ret_t cisnet_disconnect(cisnet_t netctx)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "cisnet_disconnect\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     st_context_t* net_context = (st_context_t*)netctx->context;
     netctx->state = 0;
 
@@ -780,10 +780,10 @@ cis_ret_t cisnet_write(cisnet_t netctx,const uint8_t* buffer,uint32_t length, ui
         nbSent = sendto2(netctx->sock, (const char*)buffer + offset, length - offset, 0, (struct sockaddr *)&saddr, addrlen, 0, raiflag);
 
         if (nbSent == -1){
-            xy_printf(0,XYAPP, WARN_LOG, "socket sendto [%s:%d] failed.\n", netctx->host, ntohs(saddr.sin6_port));
+            xy_printf(0,XYAPP, WARN_LOG, "%s%d", netctx->host, ntohs(saddr.sin6_port));
             return -1;
         }else{
-            xy_printf(0,XYAPP, WARN_LOG, "socket sendto [%s:%d] %d bytes\n", netctx->host, ntohs(saddr.sin6_port), nbSent);
+            xy_printf(0,XYAPP, WARN_LOG, "%s%d%d", netctx->host, ntohs(saddr.sin6_port), nbSent);
         }
         offset += nbSent;
     }

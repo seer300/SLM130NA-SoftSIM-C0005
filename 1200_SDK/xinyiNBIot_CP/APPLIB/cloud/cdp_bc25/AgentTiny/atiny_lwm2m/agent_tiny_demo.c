@@ -347,7 +347,7 @@ int set_cdp_server_ip_addr_str(char *ip_addr_str)
 	}
 	else if(xy_domain_is_valid(ip_addr_str) == 0) //域名检测
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "xy_domain_is_valid err");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_ERR;
 	}
 		
@@ -735,10 +735,10 @@ int cdp_fota_autoreg_info_recover()
 	cdp_module_init();
 	if(cdp_create_lwm2m_task(OTA_NEED_UPGRADE))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, " cdp_fota_autoreg_info_recover cdp_create_lwm2m_task fail");
+		xy_printf(0,XYAPP, WARN_LOG, "");
     	return XY_ERR;
 	}
-    xy_printf(0,XYAPP, WARN_LOG, "cdp_fota_autoreg_info_recover, over");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return XY_OK;
 }
 #endif
@@ -749,7 +749,7 @@ void cdp_netif_event_callback(PsStateChangeEvent event)
 {
 	osThreadAttr_t thread_attr = {0};
 
-    xy_printf(0,XYAPP, WARN_LOG, "cdp_netif_event_callback, netif up");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 
 #ifdef CONFIG_FEATURE_FOTA
 	if(!cdp_handle_exist() && cdp_check_if_need_fota() && cdp_fota_autoreg_info_recover() == XY_OK)
@@ -899,13 +899,13 @@ void cdp_upstream_seq_callback(unsigned long eventId, void *param, int paramLen)
 	
 	if (seq_num > CDP_SEQUENCE_MAX || seq_num <= 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[cdp_upstream_seq_callback] unexpected seq_num:%d",seq_num);
+		xy_printf(0,XYAPP, WARN_LOG, "%d",seq_num);
 		return;
 	}
 
 	if (!cdp_find_match_udp_node(seq_num))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "find no match udp mode!!!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return;
 	}
 
@@ -1017,7 +1017,7 @@ void *cdp_get_device_info()
 	if(cdp_get_endpoint_name() == NULL)
 	{
 		xy_free(device_info);
-		xy_printf(0,XYAPP, WARN_LOG, "cdp_get_endpoint_name failed!!!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return NULL;
 	}
 
@@ -1072,7 +1072,7 @@ int cdp_init(int lifetime)
 
 	if (cdp_get_params(g_phandle))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP]cdp_get_params error");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto failed;
 	}
 	
@@ -1266,26 +1266,26 @@ void cdp_lwm2m_process(void *param)
             while (osSemaphoreAcquire(cdp_recovery_sem, 0) == osOK) {};
             osSemaphoreRelease(cdp_recovery_sem);
 	    }
-		xy_printf(0,XYAPP, WARN_LOG, "cdp volunt timeout!!!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		g_lwm2m_TskHandle = NULL;
 		osThreadExit();
 	}
 
     if(XY_OK > cdp_init(lifetime))
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "[CDP]cdp init error");
+    	xy_printf(0,XYAPP, WARN_LOG, "");
         goto out;
     }
 
     if(ATINY_OK != atiny_init(g_phandle))
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "[CDP]cdp atiny_init error");
+    	xy_printf(0,XYAPP, WARN_LOG, "");
         goto out;
     }
 
     if(XY_OK != cdp_create_recv_task())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CDP]cdp creat_cdp_recv_task error");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         goto out;
     }
 

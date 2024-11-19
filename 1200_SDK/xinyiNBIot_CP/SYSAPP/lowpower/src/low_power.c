@@ -341,7 +341,7 @@ void Sys_Down_URC_default(void)
 
 	if(sys_down_str != NULL)
 	{
-		xy_printf(0, PLATFORM, WARN_LOG,"URC: %s",sys_down_str);
+		xy_printf(0, PLATFORM, WARN_LOG,"%s",sys_down_str);
 			
 		if(!is_urc_drop())
 			send_powerdown_urc_to_ext(sys_down_str, strlen(sys_down_str));
@@ -713,7 +713,7 @@ void Set32k_To_HCLK(int32_t diffval,uint32_t sleepTime)
 		g_pll_divn_old = divn_temp;
 
 	}
-	PrintLog(0,PLATFORM,WARN_LOG,"UPDATE MCNT old:%d, new:%d", old_32k_2_HCLK , g_Hclk_mcnt_cnt );
+	PrintLog(0,PLATFORM,WARN_LOG,"%d%d", old_32k_2_HCLK , g_Hclk_mcnt_cnt );
 }
 
 // 物理层专用：开启MCNT动态反馈功能
@@ -906,7 +906,7 @@ uint32_t Mcnt_Get(void)
 			g_pll_divn_old = pll_divn;
 			osCoreExitCritical();
 
-			xy_printf(0,XYAPP, WARN_LOG, "lpm xtal32k sctemperature:%d, mcnt_cnt_addr:%x mcnt_cnt:%d, pll_div:%d, freq:%d \r\n",sctemperature, 8*sctemperature, mcnt_cnt, pll_divn, rc32k_freq );
+			xy_printf(0,XYAPP, WARN_LOG, "%d%x%d%d%d",sctemperature, 8*sctemperature, mcnt_cnt, pll_divn, rc32k_freq );
 
 		}
 		else if(PRCM_32KClkSrcGet() == 0)
@@ -1074,7 +1074,7 @@ int __RAM_FUNC Lpm_WFI_Process(void)
     if((standby_degrade_flag == 1) || (g_wfi_sleep_ms >= 15))
 	{
 		standby_degrade_flag = 0;
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_WFI: %lld", g_wfi_sleep_ms);
+		xy_printf(0,PLATFORM, WARN_LOG, "%lld", g_wfi_sleep_ms);
 	}
 #endif
 
@@ -1101,7 +1101,7 @@ void del_realtime_timer(osThreadId_t thread_id)
 				g_realtime_timer_list = list->next;
 			else
 				list_prev->next = list->next;
-			xy_printf(0, XYAPP, WARN_LOG, "del_realtime_timer:0x%X,0x%X,0x%X", thread_id, g_realtime_timer_list, list_prev);
+			xy_printf(0, XYAPP, WARN_LOG, "%X%X%X", thread_id, g_realtime_timer_list, list_prev);
 			// 删除定时器
 			osTimerDelete(list->timer_id);
 			list->timer_id = NULL;		
@@ -1147,7 +1147,7 @@ void set_realtime_in_standby(int sec, osThreadId_t thread_id)
 OUT:
 	osThreadSetLowPowerFlag(list->thread_id, osLpmRealtime);
 	osMutexRelease(g_realtime_timer_mutex);
-	xy_printf(0, XYAPP, WARN_LOG, "set_realtime_in_standby:0x%X,0x%X,0x%X,%d", list->thread_id, list->timer_id, g_realtime_timer_list, sec);
+	xy_printf(0, XYAPP, WARN_LOG, "%X%X%X%d", list->thread_id, list->timer_id, g_realtime_timer_list, sec);
 	xy_assert(list->timer_id != NULL);
 	osTimerStart(list->timer_id, sec * 1000);		
 }

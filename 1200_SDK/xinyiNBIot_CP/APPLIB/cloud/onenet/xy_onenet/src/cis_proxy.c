@@ -284,7 +284,7 @@ int cisProxyReadRsp(int msgId, int flag, int objId, int insId, int resId, int re
 {
 	(void) result;
 
-	xy_printf(0,XYAPP, WARN_LOG, "AP read start");
+	xy_printf(0,XYAPP, WARN_LOG, "");
 
 	if(objId != g_cis_proxy_config->objectID)
 		xy_assert(0);
@@ -351,23 +351,23 @@ static int cisProxyStatusEventProc(int event_num)
 	if(event_num == CIS_EVENT_UNREG_DONE)
 	{
 		cis_proxy_work_state=2;
-		xy_printf(0,XYAPP, WARN_LOG, "AP close success");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	}
 	else if(event_num == CIS_EVENT_UPDATE_SUCCESS)
 		osSemaphoreRelease(g_cis_send_sem);
 	else if(event_num == CIS_EVENT_UPDATE_FAILED)
 		osSemaphoreRelease(g_cis_send_sem);
 	else if(event_num == CIS_EVENT_REG_TIMEOUT)
-		xy_printf(0,XYAPP, WARN_LOG, "AP register timeout");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	else if(event_num == CIS_EVENT_REG_SUCCESS)
-		xy_printf(0,XYAPP, WARN_LOG, "AP register success");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	else if(event_num == CIS_EVENT_NOTIFY_SUCCESS)
 		osSemaphoreRelease(g_cis_send_sem);
 	else if(event_num == CIS_EVENT_NOTIFY_FAILED)
 		osSemaphoreRelease(g_cis_send_sem);
 	else if(event_num == CIS_EVENT_UPDATE_NEED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "AP need updata");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		if ((ret=cis_updatelife(7200, 0)) != CIS_RET_OK)
 		{
 			xy_assert(0);
@@ -399,7 +399,7 @@ void cisProxyEventPro()
 		cache_node->msg = rcv_msg;
 		cache_node->next = NULL;
 
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]work_state(%d),evtType(%d)", cis_proxy_work_state, evtType);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", cis_proxy_work_state, evtType);
 		//when do closing,only can proc CALLBACK_TYPE_EVENT type
 		if(cis_proxy_work_state == 1 && evtType != CALLBACK_TYPE_EVENT)
 		{
@@ -411,24 +411,24 @@ void cisProxyEventPro()
 		switch(evtType)
 		{
 			case CALLBACK_TYPE_DISCOVER:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]discover flag(%d)", rcv_msg->flag);
+				xy_printf(0,XYAPP, WARN_LOG, "%d", rcv_msg->flag);
 				ret = cis_discover_rsp(-1, rcv_msg->objId, 1, strlen(g_cis_proxy_config->resStr), g_cis_proxy_config->resStr);
 				xy_free(rcv_msg);
 				break;
 			case CALLBACK_TYPE_OBSERVE:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]observe flag(%d),objId(%d),insId(%d),resId(%d)", rcv_msg->flag,rcv_msg->objId, rcv_msg->insId, rcv_msg->resId);
+				xy_printf(0,XYAPP, WARN_LOG, "%d%d%d%d", rcv_msg->flag,rcv_msg->objId, rcv_msg->insId, rcv_msg->resId);
 				//ret = cisObserveRspAndNotify(-1, rcv_msg->flag, rcv_msg->objId, rcv_msg->insId, rcv_msg->resId, 1);
 				cis_observe_rsp(-1, 1);
 				xy_free(rcv_msg);
 				break;
 			case CALLBACK_TYPE_OBSERVE_CANCEL:
 				//Process observe cancel event
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Read flag(%d),objId(%d),insId(%d),resId(%d)", rcv_msg->flag, rcv_msg->objId, rcv_msg->insId, rcv_msg->resId);
+				xy_printf(0,XYAPP, WARN_LOG, "%d%d%d%d", rcv_msg->flag, rcv_msg->objId, rcv_msg->insId, rcv_msg->resId);
 				cis_observe_rsp(-1, 1);
 				xy_free(rcv_msg);
 				break;
 			case CALLBACK_TYPE_READ:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]read message cache ");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				//相同msgid的message过滤
 				if(!xy_cis_msg_cache_exists(rcv_msg->msgid) && last_cache_msgid < rcv_msg->msgid)
 				{
@@ -439,7 +439,7 @@ void cisProxyEventPro()
 				}
 				break;
 			case CALLBACK_TYPE_WRITE:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]write message cache ");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				//相同msgid的message过滤
 				if(!xy_cis_msg_cache_exists(rcv_msg->msgid) && last_cache_msgid < rcv_msg->msgid)
 				{
@@ -451,7 +451,7 @@ void cisProxyEventPro()
 				cis_write_rsp(-1, 2);
 				break;
 			case CALLBACK_TYPE_EXECUTE:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]execute message cache ");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				//相同msgid的message过滤
 				if(!xy_cis_msg_cache_exists(rcv_msg->msgid) && last_cache_msgid < rcv_msg->msgid)
 				{
@@ -464,7 +464,7 @@ void cisProxyEventPro()
 				break;
 			case CALLBACK_TYPE_OBSERVE_PARAMS:
 				//Process parameter event and send parameterRsp
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Set Param ");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				//相同msgid的message过滤
 				if(!xy_cis_msg_cache_exists(rcv_msg->msgid) && last_cache_msgid < rcv_msg->msgid)
 				{
@@ -477,7 +477,7 @@ void cisProxyEventPro()
 				xy_free(rcv_msg);
 				break;
 			case CALLBACK_TYPE_EVENT:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Event(%d) ", rcv_msg->evtId);
+				xy_printf(0,XYAPP, WARN_LOG, "%d", rcv_msg->evtId);
 				//Process event inform and try to update
 				ret = cisProxyStatusEventProc(rcv_msg->evtId);	
 				break;
@@ -530,7 +530,7 @@ void cisProxyEventPro()
 	ret = cis_create((char *)(g_cis_proxy_config->serverIP), (unsigned int)(g_cis_proxy_config->serverPort), g_cis_proxy_config->bsEnable, g_cis_proxy_config->auth_code);
 	if(ret != CIS_RET_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Err: Create cis failed");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto failed_out;
 	}
 
@@ -539,14 +539,14 @@ void cisProxyEventPro()
 	ret = cis_addobj(g_cis_proxy_config->objectID, 1, insBitmap, g_cis_proxy_config->resCount, 0);
 	if(ret != CIS_RET_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Err: Add obj(%d) failed", g_cis_proxy_config->objectID);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", g_cis_proxy_config->objectID);
 		goto failed_out;
 	}
 
 	ret = cis_reg(g_cis_proxy_config->lifetime);
 	if(ret != CIS_RET_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Err: register cis failed");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto failed_out;
 	}
 
@@ -653,7 +653,7 @@ proxy_config_callback cisProxyConfigProc(uint8_t req_type,uint8_t* paramList, ui
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_ERR;
 	}
 	return XY_OK;
@@ -692,7 +692,7 @@ proxy_recv_callback cisProxyRecvProc(uint8_t req_type,uint8_t* paramList, uint8_
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY] err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_ERR;
 	}
 
@@ -733,7 +733,7 @@ proxy_send_callback cisProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 		switch(dataType)
 		{
 			case cis_tpye_notify:
-				xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]Notify ");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				//Process send notify event
 				cis_notify_sync(-1, g_cis_proxy_config->objectID, g_cis_proxy_config->insID, resID, 1,dataLen,data, 0, 0, cis_proxy_ackid++);
 				ret = osSemaphoreAcquire(g_cis_send_sem, CIS_PROXY_TIMEOUT);
@@ -766,7 +766,7 @@ proxy_send_callback cisProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 		}
 	}
 	else
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 
     return ret;
 }

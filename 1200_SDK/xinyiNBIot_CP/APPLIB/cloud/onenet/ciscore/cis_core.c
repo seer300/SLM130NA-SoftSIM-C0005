@@ -349,10 +349,10 @@ void cis_getDMServer(char *serverIP, char *host)
 	hint.ai_family = AF_INET;
 	hint.ai_socktype = SOCK_DGRAM;
 	
-	xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]begin to get cmcc server addr %s\n",host);
+	xy_printf(0,XYAPP, WARN_LOG, "%s",host);
 	rc = getaddrinfo(host, "10", &hint, &result);
 	if (rc != 0) {
-		xy_printf(0,XYAPP, WARN_LOG, "[[CMCCDM]]dns retry1! rc=%d, errno=%d\n", rc, errno);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", rc, errno);
 		server.sin_addr.s_addr=0x0702a175;//when get dns failed,use default addr:117.161.2.7:5683 42.99.2.15
 	}
 	else {
@@ -406,7 +406,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 	//deal with configuration data 
 	if (cis_config_init(&configContext, configPtr, configLen) < 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS]error: cis_config_init failed");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		cis_free((*context));
 		(*context) = NULL;
 		
@@ -435,7 +435,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 	if (NULL != DMconf)
 	{
 		dmSdkInit(DMconf);
-		xy_printf(0,XYAPP, WARN_LOG, "For Dm\n");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		int ret = genDmRegEndpointName(&deviceName, DMconf);
 		if (ret < 0)
 		{
@@ -609,7 +609,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 	if(strlen((const char *)configRet.data.cfg_net->host.data) <= 5)
  	{
 		cis_config_destory(&configContext);
-        xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to init configRet");
+        xy_printf(0,XYAPP, WARN_LOG, "");
 		return CIS_RET_ERROR;
 	}		
 
@@ -637,12 +637,12 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 		{
 		    strcpy(config_host, CMCC_TEST_DMP_ADDR);
 		}
-		xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]cmcc server addr %s\n",config_host);
+		xy_printf(0,XYAPP, WARN_LOG, "%s",config_host);
 	}
 #endif
 
 	if (targetServerHost == NULL || strlen(targetServerHost) <= 0) {
-        xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to init targetServerHost");
+        xy_printf(0,XYAPP, WARN_LOG, "");
 		cis_config_destory(&configContext);
 		return CIS_RET_ERROR;
 	}
@@ -654,7 +654,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 	st_object_t* securityObj = prv_findObject(contextP, std_object_security);
 	if (securityObj == NULL)
 	{
-	    xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to init security object");
+	    xy_printf(0,XYAPP, WARN_LOG, "");
 		return CIS_RET_ERROR;
 	}
 
@@ -663,7 +663,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 #if CIS_ENABLE_UPDATE
 		if (prv_createFotaObjects(contextP) != COAP_NO_ERROR)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to create Fota objects");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			return CIS_RET_ERROR;
 		}
 #endif
@@ -689,7 +689,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 		st_object_t* dmObj = prv_findObject(contextP, std_object_dm);
 		if (dmObj == NULL)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to init dm object");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			return CIS_RET_ERROR;
 		}
 		std_dm_create(contextP, 0, dmObj);
@@ -707,7 +707,7 @@ cis_ret_t cis_init_handle(void **context, void *configPtr, uint16_t configLen, v
 	{
 		if (dtls_init_context(&(contextP->dtls), &dtls_cb, contextP))
 		{
-	        xy_printf(0,XYAPP, WARN_LOG, "ERROR:Failed to init dtls");
+	        xy_printf(0,XYAPP, WARN_LOG, "");
 			cis_deinit((void **)&contextP);
 			cis_free(deviceName);
 			return CIS_RET_ERROR;

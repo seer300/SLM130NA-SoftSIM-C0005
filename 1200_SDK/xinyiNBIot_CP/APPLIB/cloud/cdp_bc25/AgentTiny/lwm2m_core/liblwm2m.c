@@ -735,7 +735,7 @@ next_step:
         case XY_STATE_REG_FAILED:
             // TODO avoid infinite loop by checking the bootstrap info is different
             //contextP->state = STATE_BOOTSTRAP_REQUIRED;
-            //xy_printf(0,XYAPP, WARN_LOG, "[king]XY_STATE_REG_FAILED");
+            //xy_printf(0,XYAPP, WARN_LOG, "");
             break;
 
         case XY_STATE_REG_PENDING:

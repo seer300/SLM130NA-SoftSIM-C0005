@@ -247,7 +247,7 @@ static uint8_t prv_firmware_write(uint16_t instanceId,
                 //ATINY_LOG(LOG_ERR, "type ERR %d", dataArray[i].type);
                 if(dataArray[i].type == LWM2M_TYPE_OPAQUE)
                 {
-                	xy_printf(0,XYAPP, WARN_LOG, "prv_firmware_write type:%d %d", dataArray[i].type, dataArray[i].value.asBuffer.length);
+                	xy_printf(0,XYAPP, WARN_LOG, "%d%d", dataArray[i].type, dataArray[i].value.asBuffer.length);
                 }
                 else
                 {

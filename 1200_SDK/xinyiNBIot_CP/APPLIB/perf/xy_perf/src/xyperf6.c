@@ -27,7 +27,7 @@ static inline void xyperf_upload_fin(int fd, uint32_t nb_packets, uint32_t end_t
         ret = sendto2(fd, &datagram, sizeof(struct xyperf_udp_datagram), 0, (struct sockaddr*)remote_sockaddr, sizeof(struct sockaddr_in6),0,rai_val);
         if (ret < 0)
         {
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf6 Failed to send the packet (%d)\n", ret);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", ret);
 		}
     }
 }
@@ -77,11 +77,11 @@ int xyperf_udp_ipv6_client(unsigned int duration, unsigned int packet_size, unsi
     snprintf(rsp_cmd, 128, "\r\n+XYPERF6: start xyperf6\r\n");
     send_rsp_at_to_ext(rsp_cmd);
 
-    xy_printf(0,XYAPP, WARN_LOG, "start xyperf6\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 	snprintf(rsp_cmd, 128, "\r\n+XYPERF6: udp remote_ip:%s, remote_port:%d, data_len:%d, bandwidth:%dkbps, duration:%ds, print_interval:%d, xyperf_rai:%d\r\n",
 		remote_ip, remote_port, packet_size, rate_in_kbps, duration, print_interval, rai_val);
 	send_rsp_at_to_ext(rsp_cmd);
-	xy_printf(0,XYAPP, WARN_LOG, "\nxyperf ipv6 udp remote_ip:%s, remote_port:%d, data_len:%d, bandwidth:%dkbps, duration:%ds, print_interval:%d, xyperf_rai:%d\n", 
+	xy_printf(0,XYAPP, WARN_LOG, "%s%d%d%d%d%d%d", 
         remote_ip, remote_port, packet_size, rate_in_kbps, duration, print_interval, rai_val);
 
     start_time = osKernelGetTickCount();
@@ -99,7 +99,7 @@ int xyperf_udp_ipv6_client(unsigned int duration, unsigned int packet_size, unsi
         ret = sendto2(fd, data, packet_size + sizeof(struct xyperf_udp_datagram), 0, (struct sockaddr*)&remote_sockaddr6, sizeof(struct sockaddr_in6),0,rai_val);
         if (ret < 0)
         {
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf6 ERROR! Failed to send the packet (%d)\n", ret);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", ret);
 			goto failed;
 		}
         else
@@ -128,7 +128,7 @@ int xyperf_udp_ipv6_client(unsigned int duration, unsigned int packet_size, unsi
     memset(rsp_cmd, 0, 128);
     snprintf(rsp_cmd, 128, "\r\n+XYPERF6: finished\r\n");
     send_rsp_at_to_ext(rsp_cmd);
-    xy_printf(0,XYAPP, WARN_LOG, "xyperf6 finished");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 
     if (fd != -1)
         close(fd);

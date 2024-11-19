@@ -1,4 +1,4 @@
-softVer:V1200FB10002R00C0005T03_241105
+softVer:V1200FB10002R00C0005P02_241113
 $I:1:S:%s:%X %X %X %X %d %d-%d%d%d%d%d %d%d%d%d%d-%d\n
 $I:2:S:ap log:%d %X %X\n
 $I:3:S:Test flash ending!
@@ -2218,52 +2218,55 @@ $I:2216:S:L1C: UPC MaxTxPowEnhJudge nvEnable=%d, txPower=%ddBTen, chanType=%d, u
 $I:2217:S:PHY: AGC Dbg newLUT %d input pwrdBm %d oldLUT %d,DCOC:BaseI %d, BaseQ %d, Push/Pull_I %d %d, Push/Pull_Q %d %d, u8CallType=%d, sOldAntLiner=%d, instantLiner=%d, lastLiner=%d
 $I:2218:S:PHY: NRS AGC Ctrl 
 $I:2219:S:PHY: PHY_CS_MemoryAllocErrProc eventId=%d, subframeCnt=%d
-$I:2220:S:PHY: cnnt DC problem oldLUT=%d instantRatio=%d, filterRatio=%d, newRatio=%d
-$I:2221:S:PHY: detect info cfg:network [%d %d],lastSfn %d Cnt %d
-$I:2222:S:PHY: idle DC problem oldLUT=%d newLUT=%d
-$I:2223:S:PHY: exceptionEvent unExpectEvent eventId=%d, subfameCnt=%d
-$I:2224:S:PHY: exceptionEventExcute eventId=%d, subframeCnt=%d
-$I:2225:S:PHY: DmaLen Set %d  %d
-$I:2226:S:PHY: Resync Dma Info: Addr[%x %x]  SegLen:%d  SegNum:%d
-$I:2227:S:PHY: UL Gap nextSendFRC=(%d,%d,%d) nextGapStartFRC=(%d,%d,%d) trxStartLocTim=(%d,%d,%d), expectLen=%d
-$I:2228:S:PHY: resyncInit startLocFRC=(0,%d,%d.%d) targetLocFRC=(%d,%d,%d.%d) netWorkFRC=(%d,%d,%d.%d), nsss_ifrm_in=%d, winSize=%d, cfoNum=%d
-$I:2229:S:PHY: debug src data:gHW_BBAddr->ftl_freq_est= %d %d,FTL_PhaseType= %d,ss1msDataFreqError %d,estCFO_hz= %d gPhyL1C_ShareInfo.stFreqInfo[0].stFeoAgcInfo.sFreqError=%d
-$I:2230:S:PHY: subfIntExceptionCheck bSendMsg=%d, eventID=%d, deltaSubf=%d, duration=%d ms, curlocTime=(%d, %d), startTime=(%d, %d)
-$I:2231:S:PHY: EventReq stop status dlIntEn:0x%x EQ:%d,u8Debuginfo[0]=%d,u8Debuginfo[1]=%d,u8Debuginfo[2]=%d,u8Debuginfo[3]=%d,resetReg=0x%x,resetRdBak=0x%x
-$I:2232:S:PHY: debug subfIntExceptionCheck eventID=%d, subfrmCnt=%d, pliotIntCnt=%d, duration=%d, curlocTime=(%d, %d, %d), startTime=(%d, %d, %d), deltaSubf=%d
-$I:2233:S:PHY: phyTimerIntExceptionCheck deltaSubf=%d, callBackFRC=(%d,%d,%d.%d), curLocFRC=(%d,%d,%d.%d), intStat=0x%x, intEna=0x%x
-$I:2234:S:urc:%s
-$I:2235:S:+DBGINFO:BootR %d,SubR 0x%x,PS state %d,REG %x %x\r\n
-$I:2236:S:at_write_to_AP malloc %d fail!
-$I:2237:S:URC: %s
-$I:2238:S:[ERR!!!]CP flash ban write %X
-$I:2239:S:cp_flash_operation CP flash write %X
-$I:2240:S:[running]xy_ftl_write same: %x %d %d %d %s %d 
-$I:2241:S:LPM_DEEPSLEEP boot_cp_start-wkp:%d, pll_select-wkp:%d, pll_lock-wkp:%d, boot_cp_end-wkp:%d, cp_task_start-wkp:%d,CP_ENTER_WFI:%d, AP_ENTER_WFI:%d, delta_dsleep_time:%d, WAKEUP:%d,schedule_time:%d,g_freq_32k:%d
-$I:2242:S:LPM_DEEPSLEEP temperature debug frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) frc3(%d,%d,%d,%d) delta_frc_cnt:%d delatfrc_ms:%d enter_dp_tick:%d
-$I:2243:S:LPM_STANDBY Ps_ullsleeptime_ms:%d,Ps_advance_ms:%d,ullUsrAppExpSleepTime_ms:%lld
-$I:2244:S:LPM_STANDBY ps_sleep_type: %d, ps_ulltime_ms: %lld, ps_ullsleeptime_ms: %lld, ps_sb_advance_ms: %d, platform_advance_ms: %d, wakeup_status: %x, wakeup_int: %x, coreprcm_wkup: %x, test_rc:%d %d
-$I:2245:S:current rtc msec:%u, freq:%u
-$I:2246:S:set_snapshot_by_wtime !
-$I:2247:S:update frame ms by rtc delta %d ms!
-$I:2248:S:update_snapshot_by_frame  same cell!
-$I:2249:S:WARNING! update_snapshot_by_frame phy cell sync fail!
-$I:2250:S:update_snapshot_same_cell at %d-%d/%d/%d!
-$I:2251:S:update_snapshot_by_frame fail ! new cell %d %d,old cell %d %d!
-$I:2252:S:update_snapshot_new_cell at %d-%d/%d/%d!
-$I:2253:S:send_frame_time!
-$I:2254:S:set_frame_update_flag!
-$I:2255:S:set_snapshot_update_timer!
-$I:2256:S:recv unknown msg :%d
-$I:2257:S:uSim tx fail pos1,fifo_num=%x,SM_DBGSTAT=%x
-$I:2258:S:uSim tx fail pos2,fifo_num=%x,SM_DBGSTAT=%x
-$I:2259:S:uSim VoltageSelect fail
-$I:2260:S:uSim PPS tx fail
-$I:2261:S:uSim T0 tx fail pos1
-$I:2262:S:uSim T0 tx fail pos2
-$I:2263:S:uSim T0 tx fail pos3
-$I:2264:S:xy_runtime_debug freq 720000:PHYTMR_IRQn %d,TIM4_IRQn %d,DMAC1_IRQn %d,FLASH_WRITE %d,FLASH_ERASE %d,FLASH_ERASE1 %d,FLASH_PROTECT_EN %d,FLASH_PROTECT_DIS %d,MCNT_IRQn %d,UTC_IRQn %d,WAKEUP_IRQn %d,ISO7816_IRQn %d
-$I:2265:S:Nbiot-1200, PowerOnReason %d, PowerOnSubReason:%d
+$I:2220:S:PSS COARSE WAIT Cnt %d %d
+$I:2221:S:PHY: cnnt DC problem oldLUT=%d instantRatio=%d, filterRatio=%d, newRatio=%d
+$I:2222:S:PHY: detect info cfg:network [%d %d],lastSfn %d Cnt %d
+$I:2223:S:PHY: idle DC problem oldLUT=%d newLUT=%d
+$I:2224:S:PHY: exceptionEvent unExpectEvent eventId=%d, subfameCnt=%d
+$I:2225:S:PHY: exceptionEventExcute eventId=%d, subframeCnt=%d
+$I:2226:S:PHY: DmaLen Set %d  %d
+$I:2227:S:PHY: Resync Dma Info: Addr[%x %x]  SegLen:%d  SegNum:%d
+$I:2228:S:PHY: UL Gap nextSendFRC=(%d,%d,%d) nextGapStartFRC=(%d,%d,%d) trxStartLocTim=(%d,%d,%d), expectLen=%d
+$I:2229:S:PHY: resyncInit startLocFRC=(0,%d,%d.%d) targetLocFRC=(%d,%d,%d.%d) netWorkFRC=(%d,%d,%d.%d), nsss_ifrm_in=%d, winSize=%d, cfoNum=%d
+$I:2230:S:Pss Coarse Info:net[%d %d],DmaStatus: %d Dma0Tc:%d,Dma0LinkNp =%d Dma0Ctrl = %x Dma1Tc:%d,Dma1LinkNp =%d Dma0Ctrl = %x u8Stage:%d %d
+$I:2231:S:PHY: debug src data:gHW_BBAddr->ftl_freq_est= %d %d,FTL_PhaseType= %d,ss1msDataFreqError %d,estCFO_hz= %d gPhyL1C_ShareInfo.stFreqInfo[0].stFeoAgcInfo.sFreqError=%d
+$I:2232:S:PHY: subfIntExceptionCheck bSendMsg=%d, eventID=%d, deltaSubf=%d, duration=%d ms, curlocTime=(%d, %d), startTime=(%d, %d)
+$I:2233:S:PHY: EventReq stop status dlIntEn:0x%x EQ:%d,u8Debuginfo[0]=%d,u8Debuginfo[1]=%d,u8Debuginfo[2]=%d,u8Debuginfo[3]=%d,resetReg=0x%x,resetRdBak=0x%x
+$I:2234:S:PHY: debug subfIntExceptionCheck eventID=%d, subfrmCnt=%d, pliotIntCnt=%d, duration=%d, curlocTime=(%d, %d, %d), startTime=(%d, %d, %d), deltaSubf=%d
+$I:2235:S:PHY: phyTimerIntExceptionCheck deltaSubf=%d, callBackFRC=(%d,%d,%d.%d), curLocFRC=(%d,%d,%d.%d), intStat=0x%x, intEna=0x%x
+$I:2236:S:urc:%s
+$I:2237:S:+DBGINFO:BootR %d,SubR 0x%x,PS state %d,REG %x %x\r\n
+$I:2238:S:at_write_to_AP malloc %d fail!
+$I:2239:S:URC: %s
+$I:2240:S:[ERR!!!]CP flash ban write %X
+$I:2241:S:cp_flash_operation CP flash write %X
+$I:2242:S:[running]xy_ftl_write same: %x %d %d %d %s %d 
+$I:2243:S:LPM_DEEPSLEEP boot_cp_start-wkp:%d, pll_select-wkp:%d, pll_lock-wkp:%d, boot_cp_end-wkp:%d, cp_task_start-wkp:%d,CP_ENTER_WFI:%d, AP_ENTER_WFI:%d, delta_dsleep_time:%d, WAKEUP:%d,schedule_time:%d,g_freq_32k:%d
+$I:2244:S:LPM_DEEPSLEEP temperature debug frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) frc3(%d,%d,%d,%d) delta_frc_cnt:%d delatfrc_ms:%d enter_dp_tick:%d
+$I:2245:S:LPM_STANDBY Ps_ullsleeptime_ms:%d,Ps_advance_ms:%d,ullUsrAppExpSleepTime_ms:%lld
+$I:2246:S:LPM_STANDBY ps_sleep_type: %d, ps_ulltime_ms: %lld, ps_ullsleeptime_ms: %lld, ps_sb_advance_ms: %d, platform_advance_ms: %d, wakeup_status: %x, wakeup_int: %x, coreprcm_wkup: %x, test_rc:%d %d
+$I:2247:S:current rtc msec:%u, freq:%u
+$I:2248:S:set_snapshot_by_wtime !
+$I:2249:S:update frame ms by rtc delta %d ms!
+$I:2250:S:update_snapshot_by_frame  same cell!
+$I:2251:S:WARNING! update_snapshot_by_frame phy cell sync fail!
+$I:2252:S:update_snapshot_same_cell at %d-%d/%d/%d!
+$I:2253:S:update_snapshot_by_frame fail ! new cell %d %d,old cell %d %d!
+$I:2254:S:update_snapshot_new_cell at %d-%d/%d/%d!
+$I:2255:S:send_frame_time!
+$I:2256:S:set_frame_update_flag!
+$I:2257:S:set_snapshot_update_timer!
+$I:2258:S:recv unknown msg :%d
+$I:2259:S:uSim tx fail pos1,fifo_num=%x,SM_DBGSTAT=%x
+$I:2260:S:uSim tx fail pos2,fifo_num=%x,SM_DBGSTAT=%x
+$I:2261:S:uSim VoltageSelect fail
+$I:2262:S:uSim PPS tx fail
+$I:2263:S:uSim T0 tx fail pos1
+$I:2264:S:uSim recv procedure byte null for %d times
+$I:2265:S:uSim T0 tx fail pos2
+$I:2266:S:uSim T0 tx fail pos3
+$I:2267:S:xy_runtime_debug freq 720000:PHYTMR_IRQn %d,TIM4_IRQn %d,DMAC1_IRQn %d,FLASH_WRITE %d,FLASH_ERASE %d,FLASH_ERASE1 %d,FLASH_PROTECT_EN %d,FLASH_PROTECT_DIS %d,MCNT_IRQn %d,UTC_IRQn %d,WAKEUP_IRQn %d,ISO7816_IRQn %d
+$I:2268:S:Nbiot-1200, PowerOnReason %d, PowerOnSubReason:%d
 &WUEPS_START_REQ,WUEPS_START_REQ_STRU
 &PS_POWER_OFF_REQ,PS_POWER_OFF_REQ_STRU
 &WUEPS_RESTART_REQ,WUEPS_RESTART_REQ_STRU

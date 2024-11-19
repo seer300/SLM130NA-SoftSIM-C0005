@@ -66,7 +66,7 @@ int socket_passthr_send(uint8_t id, char *data, uint32_t data_len, uint8_t seqno
 
 	if (ret <= 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "socket[%d] passthr send errno:%d", ctx->sock_id, errno);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", ctx->sock_id, errno);
 		if (seqno != 0)
 		{
 			ctx->sequence_state[seqno - 1] = SEND_STATUS_FAILED;
@@ -86,7 +86,7 @@ int socket_passthr_send(uint8_t id, char *data, uint32_t data_len, uint8_t seqno
 
 void socket_fixed_length_passthr_proc(char *buf, uint32_t len)
 {
-	xy_printf(0,XYAPP, WARN_LOG, "socket fixed recv len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", len);
 	if (g_socket_passthr_info == NULL)
 		xy_assert(0);
     if (passthr_fixed_buff_len == 0)
@@ -148,7 +148,7 @@ void socket_fixed_length_passthr_exit(void)
 
 void socket_unfixed_length_passthr_proc(char *buf, uint32_t len)
 {
-	xy_printf(0,XYAPP, WARN_LOG, "socket passthr unfixed recv len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", len);
 	if (g_socket_passthr_info == NULL)
 		xy_assert(0);
 	

@@ -37,7 +37,7 @@ void urc_print(void *data ,uint32_t len)
 	char *urc_str = xy_malloc(64);
 	snprintf(urc_str, 64, "%s", (char*)data);
 	*(urc_str + 63) = '\0';
-	xy_printf(0, PLATFORM, WARN_LOG,"urc:%s",urc_str);
+	xy_printf(0, PLATFORM, WARN_LOG,"%s",urc_str);
 	xy_free(urc_str);
 }
 
@@ -140,7 +140,7 @@ static void proc_from_nearps(at_msg_t *msg)
 	if (!is_result_code && strlen(at_prefix) != 0 &&
 		(strlen(msg->ctx->at_cmd_prefix) == 0 || strcasecmp(msg->ctx->at_cmd_prefix, at_prefix)))
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "[proc_from_nearps] ps urc info [%s]", at_prefix);
+		xy_printf(0,PLATFORM, WARN_LOG, "%s", at_prefix);
 		send_urc_to_ext(msg->data, strlen(msg->data));
 	}
 	else
@@ -148,23 +148,23 @@ static void proc_from_nearps(at_msg_t *msg)
 		//处理at_ReqAndRsp_to_ps接口上报的信息，解阻塞用户线程
 		if (msg->ctx->fwd_ctx != NULL && msg->ctx->fwd_ctx->fd >= FARPS_USER_MIN && msg->ctx->fwd_ctx->fd <= FARPS_USER_MAX)
 		{
-			xy_printf(0,PLATFORM, WARN_LOG, "[proc_from_nearps] response info for user:[%d]", msg->ctx->fwd_ctx->fd);
+			xy_printf(0,PLATFORM, WARN_LOG, "%d", msg->ctx->fwd_ctx->fd);
 			at_write_by_ctx(msg->ctx->fwd_ctx, msg->data, msg->size);
 		}
 		else if (msg->ctx->fwd_ctx != NULL)
 		{
 			//将at urc信息返回给对应的at上下文
-			xy_printf(0,PLATFORM, WARN_LOG, "[proc_from_nearps] response info for sended cmd");
+			xy_printf(0,PLATFORM, WARN_LOG, "");
 			at_write_by_ctx(msg->ctx->fwd_ctx, msg->data, msg->size);
 		}
 		else
 		{
 			if (is_result_code)
-				xy_printf(0,PLATFORM, WARN_LOG, "[proc_from_nearps] rcv undefined rsp AT!!!");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 			else
 			{
 				//broadcast for farps entity which can receive broadcast info
-				xy_printf(0,PLATFORM, WARN_LOG, "[proc_from_nearps] response info user urc,maybe nping result");
+				xy_printf(0,PLATFORM, WARN_LOG, "");
 				send_urc_to_ext(msg->data, strlen(msg->data));
 			}
 		}
@@ -197,7 +197,7 @@ static void proc_from_farps(at_msg_t *msg)
 	char *at_prefix = msg->ctx->at_cmd_prefix;
 	if (at_prefix == NULL || !strlen(at_prefix))
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "at prefix from farps invalid");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 		AT_ERR_BY_CONTEXT(ATERR_INVALID_PREFIX, msg->ctx);
 		return;
 	}
@@ -205,7 +205,7 @@ static void proc_from_farps(at_msg_t *msg)
 	//Step3: xy_proxy线程中调用at_send_wait_rsp接口，只能是3GPP相关命令，直接转发给PS
 	if (msg->ctx->fd == FARPS_USER_PROXY)
 	{	
-		xy_printf(0,PLATFORM, WARN_LOG, "at ctl deal with msg from proxy");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 		goto FWD_PROC;
 	}
 
@@ -226,7 +226,7 @@ static void proc_from_farps(at_msg_t *msg)
 			if (at_param != NULL)
 			{
 				msg->offset = at_param - msg->data;
-				xy_printf(0,PLATFORM, WARN_LOG, "at parma offset:%d", msg->offset);
+				xy_printf(0,PLATFORM, WARN_LOG, "%d", msg->offset);
 			}
 			else
 			{
@@ -235,7 +235,7 @@ static void proc_from_farps(at_msg_t *msg)
 			}
 			//将当前的at_msg拷贝发送到xy_proxy线程中
 			send_msg_2_at_proxy(AT_PROXY_MSG_CMD_PROC, msg, sizeof(at_msg_t) + msg->size + 1);
-			xy_printf(0,PLATFORM, WARN_LOG, "[xy_basic] msg [%s] send to proxy task", at_prefix);
+			xy_printf(0,PLATFORM, WARN_LOG, "%s", at_prefix);
 			return;
 		}
 	}
@@ -333,7 +333,7 @@ void at_ctl(void)
 		p_SysUp_URC_Hook();
 
 	if(HWREGB(BAK_MEM_RF_MODE) == 1)
-		xy_printf(0,PLATFORM, WARN_LOG, "Enter into RF cali mode!");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 
 	/*保存软件异常断言的时间戳*/
 	extern void boot_cp_dbg_into();
@@ -399,7 +399,7 @@ int send_msg_2_atctl(int msg_id, void *buf, int size, at_context_t* ctx)
 	xy_assert(ctx != NULL);
     int ret = AT_OK;
 
-    xy_printf(0,PLATFORM, WARN_LOG, "send_msg_2_atctl msg_id: %d, fd: %d", msg_id, ctx->fd);
+    xy_printf(0,PLATFORM, WARN_LOG, "%d%d", msg_id, ctx->fd);
 
     if (msg_id == AT_MSG_RCV_STR_FROM_NEARPS || msg_id == AT_MSG_RCV_STR_FROM_FARPS)
 	{
@@ -451,7 +451,7 @@ void forward_req_at_proc(at_msg_t *msg)
 		{
 			osDelay(AT_RETRANS_DELAY_TIME);
 			msg->ctx->retrans_count++;
-			xy_printf(0,PLATFORM, WARN_LOG, "atforward conflict, re-send fd:%d,count:%d", msg->ctx->fd, msg->ctx->retrans_count);
+			xy_printf(0,PLATFORM, WARN_LOG, "%d%d", msg->ctx->fd, msg->ctx->retrans_count);
 			send_msg_2_atctl(msg->msg_id, msg->data, msg->size, msg->ctx);
 		}
 		osMutexRelease(at_forward_m);
@@ -467,7 +467,7 @@ void forward_req_at_proc(at_msg_t *msg)
 	fwd_ctx->fwd_ctx = msg->ctx;
 
 	//Step5: at命令转发给PS
-	xy_printf(0,PLATFORM, WARN_LOG, "send msg [%s] to ps", msg->ctx->at_cmd_prefix);
+	xy_printf(0,PLATFORM, WARN_LOG, "%s", msg->ctx->at_cmd_prefix);
 	at_write_by_ctx(fwd_ctx, msg->data, strlen(msg->data));
 	osMutexRelease(at_forward_m);
 	return;
@@ -515,7 +515,7 @@ bool at_write_by_ctx(at_context_t *ctx, void *buf, int size)
 		if (ctx->fd >= FARPS_USER_MIN && ctx->fd <= FARPS_USER_MAX)
 		{
 			//notify the blocked queue which related to the fd
-			xy_printf(0,PLATFORM, WARN_LOG, "receive rsp and notify queue: %p", ctx->user_queue_Id);
+			xy_printf(0,PLATFORM, WARN_LOG, "%p", ctx->user_queue_Id);
 			ret = send_rsp_str_2_app(ctx->user_queue_Id, (char *)buf, size);
 			return ret;
 		}
@@ -526,7 +526,7 @@ bool at_write_by_ctx(at_context_t *ctx, void *buf, int size)
 		}
 		else
 		{
-			xy_printf(0,PLATFORM,WARN_LOG,"farps write null!!");
+			xy_printf(0,PLATFORM,WARN_LOG,"");
 		}
 	}
 
@@ -571,7 +571,7 @@ void Sys_Up_URC_default()
 
 	xy_free(dbg_urc);
 
-	xy_printf(0,PLATFORM, WARN_LOG, "+DBGINFO:BootR %d,SubR 0x%x,PS state %d,REG %x %x\r\n", Get_Boot_Reason(), Get_Boot_Sub_Reason(),g_softap_var_nv->ps_deepsleep_state,HWREG(0x40000000),HWREG(0x40000008));
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%x%d%x%x", Get_Boot_Reason(), Get_Boot_Sub_Reason(),g_softap_var_nv->ps_deepsleep_state,HWREG(0x40000000),HWREG(0x40000008));
 }
 
 void send_err_rsp_2_ext(int err_no, at_context_t* ctx, char *file, int line)
@@ -656,7 +656,7 @@ void at_write_to_AP(AT_SRC_FD at_fd, char *buf, unsigned int len, uint8_t isResu
 	at_response = xy_malloc2(len + 1);
 	if (at_response == NULL)
 	{
-		xy_printf(0, PLATFORM, WARN_LOG, "at_write_to_AP malloc %d fail!",len);
+		xy_printf(0, PLATFORM, WARN_LOG, "%d",len);
 		if (isResult)
 		{
 			at_response = AT_ERR_BUILD(ATERR_NO_MEM);
@@ -730,14 +730,14 @@ void at_add_urc_cache(at_context_t *ctx, char *urc, uint32_t size)
 {
 	xy_assert(urc != NULL && ctx != NULL && ctx->urcMutex != NULL);
     osMutexAcquire(ctx->urcMutex, osWaitForever);
-    xy_printf(0, PLATFORM, WARN_LOG, "at[%d] urc cache add size:%d", ctx->fd, size);
+    xy_printf(0, PLATFORM, WARN_LOG, "%d%d", ctx->fd, size);
     if (ctx->urcData == NULL)
     {
         ctx->urcData = xy_malloc(sizeof(at_urc_cache_t));
         ctx->urcData->urc = xy_malloc2(size);
 		if (ctx->urcData->urc == NULL)
 		{
-			xy_printf(0, PLATFORM, WARN_LOG, "at[%d] urc cache no mem:%d", ctx->fd, size);
+			xy_printf(0, PLATFORM, WARN_LOG, "%d%d", ctx->fd, size);
 			xy_free(ctx->urcData);
 			ctx->urcData = NULL;
 			goto CACHE_END;
@@ -758,7 +758,7 @@ void at_add_urc_cache(at_context_t *ctx, char *urc, uint32_t size)
     new->urc = xy_malloc2(size);
 	if (new->urc == NULL)
 	{
-		xy_printf(0, PLATFORM, WARN_LOG, "at[%d] urc cache no mem:%d", ctx->fd, size);
+		xy_printf(0, PLATFORM, WARN_LOG, "%d%d", ctx->fd, size);
 		xy_free(new);
 		goto CACHE_END;
 	}
@@ -790,7 +790,7 @@ void at_report_urc_cache(at_context_t *ctx)
         
         if (pre->urc != NULL)
         {
-            xy_printf(0, PLATFORM, WARN_LOG, "at[%d] urc cache report size:%d", ctx->fd, pre->urc_size);
+            xy_printf(0, PLATFORM, WARN_LOG, "%d%d", ctx->fd, pre->urc_size);
             if (ctx->fd == FARPS_AP_ASYNC)
 			{
 				if(HWREGB(BAK_MEM_DROP_URC) != 1)

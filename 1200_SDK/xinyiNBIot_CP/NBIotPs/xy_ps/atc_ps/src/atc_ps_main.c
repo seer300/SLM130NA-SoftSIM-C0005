@@ -508,7 +508,7 @@ void AtcAp_TaskEntry_EventCallback(void* pArgs)
                 }
                 
                 pCmdEvent = (ST_ATC_CMD_COM_EVENT*)pAtcDataInd->aucMsgData;
-                AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG,"[AtcAp_TaskEntry_EventCallback]: event=%d, usMsgLen=%d", pCmdEvent->usEvent, pAtcDataInd->usMsgLen);
+                AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG,"%d%d", pCmdEvent->usEvent, pAtcDataInd->usMsgLen);
                 for(i = 0; i < D_ATC_DATAIND_PROC_TBL_SIZE; i++)
                 {
                     if(AtcAp_DataIndProcTable[i].usEvent == pCmdEvent->usEvent)

@@ -46,13 +46,13 @@ void ping4_netif_event_callback(PsStateChangeEvent event)
     if (event == EVENT_PSNETIF_IPV4_VALID)
     {
 		g_ping_stop = 0;
-        xy_printf(0,XYAPP, WARN_LOG, "ping4_netif_event_callback, netif up");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
     else
     {
 		g_ping_stop = 1;
         osSemaphoreRelease(g_out_OOS_sem); //put semaphore when netif down
-        xy_printf(0,XYAPP, WARN_LOG, "ping4_netif_event_callback, netif down");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
 }
 
@@ -112,7 +112,7 @@ int _ping_ipv4(ping_para_t *ping_para)
     for (int i = 0; i < ping_para->data_len; i++)
         icmp_data[i] = i + 'a';
 
-	xy_printf(0,XYAPP, WARN_LOG, "start send ping\ndst addr:%s,datalen:%d,timeout:%d,interval_time:%d,rai:%d", ping_info->host_ip, ping_para->data_len, ping_para->time_out, ping_para->interval_time, ping_para->rai_val);
+	xy_printf(0,XYAPP, WARN_LOG, "%s%d%d%d%d", ping_info->host_ip, ping_para->data_len, ping_para->time_out, ping_para->interval_time, ping_para->rai_val);
 	while (!g_ping_stop && ping_para->ping_num--)
     {
         is_timedout = 0;
@@ -123,7 +123,7 @@ int _ping_ipv4(ping_para_t *ping_para)
 			// 若协议栈监测到当前网络处于OOS状态，可能会触发CFUN0操作，此时需要停止ping包
 			if(g_ping_stop == 1)
 			{
-				xy_printf(0,XYAPP, WARN_LOG, "report OOS and exit ping\n");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				break;
 			}
         }
@@ -131,13 +131,13 @@ int _ping_ipv4(ping_para_t *ping_para)
         icmpechohdr->seqno = lwip_htons(seqno);
         icmpechohdr->chksum = 0;
         icmpechohdr->chksum = inet_chksum(icmpechohdr, sizeof(struct icmp_echo_hdr) + ping_para->data_len);
-		xy_printf(0,XYAPP, WARN_LOG, "id:%d,seqno:%d", icmpechohdr->id, seqno);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", icmpechohdr->id, seqno);
 
 		start_time = osKernelGetTickCount();
 		ret = sendto2(sock, icmpechohdr, ping_para->data_len + sizeof(struct icmp_echo_hdr), 0, (const struct sockaddr *)&addr, sizeof(addr), 0, ping_para->rai_val);
 		if(ret <= 0)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "\r\nsendto failed and again!!!\r\n");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			osDelay(500);
 			continue;
 		}		
@@ -158,7 +158,7 @@ AGAIN:
 		{
 			is_timedout = 1;
 			user_ping_reply_info_hook(ping_info, rsp_cmd, SINGLE_PAC_TIMEOUT);
-			xy_printf(0,XYAPP, WARN_LOG, "%d select timeout\n", seqno);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", seqno);
 		}
 		else
         {
@@ -168,12 +168,12 @@ AGAIN:
 			if(FD_ISSET(sock, &readfds))
 			{
 				ret = recvfrom(sock, recv_data, IP_HLEN + ping_para->data_len + sizeof(struct icmp_echo_hdr), 0, (struct sockaddr *)&peer_addr, (socklen_t *)&peer_addrlen);
-				xy_printf(0,XYAPP, WARN_LOG, "ret=%d, port=%d\n",ret,lwip_htons(peer_addr.sin_port));
+				xy_printf(0,XYAPP, WARN_LOG, "%d%d",ret,lwip_htons(peer_addr.sin_port));
 				if( (ret > 0) && (IPPROTO_ICMP == lwip_htons(peer_addr.sin_port)) )
 				{
 					struct icmp_echo_hdr *reply_hdr = (struct icmp_echo_hdr *)(recv_data + IP_HLEN);
 
-					xy_printf(0,XYAPP, WARN_LOG, "reply_hdr->type=%d id:%d seq:%d-%d\n", reply_hdr->type, reply_hdr->id, seqno, reply_hdr->seqno);
+					xy_printf(0,XYAPP, WARN_LOG, "%d%d%d%d", reply_hdr->type, reply_hdr->id, seqno, reply_hdr->seqno);
 					if(ICMP_ER == reply_hdr->type && reply_hdr->id == lwip_htons(current_echo_id) && reply_hdr->seqno == lwip_htons(seqno))
 					{
 						ping_info->ping_reply_num++;
@@ -186,7 +186,7 @@ AGAIN:
 	                    ping_info->time_average = total_rtt / ping_info->ping_reply_num;
 						ping_info->ttl = ((struct ip_hdr *)recv_data)->_ttl;
 						user_ping_reply_info_hook(ping_info, rsp_cmd, SINGLE_PAC_SUCC);
-						xy_printf(0,XYAPP, WARN_LOG, "reply from %s[%s], %d bytes, %d ms, TTL=%d\n", ping_para->host, ping_info->host_ip, ping_para->data_len, ping_info->rtt, ping_info->ttl);
+						xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%d%d", ping_para->host, ping_info->host_ip, ping_para->data_len, ping_info->rtt, ping_info->ttl);
 						if (ping_para->ping_num == 0)
 							break;						
                         if (ping_info->rtt < (uint32_t)(ping_para->interval_time * 1000))
@@ -197,7 +197,7 @@ AGAIN:
 				}
 
 				tv.tv_sec = ping_para->time_out - ((osKernelGetTickCount() - start_time + 500) / 1000); // 4舍五入
-				xy_printf(0,XYAPP, WARN_LOG, "reply hdr err and goto select\n");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				goto AGAIN;
 			}
         }
@@ -227,12 +227,12 @@ void ping6_netif_event_callback(PsStateChangeEvent event)
 	if (event == EVENT_PSNETIF_IPV6_VALID)
     {
     	g_ping_stop = 0;
-        xy_printf(0,XYAPP, WARN_LOG, "ping6_netif_event_callback, netif up");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
     else if(event == EVENT_PSNETIF_INVALID)
     {
     	g_ping_stop = 1;
-        xy_printf(0,XYAPP, WARN_LOG, "ping6_netif_event_callback, netif down");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
 }
 
@@ -267,7 +267,7 @@ int _ping_ipv6(ping_para_t *ping_para)
 	sa6.sin6_port   = lwip_htons((u16_t)0);
 	memcpy(&sa6.sin6_addr, &ping_para->ip_addr, sizeof(struct in6_addr));
 	if (connect(sock, (struct sockaddr *)&sa6, sizeof(sa6)) == -1)
-		xy_printf(0,XYAPP, WARN_LOG, "connect fail:%d", sock);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", sock);
 	inet_ntop(AF_INET6, &ping_para->ip_addr, ping6_info->host_ip, XY_IP6ADDR_STRLEN);
 
     char *rsp_cmd   = (char *)xy_malloc(128);
@@ -288,19 +288,19 @@ int _ping_ipv6(ping_para_t *ping_para)
 
     char *data      = buff + sizeof(struct icmp6_echo_hdr);
 
-	xy_printf(0,XYAPP, WARN_LOG, "start send ping6\ndst addr:%s,datalen:%d,timeout:%d,interval_time:%d", ping6_info->host_ip, ping_para->data_len, ping_para->time_out, ping_para->interval_time);
+	xy_printf(0,XYAPP, WARN_LOG, "%s%d%d%d", ping6_info->host_ip, ping_para->data_len, ping_para->time_out, ping_para->interval_time);
 	while(ping_para->ping_num-- && !g_ping_stop)
 	{
 		++seq_no;
 		echo_hdr->seqno  = lwip_htons((uint16_t)seq_no);
 		echo_hdr->chksum = 0;
 		memset(data, seq_no, ping_para->data_len);
-		xy_printf(0,XYAPP, WARN_LOG, "id:%d,seq_no:%d", echo_id, seq_no);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", echo_id, seq_no);
 		start_time = osKernelGetTickCount();
 		ret = sendto2(sock, echo_hdr, ping_para->data_len + sizeof(struct icmp6_echo_hdr), 0, (const struct sockaddr *)&sa6, sizeof(sa6), 0, ping_para->rai_val);
 		if(ret <= 0)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "\r\nsendto failed and again!!!\r\n");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			osDelay(500);
 			continue;
 		}
@@ -319,7 +319,7 @@ AGAIN:
 		else if(0 == ret)
 		{
 			user_ping_reply_info_hook(ping6_info, rsp_cmd, SINGLE_PAC_TIMEOUT);
-			xy_printf(0,XYAPP, WARN_LOG, "%d select timeout\n",seq_no);
+			xy_printf(0,XYAPP, WARN_LOG, "%d",seq_no);
 		}
 		else
 		{
@@ -329,12 +329,12 @@ AGAIN:
 			if(FD_ISSET(sock, &readfds))
 			{
 				ret = recvfrom(sock, recv_data, IP6_HLEN + ping_para->data_len + sizeof(struct icmp6_echo_hdr), 0, (struct sockaddr *)&peer_sa6, (socklen_t *)&peer_addrlen);
-				xy_printf(0,XYAPP, WARN_LOG, "ret=%d, port=%d\n",ret,lwip_htons(peer_sa6.sin6_port));
+				xy_printf(0,XYAPP, WARN_LOG, "%d%d",ret,lwip_htons(peer_sa6.sin6_port));
 				if( (ret > 0) && (IPPROTO_ICMPV6 == lwip_htons(peer_sa6.sin6_port)) )
 				{
 					struct icmp6_echo_hdr *reply_hdr = (struct icmp6_echo_hdr *)(recv_data + IP6_HLEN);
 
-					xy_printf(0,XYAPP, WARN_LOG, "reply_hdr->type=%d id:%d-%d seq:%d-%d\n", reply_hdr->type, current_echo_id, reply_hdr->id, seq_no, reply_hdr->seqno);
+					xy_printf(0,XYAPP, WARN_LOG, "%d%d%d%d%d", reply_hdr->type, current_echo_id, reply_hdr->id, seq_no, reply_hdr->seqno);
 					if(ICMP6_TYPE_EREP == reply_hdr->type && reply_hdr->id == lwip_htons(current_echo_id) && reply_hdr->seqno == lwip_htons(seq_no))
 					{
 						ping6_info->ping_reply_num++;
@@ -348,7 +348,7 @@ AGAIN:
 						ping6_info->ttl = ((struct ip6_hdr *)recv_data)->_hoplim;
 						user_ping_reply_info_hook(ping6_info, rsp_cmd, SINGLE_PAC_SUCC);
 						
-						xy_printf(0,XYAPP, WARN_LOG, "reply from %s[%s], %d bytes, %d ms, TTL=%d\n", ping_para->host, ping6_info->host_ip, ping_para->data_len, ping6_info->rtt, ping6_info->ttl);
+						xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%d%d", ping_para->host, ping6_info->host_ip, ping_para->data_len, ping6_info->rtt, ping6_info->ttl);
 						if (ping_para->ping_num == 0)
 							break;						
                         if (ping6_info->rtt < (uint32_t)(ping_para->interval_time * 1000))
@@ -359,7 +359,7 @@ AGAIN:
 				}
 
 				tv.tv_sec = ping_para->time_out - ((osKernelGetTickCount() - start_time + 500) / 1000); // 4舍五入
-				xy_printf(0,XYAPP, WARN_LOG, "reply hdr err and goto select\n");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				goto AGAIN;
 			}
 		}
@@ -395,7 +395,7 @@ void process_ping_task(ping_para_t *ping_para)
     if ((getaddr_ret = getaddrinfo(ping_para->host, NULL, &hint, &result)) != 0)
 	{
 		user_ping_reply_info_hook(NULL, NULL, PING_UNKNOWEN);
-		xy_printf(0,XYAPP, WARN_LOG, "get dst addr failed and result_dns:%d\n", getaddr_ret);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", getaddr_ret);
 	}
     else
     {
@@ -429,9 +429,9 @@ int start_ping(ping_para_t *para)
     if (at_ping_thread_id != NULL)
     {
         if (g_ping_stop == 1)
-            xy_printf(0,XYAPP, WARN_LOG, "ping is stopping, please wait!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
         else
-            xy_printf(0,XYAPP, WARN_LOG, "error, ping is in progress, please wait until ping finished!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
 
         return XY_ERR;
     }

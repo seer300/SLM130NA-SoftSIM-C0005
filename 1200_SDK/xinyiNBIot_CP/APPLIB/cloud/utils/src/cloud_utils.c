@@ -146,19 +146,19 @@ int app_read_fs(const char * fileName,uint32_t offset,void * buf, uint32_t size)
             }
 			else if(ret >0 && ret < (int)size )
 	        {
-				xy_printf(0, XYAPP, WARN_LOG, "[FS]xy_fread %s %d %d FAIL!\n",fileName,size,ret);
+				xy_printf(0, XYAPP, WARN_LOG, "%s%d%d",fileName,size,ret);
 			}
 		}
 		else
 		{
-			xy_printf(0, XYAPP, WARN_LOG, "[FS]xy_fseek %s %d ERR!\n",fileName,offset);
+			xy_printf(0, XYAPP, WARN_LOG, "%s%d",fileName,offset);
 		}
 
 		xy_fclose(fp);
 	}
 	else
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "[FS]xy_fopen %s ERR!\n",fileName);
+		xy_printf(0, XYAPP, WARN_LOG, "%s",fileName);
 	}
 
 	if (HWREGB(BAK_MEM_XY_DUMP) == 1)
@@ -184,7 +184,7 @@ int app_write_fs(const char * fileName,void *buf,uint32_t size)
 
         if(ret < (int)size )
         {
-			xy_printf(0, XYAPP, WARN_LOG, "[FS]xy_fwrite %s %d %d ERR!\n",fileName,size,ret);
+			xy_printf(0, XYAPP, WARN_LOG, "%s%d%d",fileName,size,ret);
 			ret = XY_ERR;
 		}
         else
@@ -197,7 +197,7 @@ int app_write_fs(const char * fileName,void *buf,uint32_t size)
     }
 	else
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "[FS]xy_fopen %s ERR!\n",fileName);
+		xy_printf(0, XYAPP, WARN_LOG, "%s",fileName);
 	}
 
 	if (HWREGB(BAK_MEM_XY_DUMP) == 1)

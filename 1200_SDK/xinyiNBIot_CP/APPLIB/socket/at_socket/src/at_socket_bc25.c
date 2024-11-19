@@ -502,7 +502,7 @@ int at_QIRD_req(char *at_buf, char **prsp_cmd)
 			xy_free(report);
 			xy_free(param.data);
 			xy_free(param.remote_ip);				
-            xy_printf(0, XYAPP, INFO_LOG, "[%s]read socket len:%d", __FUNCTION__, str_len);
+            xy_printf(0, XYAPP, INFO_LOG, "%s%d", __FUNCTION__, str_len);
 		}
 		else
 		{
@@ -666,7 +666,7 @@ int at_SOCKNMI_BC25_URC(int sock_id, uint32_t len, char *data, void *remoteinfo)
 	char urc_str[64];
     int access_mode = g_socket_ctx[sock_id]->access_mode;
 
-	xy_printf(0, PLATFORM_AP, INFO_LOG, "[%s-%d]recv:%d,%d,%d\n", __FUNCTION__, __LINE__, access_mode, sock_id, len);
+	xy_printf(0, PLATFORM_AP, INFO_LOG, "%s%d%d%d%d", __FUNCTION__, __LINE__, access_mode, sock_id, len);
 	if (access_mode == SOCKET_BUFFER_MODE)
 	{
 	    if (add_new_rcv_data_node(sock_id, len, data, (struct sockaddr_storage *)remoteinfo) == XY_OK)

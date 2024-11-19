@@ -31,7 +31,7 @@ static inline void xyperf_upload_fin(int fd, uint32_t nb_packets, uint32_t end_t
 
         if (ret < 0)
         {
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf Failed to send the packet (%d)\n", ret);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", ret);
 		}
     }
 }
@@ -77,10 +77,10 @@ int xyperf_udp_ipv4_client(unsigned int duration, unsigned int packet_size, unsi
 	//每包之间发送的间隔时间等于发送一包所需的时间
     delay = packet_duration = 1000 * total_ip_size * 8 / (rate_in_kbps * 1024); //单位ms
 
-    xy_printf(0,XYAPP, WARN_LOG, "start xyperf\n");
-	xy_printf(0,XYAPP, WARN_LOG, "\nxyperf ipv4 udp remote_ip:%s, remote_port:%d, data_len:%d, bandwidth:%dkbps\n", 
+    xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "%s%d%d%d", 
         remote_ip, remote_port, packet_size, rate_in_kbps);
-	xy_printf(0,XYAPP, WARN_LOG, "\nxyperf duration:%ds, print_interval:%d, xyperf_rai:%d\n", duration, print_interval, rai_val);
+	xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", duration, print_interval, rai_val);
 
     start_time = osKernelGetTickCount();
 
@@ -100,7 +100,7 @@ int xyperf_udp_ipv4_client(unsigned int duration, unsigned int packet_size, unsi
 		/*灌包失败不退出，继续灌*/
         if (ret < 0)
         {
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf ERROR! Failed to send the packet (%d)\n", ret);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", ret);
 			//goto failed;
 		}
 		nb_packets++;
@@ -131,7 +131,7 @@ int xyperf_udp_ipv4_client(unsigned int duration, unsigned int packet_size, unsi
     end_time = osKernelGetTickCount();
 	//灌包结束发送结束报文通知服务端
 	xyperf_upload_fin(fd, nb_packets, end_time, packet_size, (struct sockaddr *)&remote_sockaddr,rai_val);
-    xy_printf(0,XYAPP, WARN_LOG, "xyperf finished");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 	send_rsp_at_to_ext("\r\n+XYPERF:finished\r\n");
 
     if (fd != -1)
@@ -230,7 +230,7 @@ int start_xyperf(xyperf_arguments_t *xyperf_param)
 
     if (g_xyperf_TskHandle != NULL)
     {
-		xy_printf(0,XYAPP, WARN_LOG, "warning!!!task have created!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_ERR;
 	}
 	

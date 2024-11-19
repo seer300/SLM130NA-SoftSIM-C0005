@@ -39,7 +39,7 @@ bool proc_at_proxy_req(at_proxy_msg_t *msg)
 
 	//Step2: 处理at命令
 	int ret = proxy_ctx->at_proc((at_msg->data + at_msg->offset), &rsp_cmd);
-	xy_printf(0,PLATFORM, WARN_LOG, "proxy task deal with [%s] done", proxy_ctx->at_cmd_prefix);
+	xy_printf(0,PLATFORM, WARN_LOG, "%s", proxy_ctx->at_cmd_prefix);
 
 	//Step3: 如果需3gpp处理，转发给PS
 	if (AT_FORWARD == ret)

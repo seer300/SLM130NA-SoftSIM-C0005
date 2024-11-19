@@ -279,7 +279,7 @@ bool wait_flash_is_done(IPC_Message pMsg)
 	volatile uint8_t done_flag = 0;
 	uint32_t start_tick;
 
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	DisablePrimask();
 #endif		
 	// must wait CP core have inited
@@ -306,7 +306,7 @@ bool wait_flash_is_done(IPC_Message pMsg)
 		} while (done_flag != 1); // wait for CP enterXIP
 	}
 
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	EnablePrimask();
 #endif	
 
@@ -360,7 +360,7 @@ void wait_cp_flash_write_done(void)
 	if(flash_notice->cp_status != cp_status_write_ready && flash_notice->cp_status != cp_status_write)
 		return;
 /*由于无法保证OPENCPU二次开发时中断函数中不运行FLASH代码，此处关中断*/
-#if (MODULE_VER==0)
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	DisablePrimask();
 #endif
 	flash_notice->ap_status = ap_status_sus; //表示ap当前已经挂起
@@ -382,7 +382,7 @@ void wait_cp_flash_write_done(void)
 
 	flash_notice->ap_status = ap_status_run; //表示ap当前已经可以运行flash代码
 	
-#if (MODULE_VER==0)
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	EnablePrimask();
 #endif
 }
@@ -762,11 +762,11 @@ bool xy_Flash_Read(uint32_t addr, void *data, uint32_t size)
 
 	if( CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()))
 	{
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		DisablePrimask();  
 #endif
 		flash_read(addr, data, size);
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		EnablePrimask();
 #endif
 	}
@@ -786,7 +786,7 @@ bool xy_Flash_Erase(uint32_t addr, uint32_t size)
 	/*耗时过久，不宜在中断函数中执行*/
 	xy_assert(!IS_IRQ_MODE());
 	
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	/*CP核正常工作期间，AP写FLASH需要由CP核执行，与宏配置冲突，进而断言*/
 	xy_assert(g_dump_core!=-1 || CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()));
 #endif
@@ -800,13 +800,13 @@ bool xy_Flash_Erase(uint32_t addr, uint32_t size)
 
 	if( CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()))
 	{
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		DisablePrimask();  
 #endif
         //擦写flash前，防止flash供电不稳，将IOLDO2切换为normal模式
         flashvcc2normal();
 		flash_erase(addr,size);
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		EnablePrimask();
 #endif
 	}
@@ -825,7 +825,7 @@ bool xy_Flash_Write(uint32_t addr, void *data, uint32_t size)
 	/*耗时过久，不宜在中断函数中执行*/
 	xy_assert(!IS_IRQ_MODE());
 	
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	/*CP核正常工作期间，AP写FLASH需要由CP核执行，与宏配置冲突，进而断言*/
 	xy_assert(g_dump_core!=-1 || CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()));
 #endif
@@ -840,13 +840,13 @@ bool xy_Flash_Write(uint32_t addr, void *data, uint32_t size)
 
 	if( CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()))
 	{
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		DisablePrimask();  
 #endif
         //擦写flash前，防止flash供电不稳，将IOLDO2切换为normal模式
         flashvcc2normal();
 		ret = flash_write_erase(addr,data,size);
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		EnablePrimask();
 #endif
 	}
@@ -865,7 +865,7 @@ bool xy_Flash_Write_No_Erase(uint32_t addr, void *data, uint32_t size)
 	/*耗时过久，不宜在中断函数中执行*/
 	xy_assert(!IS_IRQ_MODE());
 	
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 	/*CP核正常工作期间，AP写FLASH需要由CP核执行，与宏配置冲突，进而断言*/
 	xy_assert(g_dump_core!=-1 || CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()));
 #endif
@@ -879,13 +879,13 @@ bool xy_Flash_Write_No_Erase(uint32_t addr, void *data, uint32_t size)
 
 	if( CP_Is_Alive() == false || (g_errno == XY_ERR_CP_DEAD && flash_reset()) || (CP_IS_DEEPSLEEP()==true && IS_IRQ_MASKED()))
 	{
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		DisablePrimask();
 #endif
         //擦写flash前，防止flash供电不稳，将IOLDO2切换为normal模式
         flashvcc2normal();
 		flash_write_no_erase(addr,data,size);
-#if BAN_WRITE_FLASH
+#if (MODULE_VER==0 && BAN_WRITE_FLASH!=2)
 		EnablePrimask();
 #endif
 	}

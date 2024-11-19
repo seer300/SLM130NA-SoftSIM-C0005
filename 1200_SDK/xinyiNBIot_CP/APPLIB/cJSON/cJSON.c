@@ -2349,7 +2349,7 @@ CJSON_PUBLIC(cJSON *) cJSON_CreateNumber(double num)
             item->valueint = (int)num;
         }
     }
-    xy_printf(0,XYAPP, WARN_LOG, "[king][cJSON_CreateNumber]item->valueint:%d", item->valueint);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", item->valueint);
     return item;
 }
 

@@ -305,7 +305,7 @@ int mqttOpenClient(mqtt_context_t *pctx)
 		//初始化SSL句柄
 		if ((ssl_ctx = dtls_ssl_new(&establish_info, MBEDTLS_SSL_IS_CLIENT)) == NULL)
 		{
-			xy_printf(0, XYAPP, WARN_LOG, "dtls new ssl init failed !!!");
+			xy_printf(0, XYAPP, WARN_LOG, "");
 			return FAILURE;
 		}
 
@@ -322,7 +322,7 @@ int mqttOpenClient(mqtt_context_t *pctx)
 		if (dtls_shakehand(ssl_ctx, &shakehand_info) != 0)
 		{
 			xy_free(shakehand_info.u.c.port);
-			xy_printf(0, XYAPP, WARN_LOG, "dtls shakehand failed !!!");
+			xy_printf(0, XYAPP, WARN_LOG, "");
 			dtls_ssl_destroy(ssl_ctx);
 			return FAILURE;
 		}
@@ -337,7 +337,7 @@ int mqttOpenClient(mqtt_context_t *pctx)
 	{
 		if (SUCCESS != NetworkConnect(mqttCurContext->ipstack, mqttCurContext->addrinfo_data->host, mqttCurContext->addrinfo_data->port)) {
         	if (mqttCurContext->ipstack != NULL && mqttCurContext->ipstack->my_socket >= 0) {
-            	xy_printf(0, XYAPP, WARN_LOG, "create socket %d !!!", mqttCurContext->ipstack->my_socket);
+            	xy_printf(0, XYAPP, WARN_LOG, "%d", mqttCurContext->ipstack->my_socket);
             	close(mqttCurContext->ipstack->my_socket);
         	}
 			return FAILURE;
@@ -636,7 +636,7 @@ RETRY_AGAIN1:
 			  topic, (unsigned char*)mqttMessage, mqttMessage_len);
 	if (len <= 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG,"len <= 0 error len=%d \n",len);
+		xy_printf(0, XYAPP, WARN_LOG,"%d",len);
 		goto exit;
 	}
 
@@ -726,7 +726,7 @@ RETRY_AGAIN2:
 
 		if (len <= 0)
 		{
-			xy_printf(0, XYAPP, WARN_LOG,"len <= 0 error len=%d \n",len);
+			xy_printf(0, XYAPP, WARN_LOG,"%d",len);
 			rc = FAILURE;
 			goto exit;
 		}
@@ -855,11 +855,11 @@ int mqttKeepalive(mqtt_context_t *pctx)
 	//阿里云服务器只有在接收到设备发送上行数据时才会更新保活定时器
     if (TimerIsExpired(&mqttCurContext->mqtt_client->last_sent) /*&& TimerIsExpired(&mqttCurContext->mqtt_client->last_received)*/) {
         if (mqttCurContext->mqtt_client->ping_outstanding) {
-            xy_printf(0,XYAPP, WARN_LOG, "[MQTT]mqtt keep alive ping resp timeout");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             rc = FAILURE; /* PINGRESP not received in keepalive interval */
         }
         else {			
-				xy_printf(0,XYAPP, WARN_LOG, "[MQTT]mqtt keep alive send ...");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				mqtt_req_param_t *data = {0};
 
 				data = xy_malloc(sizeof(mqtt_req_param_t));
@@ -887,7 +887,7 @@ int mqttCycle(mqtt_context_t *pctx, Timer *timer)
 
 	if (packet_type > 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[MQTT]mqttReadPacket packet_type: %d", packet_type);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", packet_type);
 	}
 		
     switch (packet_type)
@@ -898,7 +898,7 @@ int mqttCycle(mqtt_context_t *pctx, Timer *timer)
 		case -1:
         {	 
         	/* no more data to read, unrecoverable. Or read packet fails due to unexpected network error */
-				xy_printf(0,XYAPP, WARN_LOG, "[MQTT]mqttCycle socket read packet_type: %d, errno : %d", packet_type, errno);
+				xy_printf(0,XYAPP, WARN_LOG, "%d%d", packet_type, errno);
 				mqtt_req_param_t *data = {0};
 
 				data = xy_malloc(sizeof(mqtt_req_param_t));
@@ -1038,7 +1038,7 @@ int mqttCycle(mqtt_context_t *pctx, Timer *timer)
 
 	rc = mqttKeepalive(mqttCurContext); 
 	if (rc == FAILURE) {
-		 xy_printf(0,XYAPP, WARN_LOG,"[MQTT] mqttKeepalive failed, mqttCycle socket read errno : %d", errno);
+		 xy_printf(0,XYAPP, WARN_LOG,"%d", errno);
 		 mqtt_req_param_t *data = {0};
 
 		 data = xy_malloc(sizeof(mqtt_req_param_t));
@@ -1076,7 +1076,7 @@ void mqttTaskRecvProcess(void *argument)
 	int idx = -1;
 	int hasBusyClient = 0;
 
-	xy_printf(0, XYAPP, WARN_LOG, "[MQTT]downlink pkg rcv thread start");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 	while(1)
 	{	
 		hasBusyClient = 0; 
@@ -1095,7 +1095,7 @@ void mqttTaskRecvProcess(void *argument)
 		osDelay(200);
 	}
 
-	xy_printf(0, XYAPP, WARN_LOG, "[MQTT]downlink pkg rcv thread end");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 	g_mqtt_recv_thread_handle = NULL;
 	osThreadExit();
  }
@@ -1109,7 +1109,7 @@ void mqttTaskSendProcess(void* argument)
 	unsigned char grantedQoSs[MQTT_MAX_SUBSCRIBE_NUM] = {0};
 	mqtt_context_t *mqttCurContext = NULL;
 
-	xy_printf(0,XYAPP, WARN_LOG, "[MQTT]at parse thread start");
+	xy_printf(0,XYAPP, WARN_LOG, "");
 	while (1)
 	{	
 		osMessageQueueGet(g_mqtt_send_msg_q, (void *)&msg, NULL, osWaitForever);
@@ -1356,7 +1356,7 @@ void mqttTaskSendProcess(void* argument)
 					len = MQTTSerialize_ack(mqttCurContext->mqtt_client->buf, mqttCurContext->mqtt_client->buf_size, msg->server_ack_mode, 0, msg->msg_id);            
                     res = MQTTSendPacket(mqttCurContext->mqtt_client, len, &timer);
 					if (res == FAILURE) {
-						xy_printf(0,XYAPP, WARN_LOG,"[MQTT]Publish message failed errno : %d, server_ack_mode : %d", errno, msg->server_ack_mode);
+						xy_printf(0,XYAPP, WARN_LOG,"%d%d", errno, msg->server_ack_mode);
 						osMutexAcquire(g_mqtt_mutex, osWaitForever);
 						mqttCloseClient(mqttCurContext);
 						mqttDeleteContext(mqttCurContext);
@@ -1379,7 +1379,7 @@ void mqttTaskSendProcess(void* argument)
 					mqttCurContext->mqtt_client->ping_outstanding = 1;
 				}
 				else {
-						xy_printf(0,XYAPP, WARN_LOG,"[MQTT]Ping message failed errno : %d", errno);
+						xy_printf(0,XYAPP, WARN_LOG,"%d", errno);
 						osMutexAcquire(g_mqtt_mutex, osWaitForever);
 						mqttCloseClient(mqttCurContext);
 						mqttDeleteContext(mqttCurContext);
@@ -1420,7 +1420,7 @@ void mqttTaskSendProcess(void* argument)
 			break;
 		}
 	}
-	xy_printf(0, XYAPP, WARN_LOG, "[MQTT]at parse thread end");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 
 	//删除消息队列
 	osMessageQueueDelete(g_mqtt_send_msg_q);
@@ -1574,7 +1574,7 @@ int mqtt_client_connect(int tcpconnectID, char *clientId, char *userName, char *
 			*(aliauth_password + 64) = '\0';
 			xy_free(sign);
 
-			xy_printf(0,XYAPP, WARN_LOG, "aliauth_clientid:%s, aliauth_username:%s, aliauth_password:%s", aliauth_clientid, aliauth_username, aliauth_password);
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%s", aliauth_clientid, aliauth_username, aliauth_password);
 			
 			mqttCurContext->mqtt_conn_data->clientID.cstring = aliauth_clientid;
 			mqttCurContext->mqtt_conn_data->username.cstring = aliauth_username;
@@ -1810,7 +1810,7 @@ int mqtt_client_publish_passthr_proc(char* buf, uint32_t len)
 
 void mqtt_indefinite_length_passthrough_proc(char *buf, uint32_t data_len)
 {
-    xy_printf(0, XYAPP, WARN_LOG, "mqtt recv len:%d", data_len);
+    xy_printf(0, XYAPP, WARN_LOG, "%d", data_len);
 
 	passthr_get_unfixedlen_data(buf, data_len);
 
@@ -1842,7 +1842,7 @@ END:
 
 void mqtt_fixed_length_passthr_proc(char *buf, uint32_t len)
 {
-	xy_printf(0,XYAPP, WARN_LOG, "mqtt recv len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", len);
     if (passthr_fixed_buff_len == 0)
         return;
 
@@ -1898,7 +1898,7 @@ void mqtt_passthr_exit(void)
 
 void mqtt_cakey_passthrough_proc(char *buf, uint32_t len)
 {
-	xy_printf(0,XYAPP, WARN_LOG, "mqtt recv len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", len);
 	
     if (passthr_fixed_buff_len == 0)
         return;

@@ -63,7 +63,7 @@ int xy_ctiot_log_info(uint8_t log_level, const char * module, const char *class,
         
         vsnprintf(log_info, 100, fmt, arg);
         va_end(arg);
-        xy_printf(0,XYAPP, WARN_LOG, "[%s][%s][%d] %s\r\n", ctiot_get_log_level_name((log_level)), function, line, log_info);
+        xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%s", ctiot_get_log_level_name((log_level)), function, line, log_info);
         xy_free(log_info);
     }
 

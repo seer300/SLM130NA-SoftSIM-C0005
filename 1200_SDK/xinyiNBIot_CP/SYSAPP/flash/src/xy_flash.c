@@ -42,14 +42,14 @@ void cp_flash_operation(uint32_t dstAddr, uint32_t srcAddr, uint32_t size, uint3
 			sprintf(str, "\r\n+DBGINFO:ERR!!!CP FLASH BAN WRITE %lX\r\n",dstAddr);
 			send_debug_by_at_uart(str);
 			
-			xy_printf(0,PLATFORM,WARN_LOG, "[ERR!!!]CP flash ban write %X",dstAddr);
+			xy_printf(0,PLATFORM,WARN_LOG, "%X",dstAddr);
 			
 			if (HWREGB(BAK_MEM_XY_DUMP) == 1)
 				xy_assert(0);
 		}
 		else
 		{
-			xy_printf(0,PLATFORM,WARN_LOG, "cp_flash_operation CP flash write %X",dstAddr);
+			xy_printf(0,PLATFORM,WARN_LOG, "%X",dstAddr);
 		}
 
 		flash_write_protect(dstAddr,size);

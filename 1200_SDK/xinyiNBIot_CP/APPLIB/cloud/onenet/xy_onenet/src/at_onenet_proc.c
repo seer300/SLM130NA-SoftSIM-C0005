@@ -74,7 +74,7 @@ static int onet_set_rai(int raiType,uint8_t* raiflag)
     else
         ret = -1;
 
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS]rai(%d)", *raiflag);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", *raiflag);
     return ret;
 }
 int onet_resume_task_start()
@@ -393,7 +393,7 @@ static cis_time_t onet_get_lifewait(st_context_t *onenet_context, cis_time_t cur
 	}
 
 	interval = lasttime + lifetime - cur_sec; 
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS]lifewait interval (%d)s, notify(%d)", interval, notifytime);
+	xy_printf(0,XYAPP, WARN_LOG, "%d%d", interval, notifytime);
 
     if(interval <= 0)
     {
@@ -421,7 +421,7 @@ static cis_time_t onet_get_lifewait(st_context_t *onenet_context, cis_time_t cur
 
 #endif
 
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS] life timer step (%d)s", step);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", step);
         while((interval-step) <= 0)
         {
             step = step>>1;
@@ -430,7 +430,7 @@ static cis_time_t onet_get_lifewait(st_context_t *onenet_context, cis_time_t cur
         wait_sec = interval - step;
     }
 
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS] life timer wait_sec (%d)s", wait_sec);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", wait_sec);
 	return wait_sec;
 }
 
@@ -466,7 +466,7 @@ void onet_at_pump(void* param)
 					continue;
 				else
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "[CIS]wait_sec(%d), tmp_sec(%d)", wait_sec, tmp_sec);
+					xy_printf(0,XYAPP, WARN_LOG, "%d%d", wait_sec, tmp_sec);
 					if(tmp_sec <= wait_sec)
 						osSemaphoreAcquire(cis_poll_sem, tmp_sec * 1000);
 					else
@@ -499,7 +499,7 @@ out:
     if (onenet_context_ref->onenet_context != NULL)
         cis_deinit((void **)&onenet_context_ref->onenet_context);
     free_onenet_context_ref(onenet_context_ref);
-	xy_printf(0,XYAPP, WARN_LOG, "onenetdown\n");
+	xy_printf(0,XYAPP, WARN_LOG, "");
     //softap_TaskDelete_Index(tsk_onenet);
 	onenet_context_ref->onet_at_thread_id = NULL;
 	osThreadExit();
@@ -511,7 +511,7 @@ int onenet_miplcreate()
     onenet_context_config_t *onenet_context_config = NULL;
 	osThreadAttr_t task_attr = {0};
 
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS]recovery onenet");
+	xy_printf(0,XYAPP, WARN_LOG, "");
 
     onenet_context_ref = (onenet_context_reference_t *)get_free_onet_context_ref();
     if (onenet_context_ref == NULL) {
@@ -533,7 +533,7 @@ int onenet_miplcreate()
         onenet_context_config->index = 0;
         if (onet_init(onenet_context_ref, onenet_context_config) < 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CIS]onet_init failed");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             goto failed;
         }
         task_attr.name = "onenet_tk";
@@ -552,7 +552,7 @@ int onenet_miplcreate()
         
         if (xy_lwm2m_init(onenet_context_ref, onenet_context_config) < 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CIS]lwm2m]init failed");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             goto failed;
         }
         task_attr.name = "xy_lwm2m_tk";
@@ -582,7 +582,7 @@ cis_coapret_t onet_on_read_cb(void* context,cis_uri_t* uri,cis_mid_t mid)
     char *at_str = xy_malloc2(MAX_ONE_NET_AT_SIZE);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, read fail");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
 
@@ -675,17 +675,17 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 			strBuffer = xy_malloc2(data->asBuffer.length * 2+1);
 			if(strBuffer == NULL)
 			{
-			    xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, write opaque fail 0");
+			    xy_printf(0,XYAPP, WARN_LOG, "");
 			    return CIS_RET_MEMORY_ERR;
 			}
 			at_str = xy_malloc2(str_len);
 			if(at_str == NULL)
             {
 			    xy_free(strBuffer);
-                xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, write opaque fail 1");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 return CIS_RET_MEMORY_ERR;
             }
-			xy_printf(0,XYAPP, WARN_LOG, "[CIS]data:(%s)", data->asBuffer.buffer);
+			xy_printf(0,XYAPP, WARN_LOG, "%s", data->asBuffer.buffer);
 			// xy_Remote_AT_Req(data->asBuffer.buffer);			
 			if (bytes2hexstr((char *)data->asBuffer.buffer, data->asBuffer.length, strBuffer, data->asBuffer.length * 2+1) <= 0 ){
 				break;
@@ -713,7 +713,7 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 					else
 					{
 					    xy_free(xy_lwm2m_cached_urc_common);
-					    xy_printf(0,XYAPP, WARN_LOG, "[cis_lwm2m]memory not enough,opaque cache fail");
+					    xy_printf(0,XYAPP, WARN_LOG, "");
 					}
 				}
 #endif
@@ -761,7 +761,7 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 			// 	cis_memcpy(paramATRsp.value, g_Remote_AT_Rsp, strlen(g_Remote_AT_Rsp));	
 
 			// 	paramATRsp.msgId = xy_get_observeMsgId(onenet_context_refs[0].onenet_context, uri);
-			// 	xy_printf(0,XYAPP, WARN_LOG, "[CIS]Remote AT mid(%d)", paramATRsp.msgId);
+			// 	xy_printf(0,XYAPP, WARN_LOG, "%d", paramATRsp.msgId);
 			// 	if(paramATRsp.msgId == -1)
 			// 	{
 			// 		if(paramATRsp.value != NULL)
@@ -786,7 +786,7 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 			at_str = xy_malloc2(str_len);
 			if(at_str == NULL)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, write string fail");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 return CIS_RET_MEMORY_ERR;
             }
 			// xy_Remote_AT_Req(data->asBuffer.buffer);
@@ -813,7 +813,7 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 					else
 					{
 					    xy_free(xy_lwm2m_cached_urc_common);
-					    xy_printf(0,XYAPP, WARN_LOG, "[cis_lwm2m]memory not enough, string cache fail");
+					    xy_printf(0,XYAPP, WARN_LOG, "");
 					}
 				}
 #endif
@@ -851,7 +851,7 @@ cis_coapret_t onet_on_write_cb(void* context,cis_uri_t* uri, const cis_data_t* v
 			// 	cis_memcpy(paramATRsp.value, g_Remote_AT_Rsp, strlen(g_Remote_AT_Rsp));	
 
 			// 	paramATRsp.msgId = xy_get_observeMsgId(onenet_context_refs[0].onenet_context, uri);
-			// 	xy_printf(0,XYAPP, WARN_LOG, "[CIS]Remote AT mid(%d)", paramATRsp.msgId);
+			// 	xy_printf(0,XYAPP, WARN_LOG, "%d", paramATRsp.msgId);
 			// 	if(paramATRsp.msgId == -1)
 			// 	{
 			// 		if(paramATRsp.value != NULL)
@@ -1009,7 +1009,7 @@ cis_coapret_t onet_on_execute_cb(void* context, cis_uri_t* uri, const uint8_t* v
     char *at_str = xy_malloc2(MAX_ONE_NET_AT_SIZE + length + 5);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, execute fail");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
     memset(at_str, 0, MAX_ONE_NET_AT_SIZE + length + 5);
@@ -1098,7 +1098,7 @@ cis_coapret_t onet_on_observe_cb(void* context, cis_uri_t* uri, bool flag, cis_m
     char *at_str = xy_malloc2(MAX_ONE_NET_AT_SIZE);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, observe fail");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
 
@@ -1167,14 +1167,14 @@ cis_coapret_t onet_on_parameter_cb(void* context, cis_uri_t* uri, cis_observe_at
     char *at_str = xy_malloc2(MAX_SET_PARAM_AT_SIZE);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, para set fail0");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
     char *str_params = xy_malloc2(MAX_SET_PARAM_SIZE);
     if(str_params == NULL)
     {
         xy_free(at_str);
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, para set fail1");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
     memset(str_params, 0, MAX_SET_PARAM_SIZE);
@@ -1229,7 +1229,7 @@ cis_coapret_t onet_on_discover_cb(void* context,cis_uri_t* uri,cis_mid_t mid)
     char *at_str = xy_malloc2(MAX_ONE_NET_AT_SIZE);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, discover fail");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return CIS_RET_MEMORY_ERR;
     }
 
@@ -1257,7 +1257,7 @@ void onet_on_event_cb(void* context, cis_evt_t eid, void* param)
     at_str = xy_malloc2(MAX_ONE_NET_AT_SIZE);
     if(at_str == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]memory not enough, event urc fail");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return;
     }
 	// ota_state_callback(eid - 40);
@@ -1738,7 +1738,7 @@ int at_proc_miplcreate_req(char *at_buf, char **rsp_cmd)
 
     if (onet_init(onenet_context_ref, onenet_context_config) < 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]at_miplcreate onet_init error\r\n");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         errorcode = ATERR_NOT_ALLOWED;
         goto failed;
     }

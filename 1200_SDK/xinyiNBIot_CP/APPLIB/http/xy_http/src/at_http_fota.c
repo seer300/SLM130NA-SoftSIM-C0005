@@ -67,7 +67,7 @@ int ota_http_request_send(httpclient_t *client, char *url, int method, httpclien
 {
     int ret = -1;
     if (client == NULL || url == NULL || client_data == NULL) {
-        xy_printf(0, XYAPP, WARN_LOG, "http recv fuc input parameter err");
+        xy_printf(0, XYAPP, WARN_LOG, "");
     } else {
 		ret = httpclient_conn(client, url);
 		if (ret < 0) {
@@ -87,11 +87,11 @@ int ota_http_recv_data(httpclient_t *client, httpclient_data_t *client_data)
 {
    int ret = -1;
    if (client == NULL || client_data == NULL) {
-        xy_printf(0, XYAPP, WARN_LOG, "http recv fuc input parameter err");
+        xy_printf(0, XYAPP, WARN_LOG, "");
     } else {
         ret = httpclient_recv(client, client_data);
         if ((ret == HTTP_ERECV) || (ret == HTTP_ETIMEOUT)) {
-            xy_printf(0, XYAPP, WARN_LOG, "recv ret:%d", ret);
+            xy_printf(0, XYAPP, WARN_LOG, "%d", ret);
         }
     }
     return ret;
@@ -100,11 +100,11 @@ int ota_http_recv_data(httpclient_t *client, httpclient_data_t *client_data)
 void ota_get_http_header(char *out_buf, int len)
 {
     if (out_buf == NULL) {
-        xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]get_http_header:out buffer should not null!");
+        xy_printf(0, XYAPP, WARN_LOG, "");
         return;
     }
 
-    xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]download index: %d, total: %d.", g_download_info.download_unit_index, g_download_info.download_unit_num);
+    xy_printf(0, XYAPP, WARN_LOG, "%d%d", g_download_info.download_unit_index, g_download_info.download_unit_num);
     snprintf((char *)out_buf, len, "Range: bytes=%d-%d\r\n", 
             g_download_info.download_unit_index * DOWNLOAD_UNIT_BYTES,
             (g_download_info.download_unit_index + 1) * DOWNLOAD_UNIT_BYTES - 1);
@@ -131,7 +131,7 @@ int ota_get_xyDelta_size(const char *url)
 	
 	ret = ota_http_request_send(&client, url, HTTP_HEAD, &client_data);
 	if (ret < 0) {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]request fail ret:%d", ret);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", ret);
 		goto exit;
 	}
 
@@ -140,7 +140,7 @@ int ota_get_xyDelta_size(const char *url)
 		if (ret < 0) {
 			if (ret == HTTP_ETIMEOUT)
 			{	
-				xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]recv ret:%d", ret);
+				xy_printf(0, XYAPP, WARN_LOG, "%d", ret);
 				continue;
 			}	
 		}
@@ -148,14 +148,14 @@ int ota_get_xyDelta_size(const char *url)
 		int response_code = httpclient_get_response_code(&client);
 		if (response_code != 200)
 		{
-			xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]recv data error, response_code:%d", response_code);
+			xy_printf(0, XYAPP, WARN_LOG, "%d", response_code);
 			ret = -1;
 			break;
 		}
 		
 		if (0 == httpclient_get_response_header_value(client_data.header_buf, "Content-Length", (int *)&val_pos, (int *)&val_len)) {
 			sscanf(client_data.header_buf + val_pos, "%d", &ota_file_size);
-		 	xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]file size:%d", ota_file_size);
+		 	xy_printf(0, XYAPP, WARN_LOG, "%d", ota_file_size);
 		 	ret = ota_file_size;
 			break;
 		}		
@@ -186,7 +186,7 @@ int ota_get_fota_data(const char *url, char *outbuf)
 	
 	ret = ota_http_request_send(&client, url, HTTP_GET, &client_data);
 	if (ret < 0) {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]request fail ret:%d", ret);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", ret);
 		goto exit;
 	}
 	
@@ -195,7 +195,7 @@ int ota_get_fota_data(const char *url, char *outbuf)
 		if (ret < 0) {
 			if (ret == HTTP_ETIMEOUT)
 			{	
-				xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]recv ret:%d", ret);
+				xy_printf(0, XYAPP, WARN_LOG, "%d", ret);
 				continue;
 			}	
 		}
@@ -230,7 +230,7 @@ void ota_http_fota_proc(const char *url)
         else
             g_download_info.download_unit_num = (g_download_info.download_delta_size/DOWNLOAD_UNIT_BYTES);
     } else {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]get delta size fail");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		goto error;
 	}
 
@@ -242,20 +242,20 @@ void ota_http_fota_proc(const char *url)
         recv_len = ota_get_fota_data(url, data_buf); 
         if (recv_len > 0) {
             if (OTA_save_one_packet(data_buf, recv_len) != XY_OK) {
-            	xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]OTA_save_one_packet fail");
+            	xy_printf(0, XYAPP, WARN_LOG, "");
                 goto error;
             }
             
             total_len += recv_len;
-            xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]get delta data %d %d", recv_len, total_len);
+            xy_printf(0, XYAPP, WARN_LOG, "%d%d", recv_len, total_len);
         } else {
-			xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]get delta data fail %d", recv_len);
+			xy_printf(0, XYAPP, WARN_LOG, "%d", recv_len);
 			goto error;
 		}
     }
 
     if(total_len != g_download_info.download_delta_size) {
-        xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]get delta size error ");
+        xy_printf(0, XYAPP, WARN_LOG, "");
         goto error;
     }
 
@@ -337,7 +337,7 @@ int at_http_fota(char *at_buf, char **prsp_cmd)
 	            	return  (ATERR_NOT_ALLOWED);
 	            }
 
-	            xy_printf(0, XYAPP, WARN_LOG, "[HTTP_FOTA]update start!");
+	            xy_printf(0, XYAPP, WARN_LOG, "");
 	            OTA_upgrade_start();
 	            break;
 	        }

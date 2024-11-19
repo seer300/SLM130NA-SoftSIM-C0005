@@ -75,7 +75,7 @@ void passthrough_process()
  */
 bool xy_passthr_data_proc_hook(char *buf, uint32_t data_len)
 {
-	xy_printf(0,PLATFORM, WARN_LOG, "passthr recv from uart len:%d", data_len);
+	xy_printf(0,PLATFORM, WARN_LOG, "%d", data_len);
     if (data_len == 0)
         return 0;
     passthr_send_msg(data_len, buf);

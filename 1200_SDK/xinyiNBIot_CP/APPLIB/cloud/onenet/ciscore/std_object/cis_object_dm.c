@@ -106,7 +106,7 @@ int prv_dm_encode(char *szin,char **szout)
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "pwd is null,use default pwd is:%s~", passwd);
+		xy_printf(0,XYAPP, WARN_LOG, "%s", passwd);
 	}
 	//
 	unsigned char key[64]={0};
@@ -130,7 +130,7 @@ int prv_dm_encode(char *szin,char **szout)
     unsigned char *ciphertext = cis_malloc(DM_EP_MEM_SIZE);
   	if(ciphertext==NULL)
   	{
-		xy_printf(0,XYAPP, WARN_LOG, "mem err r1\n");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		ret=-1;
 		goto fail;
 	}
@@ -149,7 +149,7 @@ int prv_dm_encode(char *szin,char **szout)
 	base64tmp=( char *)cis_malloc(DM_EP_MEM_SIZE);//szEpname is free now,use again;	
 	if(base64tmp==NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "mem err r2\n");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		ret = -1;
 		goto fail;
 	}	

@@ -473,7 +473,7 @@ cis_coapret_t std_firmware_execute(st_context_t * contextP,
 	else if (resourceId == RES_M_SWITCH_MCU_UPDATE)
 	{
 
-		xy_printf(0,XYAPP, WARN_LOG, "Execute MCU_UPDATE\r\n");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		contextP->isupdate_mcu = true;
 		cissys_setSwState(contextP->isupdate_mcu);
 		return COAP_204_CHANGED;

@@ -39,19 +39,19 @@ proxy_config_callback cdpProxyConfigProc(uint8_t req_type,uint8_t* paramList, ui
 
 	    if (at_parse_param(",%s,%d,%d", paramList,serverIP, &serverPort, &lifetime) != AT_OK)
 	    {
-	    	xy_printf(0,XYAPP, WARN_LOG, "[CDPDEMO]Err:  cdpProxyConfig failed");
+	    	xy_printf(0,XYAPP, WARN_LOG, "");
 	    	ret = XY_ERR;
 	    }
 
 		if( cdp_cloud_setting(serverIP, serverPort))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[CDPDEMO]Err: cdp_cloud_setting failed");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret =  XY_ERR;
 		}
 		
 		if(cdp_register(lifetime, CDP_PROXY_TIMEOUT))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[CDPDEMO]Err: register cdp failed");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret =  XY_ERR;
 		}
 		
@@ -68,7 +68,7 @@ proxy_config_callback cdpProxyConfigProc(uint8_t req_type,uint8_t* paramList, ui
 			sprintf(*prsp_cmd, "+XYCONFIG:fail");
 	}
 	else
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 
 	return ret;
 }
@@ -108,7 +108,7 @@ proxy_recv_callback cdpProxyRecvProc(uint8_t req_type,uint8_t* paramList, uint8_
 		    get_downstream_message_buffered_num(), get_downstream_message_received_num(), get_downstream_message_dropped_num());
 	}
 	else
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 
     return XY_OK;
 }
@@ -130,14 +130,14 @@ proxy_send_callback cdpProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 	
 		if (at_parse_param("%d,%d,%s", paramList,&dataType, &dataLen, data) != AT_OK || dataType == -1 ||(dataLen!=-1 && data== NULL))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY] parse error\r\n");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			ret = XY_ERR;
 		}
 
 		switch(dataType)
 		{
 			case CDP_TYPE_SEND:
-				xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY]Send");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				char* trans_data = xy_malloc(dataLen);
 			
 				if(strlen(data)!=dataLen * 2)
@@ -152,7 +152,7 @@ proxy_send_callback cdpProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 				ret = cdp_send_syn(trans_data,dataLen,cdp_CON);
 				if(ret != XY_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "cdp send err\r\n");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 				}
 				xy_free(trans_data);
 				break;
@@ -160,14 +160,14 @@ proxy_send_callback cdpProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 				ret = cdp_deregister(CDP_PROXY_TIMEOUT);
 				if(ret != XY_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "cdp deregister err\r\n");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 				}
 				break;
 			case CDP_TYPE_UPDATE:
 				ret = cdp_lifetime_update(CDP_PROXY_TIMEOUT);
 				if(ret != XY_OK)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "cdp update err\r\n");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 				}
 				break;
 			default:
@@ -177,7 +177,7 @@ proxy_send_callback cdpProxySendProc(uint8_t req_type,uint8_t* paramList, uint8_
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CDP_PROXY]err req_type ");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		ret = XY_ERR;
 	}
 		

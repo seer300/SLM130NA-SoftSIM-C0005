@@ -787,10 +787,10 @@ coap_log_impl(coap_log_t level, const char *format, ...) {
 
     coap_ticks(&now);
     if (print_timestamp(timebuf,sizeof(timebuf), now))
-      xy_printf(0,XYAPP, WARN_LOG,"%s ", timebuf);
+      xy_printf(0,XYAPP, WARN_LOG,"%s", timebuf);
 
     if (level <= LIBCOAP_LOG_DEBUG)
-      xy_printf(0,XYAPP, WARN_LOG,"%s ", loglevels[level]);
+      xy_printf(0,XYAPP, WARN_LOG,"%s", loglevels[level]);
 
     va_start(ap, format);
     vfprintf(log_fd, format, ap);
