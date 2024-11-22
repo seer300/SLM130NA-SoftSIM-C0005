@@ -1,3 +1,10 @@
+/** 
+* @file     ss_provision.c
+* @date     2024-06-25
+* @author   Onomondo
+* @brief    onomondo-uicc profile provisioning utility
+*/
+
 #include "onomondo/softsim/fs.h"
 #include "onomondo/softsim/mem.h"
 #include "onomondo/softsim/utils.h"
@@ -73,19 +80,6 @@ int softsim_get_key(char *secretkey, int size)
  */
 uint8_t ss_profile_from_string(size_t len, const char input_string[], struct ss_profile *profile)
 {
-	// // Stucture (a004): [TAR[3] | MSL | KIC_IND | KID_IND | KIC[32] | KID[32] |
-	// char *a004_header = "b00011060101";
-	// const size_t A004_RECORD_SIZE = A004_HEADER_SIZE + KEY_SIZE + KEY_SIZE;
-	// // set the default header values
-	// memcpy(&profile->_3F00_A004, a004_header, strlen(a004_header));
-	// // and fill the rest of the record with "f".
-	// memset(&profile->_3F00_A004[A004_RECORD_SIZE], 'f', A004_LEN - A004_RECORD_SIZE);
-
-	// // Structure (a003):
-	// char *a003_default = "0003000a000131323334ffffffff31323334353637380003000a008131323334ffffff"
-	// 		     "ff313233343536373801030000000a31323334ffffffff3132333435363738";
-	// memcpy(profile->_3F00_A003, a003_default, strlen(a003_default));
-
 	*profile = (struct ss_profile){0};
 
 	size_t pos = 0, data_end = 0, data_start = 0;
