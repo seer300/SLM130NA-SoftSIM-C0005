@@ -86,28 +86,28 @@ static void prv_output_buffer(uint8_t * buffer,
     while (i < length)
     {
         int j;
-        xy_printf(0,XYAPP, WARN_LOG, "  ");
+        xy_printf(0,XYAPP, WARN_LOG, "");
 
         memcpy(array, buffer+i, 16);
 
         for (j = 0 ; j < 16 && i+j < length; j++)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%02X ", array[j]);
+            xy_printf(0,XYAPP, WARN_LOG, "%02X", array[j]);
         }
         while (j < 16)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "   ");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             j++;
         }
-        xy_printf(0,XYAPP, WARN_LOG, "  ");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         for (j = 0 ; j < 16 && i+j < length; j++)
         {
             if (isprint(array[j]))
-                xy_printf(0,XYAPP, WARN_LOG, "%c ", array[j]);
+                xy_printf(0,XYAPP, WARN_LOG, "%c", array[j]);
             else
-                xy_printf(0,XYAPP, WARN_LOG, ". ");
+                xy_printf(0,XYAPP, WARN_LOG, "");
         }
-        xy_printf(0,XYAPP, WARN_LOG, "\n");
+        xy_printf(0,XYAPP, WARN_LOG, "");
 
         i += 16;
     }
@@ -326,10 +326,10 @@ static uint8_t prv_exec(uint16_t instanceId,
     case 1:
         return xiny_COAP_405_METHOD_NOT_ALLOWED;
     case 2:
-        xy_printf(0,XYAPP, WARN_LOG, "\r\n-----------------\r\nExecute on %hu/%d/%d\r\n Parameter (%d bytes):\r\n",
+        xy_printf(0,XYAPP, WARN_LOG, "%hu%d%d%d",
                         objectP->objID, instanceId, resourceId, length);
         prv_output_buffer((uint8_t*)buffer, length);
-        xy_printf(0,XYAPP, WARN_LOG, "-----------------\r\n\r\n");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return xiny_COAP_204_CHANGED;
     case 3:
         return xiny_COAP_405_METHOD_NOT_ALLOWED;

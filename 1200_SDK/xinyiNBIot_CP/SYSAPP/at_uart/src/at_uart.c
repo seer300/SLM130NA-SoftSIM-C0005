@@ -115,7 +115,7 @@ bool at_send_to_uart(void* at_ctx, void *buf, int size)
             set_at_lpuart_state(0);
         }
 
-        xy_printf(0, PLATFORM, WARN_LOG, "write_to_at_uart:%s", buf);
+        xy_printf(0, PLATFORM, WARN_LOG, "%s", buf);
         write_to_at_uart((char *)buf, size);
 
         /* 当uart挂在ap时，URC缓存上报 */

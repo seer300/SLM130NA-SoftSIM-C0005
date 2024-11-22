@@ -240,7 +240,7 @@ int xy_get_SVN(char *svn, int len)
     pCgsnCnf = (ATC_MSG_CGSN_CNF_STRU*)AtcAp_Malloc(sizeof(ATC_MSG_CGSN_CNF_STRU) + 2 + 1);
     if(ATC_AP_TRUE != xy_atc_interface_call("AT+CGSN=3\r\n", (func_AppInterfaceCallback)NULL, (void*)pCgsnCnf))
     {
-        xy_printf(0,PLATFORM, WARN_LOG, "xy_get_SVN err");
+        xy_printf(0,PLATFORM, WARN_LOG, "");
         xy_free(pCgsnCnf);
         return ATC_AP_FALSE;
     }
@@ -287,7 +287,7 @@ int xy_set_IMEI(char *imei)
     strncpy(part1, imei, 7);
     strncpy(part2, imei+7, 8);
 
-    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[xy_ps_api_test]: part1=%s, part2=%s", part1, part2);
+    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%s%s", part1, part2);
 
     pucCmd = (char*)AtcAp_Malloc(80);
     sprintf(pucCmd, "AT+NSET=\"SETIMEI\",%s,%s\r\n", part1, part2);
@@ -470,7 +470,7 @@ int xy_get_T_TAU(int *tau)
 // #if (_CURR_VERSION != _XY2100_) //multiple definition
 int xy_send_rai()
 {
-    xy_printf(0,XYAPP, INFO_LOG, "xy_send_rai,AT+RAI=1\r\n");
+    xy_printf(0,XYAPP, INFO_LOG, "");
     return xy_atc_interface_call("AT+RAI=1\r\n", NULL, (void*)NULL);
 }
 // #endif
@@ -717,7 +717,7 @@ int xy_ps_api_test(char *at_buf, char **prsp_cmd)
 
     *prsp_cmd = NULL;
 
-    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[xy_ps_api_test]: at_buf=%s", at_buf);
+    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%s", at_buf);
     
     if (at_parse_param(",%19s", at_buf, sub_cmd) != AT_OK)
     {

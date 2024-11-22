@@ -19,7 +19,7 @@ int at_WIRESHARK_req(char *at_buf, char **prsp_cmd)
 		return  (ATERR_PARAM_INVALID);
 	}
 
-	xy_printf(0,XYAPP, WARN_LOG, "wireshark origin: %d, new: %d", g_wireshark_set, capture_type);
+	xy_printf(0,XYAPP, WARN_LOG, "%d%d", g_wireshark_set, capture_type);
 	g_wireshark_set = capture_type;
 
 	if (capture_type == 1)

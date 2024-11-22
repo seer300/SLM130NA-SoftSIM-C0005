@@ -348,7 +348,7 @@ static int atiny_fota_downloaded_state_recv_notify_ack(atiny_fota_state_s *thi, 
     g_cdp_config_data->cdp_fota_flag = 1;
 	if(cloud_save_file(CDP_CONFIG_NVM_FILE_NAME, (void*)g_cdp_config_data, sizeof(cdp_config_nvm_t)) != XY_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG,"write cdp_fota_flag failed\r\n");
+		xy_printf(0,XYAPP, WARN_LOG,"");
 	}
 
     atiny_set_reboot_flag(2);

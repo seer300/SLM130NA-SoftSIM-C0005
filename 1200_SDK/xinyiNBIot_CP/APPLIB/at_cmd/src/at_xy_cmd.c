@@ -1189,16 +1189,16 @@ int at_SOFTSIM_req(char *at_buf, char **prsp_cmd){
 			return  (ATERR_PARAM_INVALID);
 		}
 
-		xy_printf(0, PLATFORM, FATAL_LOG, "at_SOFTSIM_req-secretkey len:%d", strlen(secretkey));
+		xy_printf(0, PLATFORM, FATAL_LOG, "%d", strlen(secretkey));
 
 		// 准备写入文件
 		xy_fremove("ss_SIMKEY.key", FS_DEFAULT);
-		xy_printf(0, PLATFORM, FATAL_LOG, "at_SOFTSIM_req- xy_fremove end");
+		xy_printf(0, PLATFORM, FATAL_LOG, "");
 		xy_file fp = xy_fopen("ss_SIMKEY.key","w", FS_DEFAULT);
-		xy_printf(0, PLATFORM, FATAL_LOG, "at_SOFTSIM_req- xy_fopen end");
+		xy_printf(0, PLATFORM, FATAL_LOG, "");
 
 		int writeCount = xy_fwrite(secretkey, strlen(secretkey), fp);
-		xy_printf(0, PLATFORM, FATAL_LOG, "at_SOFTSIM_req- write end");
+		xy_printf(0, PLATFORM, FATAL_LOG, "");
 		xy_fclose(fp);
 
 		return AT_END;

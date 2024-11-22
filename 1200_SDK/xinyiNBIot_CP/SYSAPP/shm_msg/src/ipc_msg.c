@@ -73,7 +73,7 @@ void add_zero_copy_sum(uint32_t addr, unsigned int len)
     }
 
     zero_copy_info->pending_num++;
-	xy_printf(0,PLATFORM,WARN_LOG,"ICM_ZERO_COPY_MSG, addr:%x, len:%d, current_thread:%s", icm_msg->msg_addr, icm_msg->msg_len, icm_msg->tskName);
+	xy_printf(0,PLATFORM,WARN_LOG,"%x%d%s", icm_msg->msg_addr, icm_msg->msg_len, icm_msg->tskName);
 #endif
 
 	xy_mutex_release(icm_zero_copy_m);
@@ -96,7 +96,7 @@ void sub_zero_copy_sum()
         icm_msg = zero_copy_info->head;
         zero_copy_info->head = zero_copy_info->head->next;
 
-        //xy_printf(0,PLATFORM,WARN_LOG,"clear ICM_ZERO_COPY_MSG, addr:%x, len:%d, current_thread:%s", icm_msg->msg_addr, icm_msg->msg_len, icm_msg->tskName);
+        //xy_printf(0,PLATFORM,WARN_LOG,"%x%d%s", icm_msg->msg_addr, icm_msg->msg_len, icm_msg->tskName);
         
 		zero_copy_info->pending_num--;
         if (zero_copy_info->pending_num == 0)
@@ -316,7 +316,7 @@ void inter_core_msg_entry()
 					if (HWREGB(BAK_MEM_XY_DUMP) == 1)
 						xy_assert(0);
 					else
-						xy_printf(0,PLATFORM, WARN_LOG, "recv unknown msg :%d",Msg.id);
+						xy_printf(0,PLATFORM, WARN_LOG, "%d",Msg.id);
 					break;
 				}
 			}

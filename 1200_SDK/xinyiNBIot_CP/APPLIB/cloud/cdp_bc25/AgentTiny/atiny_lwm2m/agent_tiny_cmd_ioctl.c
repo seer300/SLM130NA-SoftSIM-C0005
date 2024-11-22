@@ -272,7 +272,7 @@ int atiny_get_cell_id(int *cellID)
 	
 	xy_get_CELLID(cellID);
 
-	xy_printf(0,XYAPP, WARN_LOG, "cell_id %d", *cellID);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", *cellID);
 	return ATINY_OK;
 }
 

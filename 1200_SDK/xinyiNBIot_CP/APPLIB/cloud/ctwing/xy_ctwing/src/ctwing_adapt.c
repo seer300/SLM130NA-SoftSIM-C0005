@@ -617,7 +617,7 @@ uint16_t xy_ctlw_get_cell_id(uint32_t* cellID)
 	
 	xy_get_CELLID(cellID);
 
-	xy_printf(0,XYAPP, WARN_LOG, "cell_id %d", *cellID);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", *cellID);
     return CTIOT_NB_SUCCESS;
 }
 
@@ -647,14 +647,14 @@ int xy_ctlw_firmware_ver(char *version, int len)
 
 int xy_ctlw_do_dev_reboot(void)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "\r\ndevice is rebooting......\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     xy_Soft_Reset(SOFT_RB_BY_CP_USER);
     return CTIOT_NB_SUCCESS;
 }
 
 int xy_ctlw_do_factory_reset(void)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "\r\nFACTORY RESET\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return CTIOT_NB_SUCCESS;
 }
 
@@ -742,14 +742,14 @@ int xy_ctlw_set_timezone(const char *timezone, int len)
 
 int xy_ctlw_get_bind_mode(char *mode, int len)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "bind type is UQ......\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     (void)snprintf(mode, len, "UQ");
     return CTIOT_NB_SUCCESS;
 }
 
 int xy_ctlw_trig_firmware_update(void)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "firmware is updating......\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return CTIOT_NB_SUCCESS;
 }
 
@@ -794,7 +794,7 @@ int xy_ctlw_update_psk(char *psk_id, int len)
 	(void) psk_id;
 	(void) len;
 
-    xy_printf(0,XYAPP, WARN_LOG, "update psk success\r\n");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return CTIOT_NB_SUCCESS;
 }
 

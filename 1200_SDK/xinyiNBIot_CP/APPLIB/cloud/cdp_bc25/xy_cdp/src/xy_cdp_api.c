@@ -29,13 +29,13 @@ int cdp_cloud_setting(char *ip_addr_str, int port)
 
 	if((strlen(ip_addr_str) <= 0)||(strlen(ip_addr_str) > 40) || (port < 0) || (port > 65535))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[cdp_cloud_setting]:ip or port error!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
 	}
 
     if(set_cdp_server_settings(ip_addr_str, (u16_t)port))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_cloud_setting]:cdp server setting error!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -48,7 +48,7 @@ int cdp_register(int lifetime, int timeout)
     //wait PDP active
 	if(!xy_tcpip_is_ok())
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:Network disconnection!");
+    	xy_printf(0,XYAPP, WARN_LOG, "");
     	return XY_ERR;
     }
 
@@ -61,23 +61,23 @@ int cdp_register(int lifetime, int timeout)
     {
         if(lifetime < 120 || lifetime > LWM2M_DEFAULT_LIFETIME * 30)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp server lifetime is error!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return XY_ERR;
         }
         if(strcmp((const char *)get_cdp_server_ip_addr_str(), "") == 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp server addr is empty!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return XY_ERR;
         }
         else if(cdp_create_lwm2m_task(lifetime))
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:registed failed!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return XY_ERR;
         }
     }
     else
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp have registed!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_OK;
     }    
     
@@ -93,17 +93,17 @@ int cdp_register(int lifetime, int timeout)
             osDelay(100);
         }
 
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp register fail, timeout!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
     if(g_phandle == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp register fail!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
     
-    xy_printf(0,XYAPP, WARN_LOG, "[cdp_register]:cdp register success!");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return XY_OK;
 }
 
@@ -118,7 +118,7 @@ int cdp_deregister(int timeout)
 		temp_timeout -= 100;
 		if (temp_timeout <= 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[cdp_deregister]:Network disconnection!");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return XY_ERR;
         }
 	}
@@ -129,7 +129,7 @@ int cdp_deregister(int timeout)
 
     if(cdp_delete_lwm2m_task() == 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_deregister]:cdp deregister failed!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -139,7 +139,7 @@ int cdp_deregister(int timeout)
     while (osSemaphoreAcquire(cdp_api_deregister_sem, 0) == osOK) {};
     osSemaphoreAcquire(cdp_api_deregister_sem, timeout*1000);
   
-    xy_printf(0,XYAPP, WARN_LOG, "[cdp_deregister]:cdp deregister success!");
+    xy_printf(0,XYAPP, WARN_LOG, "");
     return XY_OK;
 }
 
@@ -150,19 +150,19 @@ int cdp_send_syn(char *data, int len, int msg_type)
 
     if(data == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:data is NULL!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
     
     if(len>MAX_REPORT_DATA_LEN || len<=0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:data len error!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
         
     if (!xy_tcpip_is_ok()) 
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:Network disconnection!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -174,7 +174,7 @@ int cdp_send_syn(char *data, int len, int msg_type)
     if ((is_cdp_running() == 0) 
             || (context->state != STATE_READY))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:cdp not exist!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -183,7 +183,7 @@ int cdp_send_syn(char *data, int len, int msg_type)
 
     if(get_upstream_message_pending_num())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:Data is being sent!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
         
@@ -198,11 +198,11 @@ int cdp_send_syn(char *data, int len, int msg_type)
 
 	if(get_upstream_message_error_num() - errr_num != 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:Data is send fail!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_ERR;
 	}
 
-    xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:Data is send success!"); 
+    xy_printf(0,XYAPP, WARN_LOG, ""); 
     return XY_OK;
 }
 
@@ -213,19 +213,19 @@ int cdp_send_asyn(char *data, int len, int msg_type)
     
     if(data == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_asyn]:data is NULL!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
     
     if(len>MAX_REPORT_DATA_LEN || len<=0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_asyn]:data len error!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
         
     if (!xy_tcpip_is_ok()) 
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_asyn]:Network disconnection!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -237,7 +237,7 @@ int cdp_send_asyn(char *data, int len, int msg_type)
     if ((is_cdp_running() == 0) 
             || (context->state != STATE_READY))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:cdp not exist!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -247,7 +247,7 @@ int cdp_send_asyn(char *data, int len, int msg_type)
     pending_num = get_upstream_message_pending_num();
     if(pending_num >= 8)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_asyn]:The data link list is full!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -286,7 +286,7 @@ int cdp_lifetime_update(int timeout)
         
     if (!xy_tcpip_is_ok()) 
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_update]:Network disconnection!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -298,14 +298,14 @@ int cdp_lifetime_update(int timeout)
     if ((is_cdp_running() == 0) 
             || (context->state != STATE_READY))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:cdp not exist!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
     xy_lwm2m_server_t *targetP = context->serverList;
     if(targetP == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_send_syn]:cdp not ready!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 
@@ -327,7 +327,7 @@ int cdp_lifetime_update(int timeout)
             osDelay(100);
         }
         
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_update] cdp update fail!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }    
     
@@ -383,7 +383,7 @@ int cdp_set_endpoint_name(char * endpointname)
 	cdp_module_init();
 	if(endpointname == NULL || (endpointname != NULL && strlen(endpointname) > 255))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cdp_set_endpoint_name]:Parameter error!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_ERR;
     }
 	

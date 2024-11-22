@@ -30,16 +30,16 @@ void http_err_report(http_context_reference_t* http_context_ref, HTTPC_RESULT er
 	char *urc_buf = xy_malloc(40);
 	
 	if (errorCode == HTTP_ECONN) {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP] connection error occurred, ret:%d", errorCode);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", errorCode);
 		snprintf(urc_buf, 40, "+HTTPERR:%d,%d", http_context_ref->http_id, errorCode);
 		
 	} 
 	else if (errorCode == HTTP_ECLSD) {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP] connection closed by http server, ret:%d", errorCode);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", errorCode);
 		snprintf(urc_buf, 40, "+HTTPERR:%d,%d", http_context_ref->http_id, errorCode);
 	}
 	else {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP] other error, ret:%d", errorCode);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", errorCode);
 		snprintf(urc_buf, 40, "+HTTPERR:%d,%d", http_context_ref->http_id, errorCode);
 	}
 	
@@ -138,7 +138,7 @@ void http_send_report(http_context_reference_t* http_context_ref, HTTPC_RESULT e
 		snprintf(urc_buf, 24, "+REQUESTSUCCESS");
 	} 
 	else {
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP] http send report, ret:%d", errorCode);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", errorCode);
 		snprintf(urc_buf, 24, "+BADREQUEST");
 	}
 	
@@ -656,7 +656,7 @@ void http_recv_thread(void* argument)
 		memset(http_context_ref->client_data->response_buf, 0, http_context_ref->client_data->response_buf_len);
 		
 		ret = httpclient_recv(http_context_ref->client, http_context_ref->client_data);
-		xy_printf(0, XYAPP, WARN_LOG, "[HTTP] content_block_len:%d, response_code:%d, ret:%d", http_context_ref->client_data->content_block_len, http_context_ref->client->response_code, ret);
+		xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", http_context_ref->client_data->content_block_len, http_context_ref->client->response_code, ret);
 
 		if (ret == HTTP_SUCCESS) {
 			http_recv_report(http_context_ref, 0);
@@ -1060,7 +1060,7 @@ int at_http_close(char *at_buf, char **rsp_cmd)
 	if (http_context_ref->status == HTTPSTAT_CONNECTED || http_context_ref->status == HTTPSTAT_RECEDATA) {
 		/* 置标志位后,在 http_recv_thread 中完成关闭socket操作 */
 		http_context_ref->quit = 1;
-		xy_printf(0,XYAPP, WARN_LOG, "[at_http_close]http id(%d) quit flag set 1!!!", http_id);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", http_id);
 	}	
 	
 	while (http_context_ref->http_send_thread != NULL || http_context_ref->http_recv_thread != NULL)

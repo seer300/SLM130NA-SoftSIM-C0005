@@ -17,11 +17,11 @@
 #define MODULE_VER_STR  PRODUCT_NAME
 
 
-#define BOARD_PATCH      	 "1.2.0.5"
+#define BOARD_PATCH      	 "1.2.5.2"
 #define VERSION_DEV_TYPE	 "M019"
 
-#define BUILD_DATE           "1028"
-#define VERSION_INFO_NEW	 "05"
+#define BUILD_DATE           "1120"
+#define VERSION_INFO_NEW	 "07"
 
 
 /********************************** 云业务相关 **********************************/

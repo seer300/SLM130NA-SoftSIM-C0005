@@ -52,7 +52,7 @@ void ctiot_fota_state_changed(void)
 	if(fotaStateManage.notifyUpdatingMsgId == 0)//本次fota上报为平台put 5/0/1 URL后的第一条上报，记录本次msgId
 	{
 		fotaStateManage.notifyUpdatingMsgId = msgId;
-		xy_printf(0,XYAPP, WARN_LOG, "is fota 5/0/3 notify msgId=%d",fotaStateManage.notifyUpdatingMsgId);
+		xy_printf(0,XYAPP, WARN_LOG, "%d",fotaStateManage.notifyUpdatingMsgId);
 	}
 		
 
@@ -535,7 +535,7 @@ void fota_notification_ack_handle(int msgId)
 {
 	if(fotaStateManage.notifyUpdatingMsgId == msgId)//平台下方5/0/1URL后，主动上报5/0/3的ACK回复
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CTLW_FOTA] fota start");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		fota_start(firmwareWriteParameter.packageUri);
 		
 	}

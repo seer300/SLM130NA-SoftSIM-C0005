@@ -45,7 +45,7 @@ int check_onenet_session_info()
 
     if(!xy_tcpip_is_ok())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS] resume fail,tcpip is not ok.");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return RESUME_STATE_ERROR;
     }
 
@@ -53,7 +53,7 @@ int check_onenet_session_info()
     if (g_onenet_session_info->last_update_time + g_onenet_session_info->life_time <= current_sec
         || current_sec <= g_onenet_session_info->last_update_time)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS]error:onenet expired, pre_update_time:%d lifetime:%d curtime:%d\n",
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d%d",
             g_onenet_session_info->last_update_time, g_onenet_session_info->life_time, current_sec);
         return RESUME_LIFETIME_TIMEOUT;
     }
@@ -112,7 +112,7 @@ void resume_onenet_context(st_context_t* ctx)
     ctx->callback.onSetParams = onet_on_parameter_cb;
     ctx->callback.onEvent = onet_on_event_cb;
 
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS]resume cis context, obj count(%d)", g_onenet_session_info->object_count);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", g_onenet_session_info->object_count);
     for (i = 0; i <g_onenet_session_info->object_count; i++)
     {
         backup_object = &g_onenet_session_info->onenet_object[i];
@@ -165,7 +165,7 @@ void resume_onenet_context(st_context_t* ctx)
     ctx->server->location = xy_malloc(strlen((const char *)g_onenet_session_info->location) + 1);
     strcpy(ctx->server->location, (const char *)g_onenet_session_info->location);
 
-    xy_printf(0,XYAPP, WARN_LOG, "[CIS]resume cis context, obsv count(%d)", g_onenet_session_info->observed_count);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", g_onenet_session_info->observed_count);
     for (i = 0; i <g_onenet_session_info->observed_count; i++)
     {
         backup_observed = &g_onenet_session_info->observed[i];
@@ -195,7 +195,7 @@ void onenet_resume_task()
     {
         if(onenet_miplcreate() != XY_OK)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CIS]onenet_miplcreate failed, give cis_recovery_sem");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             if(cis_recovery_sem != NULL)
                 osSemaphoreRelease(cis_recovery_sem);
 
@@ -409,7 +409,7 @@ void onenet_rtc_resume_process()
 {
     cis_module_init();
     int ret = onenet_resume_session();
-    xy_printf(0,XYAPP, WARN_LOG, "\r\n onenet_rtc_resume_process update %d \r\n",ret);
+    xy_printf(0,XYAPP, WARN_LOG, "%d",ret);
 
     g_onenet_rtc_resume_TskHandle= NULL;
     osThreadExit();
@@ -477,7 +477,7 @@ void onenet_resume_state_process(int code)
         else
         {
             cloud_remove_file(ONENET_SESSION_NVM_FILE_NAME);
-            xy_printf(0,XYAPP, WARN_LOG, "\r\n onenet_bak_allInfo failed \r\n");
+            xy_printf(0,XYAPP, WARN_LOG, "");
         }
         break;
     case CIS_EVENT_UPDATE_FAILED:
@@ -498,7 +498,7 @@ void onenet_resume_state_process(int code)
         else
         {
             cloud_remove_file(ONENET_SESSION_NVM_FILE_NAME);
-            xy_printf(0,XYAPP, WARN_LOG, "\r\n onenet_bak_allInfo failed \r\n");
+            xy_printf(0,XYAPP, WARN_LOG, "");
         }
         break;
     default:
@@ -547,7 +547,7 @@ int onenet_resume_session()
             send_debug_by_at_uart("+DBGINFO:[CIS] net not ok\r\n");
         osMutexRelease(g_onenet_module_init_mutex);
 
-        xy_printf(0,XYAPP, WARN_LOG, "[onenet_resume_app] result[%d]!\n", check_result);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", check_result);
     }
     return check_result;
 }
@@ -583,7 +583,7 @@ void cis_user_config_init()
 void cis_netif_event_callback(PsStateChangeEvent event)
 {
     osThreadAttr_t task_attr = {0};
-    xy_printf(0,XYAPP, WARN_LOG, "onenet_netif_event_callback, netif up");
+    xy_printf(0,XYAPP, WARN_LOG, "");
 
 #if CIS_ENABLE_UPDATE
     if(!is_onenet_task_running(0))

@@ -100,13 +100,13 @@ int check_wall_time(uint32_t delta)
 
 	if (0 != query_ntp(&arg))
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "error!query_ntp,fail get time!");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 		return 0;
 	}
 	
 	if((sec1 = xy_get_UT_ms()/1000) == 0)
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "error!xy_get_UT_ms,fail get time!");
+		xy_printf(0,PLATFORM, WARN_LOG, "");
 		return 0;
 	}
 	
@@ -355,7 +355,7 @@ int at_TEST_req(char *at_buf, char **prsp_cmd)
 				g_flash_test_TskHandle = osThreadNew((osThreadFunc_t)flash_test_entry, NULL, &thread_attr);
 			}
 			osMessageQueuePut(g_flash_test_msg_q, (void *)(&msg), 0, osNoWait); 
-			xy_printf(0, XYAPP, WARN_LOG, "test flash start:%X %X %X", msg->base, msg->size, g_flash_test_TskHandle);
+			xy_printf(0, XYAPP, WARN_LOG, "%X%X%X", msg->base, msg->size, g_flash_test_TskHandle);
 		}
 		/*AT+TEST=NV,...用于FLASH中NV区域的FLASH操作测试*/
 		else if (!strcmp(cmd, "NV"))

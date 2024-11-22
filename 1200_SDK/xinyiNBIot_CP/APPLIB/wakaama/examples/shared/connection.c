@@ -187,7 +187,7 @@ int xiny_connection_send(xiny_connection_t *connP,
         port = saddr->sin6_port;
     }
 
-    xy_printf(0,XYAPP, WARN_LOG, "Sending %lu bytes to [%s]:%hu\r\n", length, s, ntohs(port));
+    xy_printf(0,XYAPP, WARN_LOG, "%lu%s%hu", length, s, ntohs(port));
 
     output_buffer(stderr, buffer, length, 0);
 #endif
@@ -213,13 +213,13 @@ uint8_t xiny_lwm2m_buffer_send(void * sessionH,
 
     if (connP == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "#> failed sending %lu bytes, missing connection\r\n", length);
+        xy_printf(0,XYAPP, WARN_LOG, "%lu", length);
         return xiny_COAP_500_INTERNAL_SERVER_ERROR ;
     }
 
     if (-1 == xiny_connection_send(connP, buffer, length))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "#> failed sending %lu bytes\r\n", length);
+        xy_printf(0,XYAPP, WARN_LOG, "%lu", length);
         return xiny_COAP_500_INTERNAL_SERVER_ERROR ;
     }
 

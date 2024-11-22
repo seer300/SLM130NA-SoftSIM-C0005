@@ -50,7 +50,7 @@ bool single_atcmd_proc(at_context_t *ctx)
 		at_delaylock_act();
 	
 	//debug打印,用于确认at命令接收情况。
-	xy_printf(0, PLATFORM, WARN_LOG, "at recv from fd:%d,len:%d,%s", ctx->fd, ctx->g_have_rcved_len, ctx->g_farps_rcv_mem);
+	xy_printf(0, PLATFORM, WARN_LOG, "%d%d%s", ctx->fd, ctx->g_have_rcved_len, ctx->g_farps_rcv_mem);
 
 	if (ctx->state & RCV_REQ_NOW)
 	{
@@ -132,7 +132,7 @@ void at_recv_from_log(uint32_t id,char *buf, unsigned int data_len)
 
 	if (ctx->g_have_rcved_len + data_len > AT_RX_PULL_ERR_THRESHOLD)
 	{
-		xy_printf(0, PLATFORM, WARN_LOG, "AT rx pin pull down,and recv all zero!!!ERROR!!!");
+		xy_printf(0, PLATFORM, WARN_LOG, "");
 		send_debug_by_at_uart("+DBGINFO:AT RX PIN pull down ERROR\r\n");
 		goto END_PROC;
 	}
@@ -234,7 +234,7 @@ bool at_send_to_log(void* at_ctx, void *buf, int size)
 		reset_ctx(ctx);
 	}
 
-	xy_printf(0,PLATFORM, WARN_LOG, "at_send_to_log:%s", (char *)buf);
+	xy_printf(0,PLATFORM, WARN_LOG, "%s", (char *)buf);
 	diag_at_response_output((char *)buf, size);
 
 	return 1;
@@ -253,7 +253,7 @@ bool at_send_to_ap(void* at_ctx, void *buf, int size)
 		reset_ctx(ctx);
 	}
 
-	xy_printf(0,PLATFORM, WARN_LOG, "at_send_to_ap:%s,%d", buf, ctx->fd);
+	xy_printf(0,PLATFORM, WARN_LOG, "%s%d", buf, ctx->fd);
 	at_write_to_AP(ctx->fd, (char *)buf, size, isResult);
 
 	/* URC缓存上报 */

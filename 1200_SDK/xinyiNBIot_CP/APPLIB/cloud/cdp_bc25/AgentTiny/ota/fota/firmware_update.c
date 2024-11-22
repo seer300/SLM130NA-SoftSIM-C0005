@@ -100,7 +100,7 @@ static void firmware_download_reply(lwm2m_transaction_t *transacP,
     ATINY_LOG(LOG_ERR, "block_num : %lu, block2_more : %lu, block_offset : %lu, payload_len is %u",
               block_num, (uint32_t)block2_more, block_offset, packet->payload_len);
 
-	xy_printf(0,XYAPP, WARN_LOG, "[CDP]size:%d,num:%d,offset:%d,more:%d", block_size, block_num, block_offset, block2_more);
+	xy_printf(0,XYAPP, WARN_LOG, "%d%d%d%d", block_size, block_num, block_offset, block2_more);
     
     len = (uint32_t)(packet->payload_len);
     ret = OTA_save_one_packet(packet->payload, len);
@@ -217,7 +217,7 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri url protocol no support");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return -1;
 	}
 
@@ -245,7 +245,7 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
             }       
             else
             {
-				xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri ip is invalid");
+				xy_printf(0,XYAPP, WARN_LOG, "");
                 return -1;
             }
                         
@@ -266,7 +266,7 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
 
                 if(!ipTailPtr)
             	{
-					xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri no fota url source");
+					xy_printf(0,XYAPP, WARN_LOG, "");
 				 	return -1; //未找到资源定位符'/'或'\\'
             	}
             }
@@ -287,7 +287,7 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
 
 			if(!portTailPtr)
 			{
-				xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri no fota url source");
+				xy_printf(0,XYAPP, WARN_LOG, "");
 				return -1;
 			}
 		}
@@ -295,7 +295,7 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
 		//port长度大于5:非法网络端口
 		if(portTailPtr - uri_ptr - 1 > 5)
         {
-        	xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri port invalid\r\n");
+        	xy_printf(0,XYAPP, WARN_LOG, "");
             return -1;
         }
 
@@ -324,10 +324,10 @@ int parse_firmware_uri(char *uri, char *parsed_host, char *parsed_port)
     }
     else
     {
-    	xy_printf(0, XYAPP, WARN_LOG, "parse_firmware_uri no url\r\n");
+    	xy_printf(0, XYAPP, WARN_LOG, "");
         return -1;//无URL资源
     }
-    xy_printf(0,XYAPP, WARN_LOG, "[CDP] fota host:%s, port:%s", parsed_host, parsed_port);
+    xy_printf(0,XYAPP, WARN_LOG, "%s%s", parsed_host, parsed_port);
     return 0;
 }
 
@@ -441,7 +441,7 @@ int send_resquest(uint32_t num, uint8_t more, uint16_t size)
 	size_t allocLen = 0;
 	coap_packet_t *message = (coap_packet_t *)lwm2m_malloc(sizeof(coap_packet_t));
 
-	xy_printf(0,XYAPP, WARN_LOG, "send_resquest message ID is %d\n", messageID);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", messageID);
 	xy_coap_init_message(message, COAP_TYPE_CON, COAP_GET, messageID);
 	xy_coap_set_header_uri_path(message, g_ota_uri_path);
     
@@ -460,7 +460,7 @@ int send_resquest(uint32_t num, uint8_t more, uint16_t size)
 		if (0 != pktBufferLen)
 		{
 			result = atiny_net_send(g_ota_ctx, pktBuffer, pktBufferLen);
-			xy_printf(0,XYAPP, WARN_LOG, "send_resquest sendto result %d\n", result);
+			xy_printf(0,XYAPP, WARN_LOG, "%d", result);
 		}
 		lwm2m_free(pktBuffer);
 	}
@@ -484,7 +484,7 @@ int ota_packet_handle(char *recv_buf , uint16_t size, uint32_t *recved_size)
         case COAP_TYPE_NON:
         case COAP_TYPE_CON:
         case COAP_TYPE_RST:
-            xy_printf(0,XYAPP, WARN_LOG, "ota_packet_handle no ack\n");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             break;
         case COAP_TYPE_ACK:
         {	
@@ -492,7 +492,7 @@ int ota_packet_handle(char *recv_buf , uint16_t size, uint32_t *recved_size)
                 break;
             
             xy_coap_get_header_size(message, &packetSize);
-            xy_printf(0,XYAPP, WARN_LOG, "ota_packet_handle packetSize is %d\n", message->payload_len);          
+            xy_printf(0,XYAPP, WARN_LOG, "%d", message->payload_len);          
 
             if (OTA_save_one_packet(message->payload, message->payload_len) != XY_OK)
             {
@@ -504,7 +504,7 @@ int ota_packet_handle(char *recv_buf , uint16_t size, uint32_t *recved_size)
 
             if (message->block2_more != 0)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "ota_packet_handle packetSize more %d\n", g_block_num + 1);
+                xy_printf(0,XYAPP, WARN_LOG, "%d", g_block_num + 1);
                 resendCount = 5;
                 g_block_num++;
                 messageID++;
@@ -516,7 +516,7 @@ int ota_packet_handle(char *recv_buf , uint16_t size, uint32_t *recved_size)
             }
             else
             {
-                xy_printf(0,XYAPP, WARN_LOG, "ota_packet_handle ota packet recv over");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 if (!OTA_delta_check())
                 {
                     result = FIRMWARE_DOWNING_SUCCESS;
@@ -552,7 +552,7 @@ void cdp_start_fota_download(char *ota_url)
 
     if(ota_url == NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "cdp_start_fota_download is NULL, exit");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         result = FIRMWARE_DOWNING_URI_ERR;
         goto exit;
     }
@@ -562,7 +562,7 @@ void cdp_start_fota_download(char *ota_url)
    
     if(parse_firmware_uri(ota_url, fota_host, fota_port))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "parse_firmware_uri failed");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         result = FIRMWARE_DOWNING_URI_ERR;
         goto exit;
     }
@@ -575,7 +575,7 @@ void cdp_start_fota_download(char *ota_url)
         goto exit;
     }
         
-    xy_printf(0,XYAPP, WARN_LOG, "socket fd: %d", g_ota_ctx->fd);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", g_ota_ctx->fd);
 
     //发送第一个请求数据包
     resendCount = 5;
@@ -597,13 +597,13 @@ void cdp_start_fota_download(char *ota_url)
 
             if(result == FIRMWARE_DOWNING_SUCCESS)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "FOTA PACKET download success");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 atiny_fota_manager_update_notify(FIRMWARE_UPDATE_RST_SUCCESS, atiny_fota_manager_get_instance());
                 goto exit;
             }
             else if(result > FIRMWARE_DOWNING_SUCCESS)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "FOTA PACKET download fail");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 atiny_fota_manager_update_notify(result, atiny_fota_manager_get_instance());
                 goto exit;
             }
@@ -613,14 +613,14 @@ void cdp_start_fota_download(char *ota_url)
 		{
 			if (resendCount == 0)
 			{
-                xy_printf(0,XYAPP, WARN_LOG, "FOTA PACKET download fail");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 atiny_fota_manager_update_notify(FIRMWARE_DOWNING_TIMEOUT, atiny_fota_manager_get_instance());
                 result = FIRMWARE_DOWNING_TIMEOUT; //链接断开
                 goto exit;
 			}
 			else
 			{
-                xy_printf(0,XYAPP, WARN_LOG, "!!!!!!!!!!!!!!!resend packet!!!!!!!!!!!!!!!!\n");
+                xy_printf(0,XYAPP, WARN_LOG, "");
 				send_resquest(g_block_num, 0, BLOCK_SIZE);
 				resendCount--;
 			}
@@ -637,7 +637,7 @@ exit:
     	lwm2m_free(recv_buf);
     
     atiny_fota_manager_set_update_result(atiny_fota_manager_get_instance(), result); //成功失败结果码设置
-    xy_printf(0,XYAPP, WARN_LOG, "cdp_start_fota_download ended, result:%d\n",result);
+    xy_printf(0,XYAPP, WARN_LOG, "%d",result);
 	osThreadExit();
 }
 #endif

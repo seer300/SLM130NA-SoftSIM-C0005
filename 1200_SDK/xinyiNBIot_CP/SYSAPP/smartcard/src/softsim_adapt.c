@@ -82,26 +82,26 @@ int get_uicc_mode()
 // SoftSIM Application Initialization
 void softsim_init()
 {
-    xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Application Initialization");
+    xy_printf(0, PLATFORM, DEBUG_LOG, "");
 
     if (onomondo_profile_provisioning() == 0)
-        xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Provisioning Succcesfully Written");
+        xy_printf(0, PLATFORM, DEBUG_LOG, "");
     else
-        xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Provisioning inclomplete... error occured");
+        xy_printf(0, PLATFORM, DEBUG_LOG, "");
 
 	if (!apductx) 
     {   
-        xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Context Generation");
+        xy_printf(0, PLATFORM, DEBUG_LOG, "");
         apductx = ss_new_ctx();
 
         if (!apductx)
             return -1;
         
-        xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Context Reset");
+        xy_printf(0, PLATFORM, DEBUG_LOG, "");
         ss_reset(apductx);
     }
 
-    xy_printf(0, PLATFORM, DEBUG_LOG, "SoftSIM Application Initialization Success");
+    xy_printf(0, PLATFORM, DEBUG_LOG, "");
 }
 
 

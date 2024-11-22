@@ -102,7 +102,7 @@ int my_aes_encrypt(char* enckey,char* encbuf, char* decbuf,int inlen,int* outlen
 
 	    #ifdef DEBUG_INFO
 
-        xy_printf(0,XYAPP, WARN_LOG, "de enc_s=%p,size=%d,len=%d\n",enc_s,nTotal,nLen);
+        xy_printf(0,XYAPP, WARN_LOG, "%p%d%d",enc_s,nTotal,nLen);
 
         #endif
 
@@ -110,7 +110,7 @@ int my_aes_encrypt(char* enckey,char* encbuf, char* decbuf,int inlen,int* outlen
 
 	    {
 
-			xy_printf(0,XYAPP, WARN_LOG, "enc_s mem err\n");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 
 			return -1;
 
@@ -178,13 +178,13 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
   szEpname=( char *)cis_malloc(EP_MEM_SIZE);
   if(szEpname==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err r1\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	ciphertext=( char *)cis_malloc(EP_MEM_SIZE);
   if(ciphertext==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err r2\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 
@@ -195,7 +195,7 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
 	strlen((const char *)(g_opt->szCMEI_IMEI2))>0?g_opt->szCMEI_IMEI2:szStars,
 	strlen((const char *)(g_opt->szIMSI))>0?g_opt->szIMSI:szStars,	
 	strlen((const char *)(g_opt->szDMv))>0?g_opt->szDMv:szStars);
-	//xy_printf(0,XYAPP, WARN_LOG, "reg szEpname:%s,%d\n",szEpname,strlen(szEpname));
+	//xy_printf(0,XYAPP, WARN_LOG, "%s%d",szEpname,strlen(szEpname));
 	if (strlen((const char *)name)<=0)
 		name=szEpname;
 	if(strlen((const char *)(g_opt->szPwd))>0)
@@ -204,7 +204,7 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "pwd is null,use default pwd is:%s~\n", passwd);
+		xy_printf(0,XYAPP, WARN_LOG, "%s", passwd);
 	}
 
 	my_sha256(passwd,strlen((const char *)passwd),key);
@@ -222,7 +222,7 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
 
 	if(base64tmp==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err r4\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	cis_memset(base64tmp,0,EP_MEM_SIZE);
@@ -233,7 +233,7 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
  	epnametmp=( char *)cis_malloc(EP_MEM_SIZE*4);
 	if(epnametmp==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err\n,3");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	cis_memset(epnametmp,0,EP_MEM_SIZE*4);
@@ -244,7 +244,7 @@ int genDmRegEndpointName(char ** data,void *dmconfig)
 		strlen((const char *)(g_opt->szCMEI_IMEI))>0?g_opt->szCMEI_IMEI:g_opt->szSN,
 		g_opt->szSN,
 		0);
-	//xy_printf(0,XYAPP, WARN_LOG, "reg epname=%s,%d\n", epnametmp,strlen(epnametmp));
+	//xy_printf(0,XYAPP, WARN_LOG, "%s%d", epnametmp,strlen(epnametmp));
 	name = epnametmp; //?????????
 	///////////////
 	*data=(char *)cis_malloc(strlen((const char *)name)+1);
@@ -302,13 +302,13 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
   szEpname=( char *)cis_malloc(EP_MEM_SIZE);
   if(szEpname==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err u1\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	ciphertext=( char *)cis_malloc(EP_MEM_SIZE);
   if(ciphertext==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err u2\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	cis_memset(ciphertext,0,EP_MEM_SIZE);
@@ -317,7 +317,7 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
 	strlen((const char *)(g_opt->szCMEI_IMEI))>0?g_opt->szCMEI_IMEI:szStars,
 	strlen((const char *)(g_opt->szCMEI_IMEI2))>0?g_opt->szCMEI_IMEI2:szStars,
 	strlen((const char *)(g_opt->szIMSI))>0?g_opt->szIMSI:szStars,szStars);
-	//xy_printf(0,XYAPP, WARN_LOG, "update szEpname:%s,%d\n",szEpname,strlen(szEpname));
+	//xy_printf(0,XYAPP, WARN_LOG, "%s%d",szEpname,strlen(szEpname));
 	if (strlen((const char *)name)<=0)
 		name=szEpname;
 
@@ -327,7 +327,7 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "pwd is null,use default pwd is:%s~\n", passwd);
+		xy_printf(0,XYAPP, WARN_LOG, "%s", passwd);
 	}
 	//sha256(passwd,strlen(passwd),key);
 
@@ -344,7 +344,7 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
 	base64tmp=( char *)cis_malloc(EP_MEM_SIZE);//szEpname is free now,use again;
 	if(base64tmp==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err u4\n");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto out;
 	}
 	cis_memset(base64tmp,0,EP_MEM_SIZE);
@@ -355,7 +355,7 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
 	epnametmp=(char *)cis_malloc(EP_MEM_SIZE*4);
 	if(epnametmp==NULL)
   {
-		xy_printf(0,XYAPP, WARN_LOG, "mem err u3\n");ret=-1;
+		xy_printf(0,XYAPP, WARN_LOG, "");ret=-1;
 		goto out;
 	}
 	cis_memset(epnametmp,0,EP_MEM_SIZE*4);
@@ -366,7 +366,7 @@ int genDmUpdateEndpointName(char **data,void *dmconfig)
 		strlen((const char *)(g_opt->szCMEI_IMEI))>0?g_opt->szCMEI_IMEI:g_opt->szSN,
 		g_opt->szSN,
 		0);
-	//xy_printf(0,XYAPP, WARN_LOG, "update epname=%s,%d\n", epnametmp,strlen(epnametmp));
+	//xy_printf(0,XYAPP, WARN_LOG, "%s%d", epnametmp,strlen(epnametmp));
 	name = epnametmp;
   *data=(char *)cis_malloc(strlen((const char *)name)+1);
 	if(*data==NULL)

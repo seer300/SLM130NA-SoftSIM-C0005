@@ -44,7 +44,7 @@ typedef struct
 
 static void cmccdm_rtc_timeout_cb(void)
 {
-	xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]RTC callback, cmdmp state[%d]\n", g_softap_var_nv->cmdm_state);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", g_softap_var_nv->cmdm_state);
 
    // g_cmcc_dm_rtcflag = 1;
     if(g_softap_var_nv->cmdm_state == CMDM_REG_SUCCESS || g_softap_var_nv->cmdm_state == CMDM_UPDATE_SUCCESS
@@ -76,10 +76,10 @@ static int cmcc_send(cmccdm_netinfo_t *net_info,const uint8_t* buffer,uint32_t l
     nbSent = sendto2(net_info->sock, (const char*)buffer, length, 0, (struct sockaddr *)&saddr, sizeof(saddr), 0, 0);
 
     if (nbSent == -1){
-        xy_printf(0,XYAPP, WARN_LOG, "cmcc send [%s:%d] failed errno[%d]\n", net_info->host, ntohs(saddr.sin6_port), errno);
+        xy_printf(0,XYAPP, WARN_LOG, "%s%d%d", net_info->host, ntohs(saddr.sin6_port), errno);
         return -1;
     }else{
-        xy_printf(0,XYAPP, WARN_LOG, "cmcc send [%s:%d] %d bytes\n", net_info->host, ntohs(saddr.sin6_port), nbSent);
+        xy_printf(0,XYAPP, WARN_LOG, "%s%d%d", net_info->host, ntohs(saddr.sin6_port), nbSent);
     }
 
     return XY_OK;
@@ -106,7 +106,7 @@ uint32_t get_query_items(uint8_t *payload)
         }
     }
 
-    xy_printf(0,XYAPP, WARN_LOG,"[cmcc_dm] query items 0x%x",ret);
+    xy_printf(0,XYAPP, WARN_LOG,"%x",ret);
     return ret;
 }
 
@@ -132,7 +132,7 @@ static int socket_recv(cmccdm_netinfo_t *net_info, cmccdm_request_t *upstream_re
     result = select(net_info->sock + 1, &readfds, NULL, NULL, &tv);
     if (result < 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]Err select(): %d %s\n", errno, strerror(errno));
+        xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
         return -1;
     }
     else if (result > 0)
@@ -159,7 +159,7 @@ static int socket_recv(cmccdm_netinfo_t *net_info, cmccdm_request_t *upstream_re
 
             if (numBytes <= 0)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]Err recvfrom(): %d %s %d\n", errno, strerror(errno), numBytes);
+                xy_printf(0,XYAPP, WARN_LOG, "%d%s%d", errno, strerror(errno), numBytes);
                 result = -1;
             }
             else if (numBytes > 0)
@@ -270,7 +270,7 @@ static int socket_recv(cmccdm_netinfo_t *net_info, cmccdm_request_t *upstream_re
                         break;
                     }
                     default:
-                    xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]recv default: type[%d] code[%d]\n", message->type, message->code);
+                    xy_printf(0,XYAPP, WARN_LOG, "%d%d", message->type, message->code);
                         break;
                 }
                 coap_free_header(message);
@@ -281,7 +281,7 @@ static int socket_recv(cmccdm_netinfo_t *net_info, cmccdm_request_t *upstream_re
     }
     else
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[CMCCDM]selecting... \n");
+        xy_printf(0,XYAPP, WARN_LOG, "");
     }
 
     return result;
@@ -304,7 +304,7 @@ bool cmdm_sock_create(cmccdm_netinfo_t *net_info)
     net_info->port = 5683;
     if ((net_info->sock = xy_socket_by_host(net_info->host, 2, IPPROTO_UDP, 0, net_info->port, &net_info->remote_addr)) < 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cmdm]create sock error[%d]\r\n", net_info->sock);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", net_info->sock);
         return false;
     }
 
@@ -408,7 +408,7 @@ void set_cmdm_rtc_by_state(int state)
     //重试上限
     if(g_cmcc_dm_regInfo->have_retry_num> g_cmcc_dm_regInfo->retry_num)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "[cmcc_dm] have tried %d times, stop retry ", g_cmcc_dm_regInfo->have_retry_num);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", g_cmcc_dm_regInfo->have_retry_num);
         g_cmcc_dm_regInfo->have_retry_num = 0;
         cloud_save_file(CMCC_DM_NVM_FILE_NAME,(void*)g_cmcc_dm_regInfo,sizeof(cmcc_dm_regInfo_t));
         return;
@@ -426,13 +426,13 @@ void set_cmdm_rtc_by_state(int state)
         //成功心跳RTC
         g_cmcc_dm_regInfo->have_retry_num = 0;
         xy_rtc_timer_create(RTC_TIMER_CMCCDM, g_cmcc_dm_regInfo->dm_inteval_time*60, cmccdm_rtc_timeout_cb, NULL);
-        xy_printf(0,XYAPP, WARN_LOG, "[cmcc_dm] reg/update success[%d], next rtc[%d]", state, g_cmcc_dm_regInfo->dm_inteval_time*60);
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d", state, g_cmcc_dm_regInfo->dm_inteval_time*60);
     }
     else
     {
         //失败重试RTC
         xy_rtc_timer_create(RTC_TIMER_CMCCDM, g_cmcc_dm_regInfo->retry_time*60, cmccdm_rtc_timeout_cb, NULL);
-        xy_printf(0,XYAPP, WARN_LOG, "[cmcc_dm] reg/update fail[%d], runtimes[%d] next rtc[%d]", state, g_cmcc_dm_regInfo->have_retry_num, g_cmcc_dm_regInfo->retry_time*60);
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", state, g_cmcc_dm_regInfo->have_retry_num, g_cmcc_dm_regInfo->retry_time*60);
     }
 
     cloud_save_file(CMCC_DM_NVM_FILE_NAME,(void*)g_cmcc_dm_regInfo,sizeof(cmcc_dm_regInfo_t));
@@ -554,7 +554,7 @@ void cmcc_dm_run(void)
     xy_free(send_buf);
 out:
     xy_free(net_info);
-    xy_printf(0,XYAPP, WARN_LOG,"[CMCCDM] cmcc_dm thread exit..");
+    xy_printf(0,XYAPP, WARN_LOG,"");
     g_cmcc_dm_TskHandle = NULL;
     osThreadExit();
 }
@@ -587,7 +587,7 @@ void cmcc_dm_init()
     osThreadAttr_t task_attr = {0};
     if (g_cmcc_dm_TskHandle == NULL && g_softap_fac_nv->need_start_dm)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"start cmcc dm task!!!");
+        xy_printf(0,XYAPP, WARN_LOG,"");
         task_attr.name = "cmcc_dm";
         task_attr.priority = osPriorityNormal1;
         task_attr.stack_size = osStackShared;

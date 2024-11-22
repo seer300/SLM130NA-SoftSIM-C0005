@@ -501,7 +501,7 @@ unsigned char AtcAp_CEDRXS_T_LNB_Process(unsigned char *pEventBuffer)
 unsigned char AtcAp_CPSMS_T_LNB_Process(unsigned char *pEventBuffer)
 {
     Unused_para_ATCAP(pEventBuffer);
-    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG,"[AtcAp_CPSMS_T_LNB_Process]");
+    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG,"");
 #if VER_BC25
     g_AtcApInfo.stAtRspInfo.usRspLen = AtcAp_StrPrintf((unsigned char *)g_AtcApInfo.stAtRspInfo.aucAtcRspBuf,
         (const unsigned char *)"\r\n+CPSMS: (0-2),,,(\"00000000\"-\"11111111\"),(\"00000000\"-\"11111111\")\r\n");
@@ -4035,7 +4035,7 @@ void AtcAp_MsgProc_MALLOC_ADDR_Ind(unsigned char* pRecvMsg)
 void AtcAp_MsgProc_IPSN_Ind(unsigned char* pRecvMsg)
 {
     ATC_MSG_IPSN_IND_STRU*    pIpsnInd = (ATC_MSG_IPSN_IND_STRU*)pRecvMsg;
-    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_MsgProc_IPSN_Ind] IPSN = %d ,status = %d", pIpsnInd->usIpSn ,pIpsnInd->ucStatus);
+    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d%d", pIpsnInd->usIpSn ,pIpsnInd->ucStatus);
 
     if(ATC_AP_TRUE == pIpsnInd->ucFlowCtrlStatusFlg 
         && ATC_AP_TRUE == pIpsnInd->ucFlowCtrlUrcFlg)

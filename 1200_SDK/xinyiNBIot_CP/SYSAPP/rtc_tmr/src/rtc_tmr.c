@@ -309,7 +309,7 @@ int Is_RTC_Already_Expired(uint64_t utc_alarm_num64)
 
 	if(osThreadGetId() == rtc_tmr_task_handler)
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "is_rtc_event_expired cur_rtc_msec=%lld, event_time=%lld",utc_cur,utc_alarm_num64);
+		xy_printf(0,PLATFORM, WARN_LOG, "%lld%lld",utc_cur,utc_alarm_num64);
 	}
 	// 若当前时间不小于alarm事件时间，则判断为超时
 	if(utc_cur >= utc_alarm_num64)
@@ -903,7 +903,7 @@ int reset_universal_timer(RTC_TimeTypeDef *rtctime, int zone_sec)
 {
 	if(rtctime->wall_clock.tm_year < 2020)
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "USER set universal time ERROR!year=%d",rtctime->wall_clock.tm_year);
+		xy_printf(0,PLATFORM, WARN_LOG, "%d",rtctime->wall_clock.tm_year);
 	}
 	
 	set_snapshot_by_wtime(xy_mktime(rtctime)+zone_sec*1000);
@@ -937,7 +937,7 @@ uint64_t get_cur_UT_ms()
 	}
 	if(HWREGB(BAK_MEM_XY_DUMP) == 1)/*Release不打印,避免打印频繁,造成刷屏*/
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "current rtc msec:%u, freq:%u",(uint32_t)now_rtc_ms, XY_UTC_CLK);
+		xy_printf(0,PLATFORM, WARN_LOG, "%u%u",(uint32_t)now_rtc_ms, XY_UTC_CLK);
 	}
 	
 	rtc_delta_ms = CONVERT_RTCTICK_TO_MS(now_rtc_ms-g_softap_var_nv->rtc_ms);
@@ -1134,7 +1134,7 @@ void set_snapshot_by_wtime(uint64_t wall_time_ms)
 
 	get_sema_hardware(1000);
 
-	xy_printf(0,PLATFORM, INFO_LOG, "set_snapshot_by_wtime !");
+	xy_printf(0,PLATFORM, INFO_LOG, "");
 
 	if(g_softap_var_nv->frame_ms != 0)
 	{
@@ -1142,7 +1142,7 @@ void set_snapshot_by_wtime(uint64_t wall_time_ms)
 		
 		g_softap_var_nv->frame_ms += CONVERT_RTCTICK_TO_MS(rtc_ms-g_softap_var_nv->rtc_ms);
 
-		xy_printf(0,PLATFORM, INFO_LOG, "update frame ms by rtc delta %d ms!",(rtc_ms-g_softap_var_nv->rtc_ms));
+		xy_printf(0,PLATFORM, INFO_LOG, "%d",(rtc_ms-g_softap_var_nv->rtc_ms));
 	}
 	
 	g_softap_var_nv->wall_time_ms = wall_time_ms;
@@ -1183,7 +1183,7 @@ void update_snapshot_by_frame(PhyFrameInfo *frame_info)
 		uint32_t offset_rtc = (uint32_t)CONVERT_RTCTICK_TO_MS(rtc_ms-g_softap_var_nv->rtc_ms);
 		uint32_t offset_ms = GetFrameMsByRtcDelta(g_softap_var_nv->frame_ms,frame_info->frame_ms,offset_rtc);
 		
-		xy_printf(0,PLATFORM, INFO_LOG, "update_snapshot_by_frame  same cell!");
+		xy_printf(0,PLATFORM, INFO_LOG, "");
 
 		xy_assert(g_softap_var_nv->rtc_ms != 0);
 
@@ -1198,7 +1198,7 @@ void update_snapshot_by_frame(PhyFrameInfo *frame_info)
 				if(HWREGB(BAK_MEM_XY_DUMP) == 0)
 					offset_ms = offset_rtc;
 				else
-					xy_printf(0,PLATFORM, INFO_LOG, "WARNING! update_snapshot_by_frame phy cell sync fail!");
+					xy_printf(0,PLATFORM, INFO_LOG, "");
 			}
 		}
 		
@@ -1212,12 +1212,12 @@ void update_snapshot_by_frame(PhyFrameInfo *frame_info)
 		/*与PC机时间应该出入一秒内，超过2秒需要找青云确认*/
 		xy_gmtime_r(g_softap_var_nv->wall_time_ms,&wtime);
 
-		xy_printf(0,PLATFORM, INFO_LOG, "update_snapshot_same_cell at %d-%d/%d/%d!",wtime.wall_clock.tm_mday,wtime.wall_clock.tm_hour,wtime.wall_clock.tm_min,wtime.wall_clock.tm_sec);
+		xy_printf(0,PLATFORM, INFO_LOG, "%d%d%d%d",wtime.wall_clock.tm_mday,wtime.wall_clock.tm_hour,wtime.wall_clock.tm_min,wtime.wall_clock.tm_sec);
 	}
 	/*小区变更，或者尚未获取世界时间。该处应该为小概率事件*/
 	else
 	{	
-		xy_printf(0,PLATFORM, INFO_LOG, "update_snapshot_by_frame fail ! new cell %d %d,old cell %d %d!",frame_info->cell_id,frame_info->freq_num,g_softap_var_nv->cell_id,g_softap_var_nv->freq_num);
+		xy_printf(0,PLATFORM, INFO_LOG, "%d%d%d%d",frame_info->cell_id,frame_info->freq_num,g_softap_var_nv->cell_id,g_softap_var_nv->freq_num);
 		
 		/*有旧的快照信息，则通过RTC时刻数来更新*/
 		if(g_softap_var_nv->rtc_ms != 0 && g_softap_var_nv->wall_time_ms != 0)
@@ -1232,7 +1232,7 @@ void update_snapshot_by_frame(PhyFrameInfo *frame_info)
 		/*此处精度为RC，与PC机时间出入几秒属于正常现象*/
 		xy_gmtime_r(g_softap_var_nv->wall_time_ms,&wtime);
 
-		xy_printf(0,PLATFORM, INFO_LOG, "update_snapshot_new_cell at %d-%d/%d/%d!",wtime.wall_clock.tm_mday,wtime.wall_clock.tm_hour,wtime.wall_clock.tm_min,wtime.wall_clock.tm_sec);
+		xy_printf(0,PLATFORM, INFO_LOG, "%d%d%d%d",wtime.wall_clock.tm_mday,wtime.wall_clock.tm_hour,wtime.wall_clock.tm_min,wtime.wall_clock.tm_sec);
 
 	}
 
@@ -1256,7 +1256,7 @@ __RAM_FUNC void send_frame_time(uint32_t frame_ms,uint32_t freq_num,uint16_t cel
 		info.freq_num = freq_num;
 		info.cell_id = cell_id;
 		send_msg_2_proxy(PROXY_MSG_FRAME_TIME,&info, sizeof(PhyFrameInfo));
-		xy_printf(0,PLATFORM, INFO_LOG, "send_frame_time!");
+		xy_printf(0,PLATFORM, INFO_LOG, "");
 	}
 }
 
@@ -1265,7 +1265,7 @@ void set_frame_update_flag()
 	/*若非RC32K，则不使用物理层帧信息同步快照，退化为原始的快照机制*/
 	if(HWREGB(BAK_MEM_32K_CLK_SRC) == 0 && g_softap_fac_nv->frame_cal==1)
 	{
-		xy_printf(0,PLATFORM, INFO_LOG, "set_frame_update_flag!");
+		xy_printf(0,PLATFORM, INFO_LOG, "");
 		g_do_frame_update = 1;
 	}
 }
@@ -1280,7 +1280,7 @@ void set_snapshot_update_timer()
 		g_do_frame_update = 1;
 		UT_timer = osTimerNew((osTimerFunc_t)set_frame_update_flag,osTimerPeriodic, NULL,NULL);
 		osTimerStart(UT_timer,(60*60*1000));
-		xy_printf(0,PLATFORM, INFO_LOG, "set_snapshot_update_timer!");
+		xy_printf(0,PLATFORM, INFO_LOG, "");
 	}
 
 }

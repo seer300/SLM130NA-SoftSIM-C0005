@@ -19,7 +19,7 @@ static void fs_debug_info_print(const char * fileName, const char * function)
 	send_debug_by_at_uart(debug_str);
 	xy_free(debug_str);
 
-	xy_printf(0,XYAPP, WARN_LOG, "[XY_FS] can't %s flie: %s", function, fileName);
+	xy_printf(0,XYAPP, WARN_LOG, "%s%s", function, fileName);
 }
 
 xy_file xy_fopen(const char * fileName, const char * mode, uint32_t diskType)

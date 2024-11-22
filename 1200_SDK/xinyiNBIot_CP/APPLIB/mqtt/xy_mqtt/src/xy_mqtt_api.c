@@ -56,7 +56,7 @@ int xy_mqtt_downlink_process(MQTTClient* c,messageHandler messageHandler,int syn
     if ((c->keepAliveInterval > 0) && (packet_type >=1 ))
         TimerCountdown(&c->last_received, c->keepAliveInterval); // record the fact that we have successfully received a packet
 
-    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] cycle packet_type = %d\n",packet_type);
+    xy_printf(0,XYAPP, WARN_LOG, "%d",packet_type);
 
     switch (packet_type)
     {
@@ -199,7 +199,7 @@ int xy_mqtt_downlink_process(MQTTClient* c,messageHandler messageHandler,int syn
                     len = MQTTSerialize_ack(c->buf, c->buf_size, PUBREC, 0, msg.id);
                 if (len <= 0)
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] downlink publish Serialize pubreply fail\n");
+                    xy_printf(0,XYAPP, WARN_LOG, "");
                     rc = FAILURE;
                 }
                 else
@@ -272,7 +272,7 @@ int xy_mqtt_connect(MQTTClient* c, MQTTPacket_connectData* options,int synflag)
 #endif
      if (c->isconnected) /* don't send connect packet again if we are already connected */
 	 {
-	     xy_printf(0,XYAPP, WARN_LOG, "[MQTT] connect: now is connected\n");
+	     xy_printf(0,XYAPP, WARN_LOG, "");
 		 goto exit;
 	 }
   
@@ -517,7 +517,7 @@ int xy_mqtt_publish(MQTTClient* c, const char* topicName, MQTTMessage* message,i
 #endif
     if (!c->isconnected)
     {
-      xy_printf(0,XYAPP, WARN_LOG, "MQTT is not connected \n");
+      xy_printf(0,XYAPP, WARN_LOG, "");
       goto exit;
     }
 
@@ -531,12 +531,12 @@ int xy_mqtt_publish(MQTTClient* c, const char* topicName, MQTTMessage* message,i
               topic, (unsigned char*)message->payload, message->payloadlen);
     if (len <= 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "len <= 0 error len=%d \n",len);
+        xy_printf(0,XYAPP, WARN_LOG, "%d",len);
         goto exit;
     }
     if ((rc = MQTTSendPacket(c, len, &timer)) != SUCCESS) // send the subscribe packet
     {
-        xy_printf(0,XYAPP, WARN_LOG, "sendPacket error rc=%d \n",rc);
+        xy_printf(0,XYAPP, WARN_LOG, "%d",rc);
         goto exit;
     }
 

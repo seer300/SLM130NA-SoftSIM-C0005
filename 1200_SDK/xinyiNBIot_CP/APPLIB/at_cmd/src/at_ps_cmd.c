@@ -42,7 +42,7 @@ static bool send_null_udp_paket(char *remote_ip,unsigned short remote_port)
 
 	if (s < 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "xyari create null udp socket fail");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		return false;
 	}
 
@@ -51,22 +51,22 @@ static bool send_null_udp_paket(char *remote_ip,unsigned short remote_port)
 	if(1 != inet_aton(remote_ip, &remote_sockaddr.sin_addr))
 	{
 		close(s);
-		xy_printf(0, XYAPP, WARN_LOG, "xyari open null udp socket fail");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		return false;
 	}
 	
-	xy_printf(0, XYAPP, WARN_LOG, "xyrai open null udp socket success");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 
 	if (sendto2(s, "A", 1, 0, (struct sockaddr *)&remote_sockaddr, sizeof(struct sockaddr_in), 0, 1) < 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "send_errno:%d", errno);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", errno);
 		close(s);
 		return false;
 	}
 
-	xy_printf(0, XYAPP, WARN_LOG, "xyrai null udp send success");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 	close(s);
-	xy_printf(0, XYAPP, WARN_LOG, "xyrai close null udp socket success");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 
 	return true;
 }
@@ -215,7 +215,7 @@ void urc_CGEV_Callback(unsigned long eventId, void *param, int paramLen)
 	ATC_MSG_CGEV_IND_STRU *cgev_urc = (ATC_MSG_CGEV_IND_STRU*)param;
 	
 	uint8_t cid = cgev_urc->stCgevPara.ucCid;
-	xy_printf(0,XYAPP, WARN_LOG, "cgev urc eventId:%d,cid:%d", cgev_urc->ucCgevEventId, cgev_urc->stCgevPara.ucCid);
+	xy_printf(0,XYAPP, WARN_LOG, "%d%d", cgev_urc->ucCgevEventId, cgev_urc->stCgevPara.ucCid);
 
 	switch(cgev_urc->ucCgevEventId)
 	{
@@ -245,11 +245,11 @@ void urc_CGEV_Callback(unsigned long eventId, void *param, int paramLen)
 				 * 此时需要将ipv6地址恢复标志位复位，避免执行CFUN1操作后，ipv6地址继续执行深睡恢复流程
 				 */
 				g_ipv6_resume_flag = 0;
-				xy_printf(0, XYAPP, WARN_LOG, "ipv6 resume flag reset");
+				xy_printf(0, XYAPP, WARN_LOG, "");
 			}
 			if (g_working_cid != INVALID_CID && cid != g_working_cid)
 			{
-				xy_printf(0, XYAPP, WARN_LOG, "current cid is not working cid and return");
+				xy_printf(0, XYAPP, WARN_LOG, "");
 				if (is_netif_active(cid))
 					send_msg_2_proxy(PROXY_MSG_PS_PDP_DEACT, &cid, sizeof(cid));
 				return;
@@ -291,7 +291,7 @@ void urc_XYIPDNS_Callback(unsigned long eventId, void *param, int paramLen)
 	pdp_info.ip_type = xyipdns_urc->stPara.ucPdpType;
 	g_working_cid = pdp_info.workingCid = xyipdns_urc->stPara.ucCid;
 
-	xy_printf(0, XYAPP, WARN_LOG, "xyipdns urc cid:%d, type:%d", pdp_info.workingCid, pdp_info.ip_type);
+	xy_printf(0, XYAPP, WARN_LOG, "%d%d", pdp_info.workingCid, pdp_info.ip_type);
 
 	switch (pdp_info.ip_type)
 	{
@@ -301,7 +301,7 @@ void urc_XYIPDNS_Callback(unsigned long eventId, void *param, int paramLen)
 
 			if (ip4_addr_isany_val(*ip_2_ip4(&pdp_info.ip4)))
 			{
-				xy_printf(0, XYAPP, WARN_LOG, "ipv4 active but ipv4 addr is any");
+				xy_printf(0, XYAPP, WARN_LOG, "");
 				goto error;
 			}
 
@@ -317,7 +317,7 @@ void urc_XYIPDNS_Callback(unsigned long eventId, void *param, int paramLen)
 
 			if (ip6_addr_isany(ip_2_ip6(&pdp_info.ip6_local)))
 			{
-				xy_printf(0, XYAPP, WARN_LOG, "ipv6 active but ipv4 addr is any");
+				xy_printf(0, XYAPP, WARN_LOG, "");
 				goto error;
 			}
 
@@ -334,7 +334,7 @@ void urc_XYIPDNS_Callback(unsigned long eventId, void *param, int paramLen)
 
 			if (ip4_addr_isany_val(*ip_2_ip4(&pdp_info.ip4)) || ip6_addr_isany(ip_2_ip6(&pdp_info.ip6_local)))
 			{
-				xy_printf(0, XYAPP, WARN_LOG, "ipv46 active but ipv4 or ipv6 addr is any");
+				xy_printf(0, XYAPP, WARN_LOG, "");
 				goto error;
 			}
 			
@@ -369,12 +369,12 @@ void urc_SIMST_Callback(unsigned long eventId, void *param, int paramLen)
 	xy_assert(paramLen == sizeof(ATC_MSG_SIMST_IND_STRU));
 	ATC_MSG_SIMST_IND_STRU *simst_urc = (ATC_MSG_SIMST_IND_STRU*)param;
 
-	xy_printf(0,XYAPP, WARN_LOG, "sim urc status:%d", simst_urc->ucSimStatus);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", simst_urc->ucSimStatus);
 	
 	if(simst_urc->ucSimStatus == 0)
 	{
 		g_Sim_Is_Valid = 0;
-		xy_printf(0,XYAPP, WARN_LOG, "no sim card");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	}
 	else
 	{
@@ -422,7 +422,7 @@ void urc_CTZEU_Callback(unsigned long eventId, void *param, int paramLen)
 
 	zone_sec = (int)g_softap_var_nv->g_zone * 15 * 60;
 
-	xy_printf(0,XYAPP, WARN_LOG, "+CTZEU:%1d,%1d,%d/%d/%d,%d:%d:%d\r\n",\
+	xy_printf(0,XYAPP, WARN_LOG, "%1d%1d%d%d%d%d%d%d",\
 		zone,DayLightTime,wall_time.tm_year,wall_time.tm_mon,wall_time.tm_mday,wall_time.tm_hour,wall_time.tm_min,wall_time.tm_sec);
 #if VER_BC95
 	if(g_softap_fac_nv->g_NITZ == 1)
@@ -438,7 +438,7 @@ void urc_NPSMR_Callback(unsigned long eventId, void *param, int paramLen)
     ATC_MSG_MNBIOTEVENT_IND_STRU *npsmr_urc = (ATC_MSG_MNBIOTEVENT_IND_STRU*)xy_malloc(sizeof(ATC_MSG_MNBIOTEVENT_IND_STRU));
     memcpy(npsmr_urc, param, paramLen);
 
-    xy_printf(0, XYAPP, WARN_LOG, "PS_psm status %d", npsmr_urc->ucPsmState);
+    xy_printf(0, XYAPP, WARN_LOG, "%d", npsmr_urc->ucPsmState);
 
     if(npsmr_urc->ucPsmState == 1)  //EXIT PSM
     {

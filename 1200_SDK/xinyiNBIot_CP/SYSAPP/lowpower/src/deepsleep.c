@@ -195,13 +195,13 @@ void lpm_time_debug(void)
 	g_db_cp_schedule_time  = portCLK_TICK_COUNTER_REG;
 	g_dp_runtime_record = (RUNTIME_DBG_T *)(BAK_MEM_RUN_TIME_STATISTICS + 0x100);
 	
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP utc_timer:%x, utc_cnt:%d, utc_alarm_timer:%x, utc_alarm_cnt:%d",
+	xy_printf(0,PLATFORM, WARN_LOG, "%x%d%x%d",
 			*(uint32_t *)0x60011000, *(uint32_t *)0x60011004, *(uint32_t *)0x60011008, *(uint32_t *)0x6001100c);
 	
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP ap_reset_handler:%d, mpu:%d, restore_msp:%d, lp_init:%d, sysclk_select:%d, apwakeup:%d, gpio_scene:%d, gpio_update:%d, 32kxtal:%d, wp_restore:%d, measuer_32k:%d, fastsysteminit:%d, fastrecovery:%d",
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d",
 			g_dp_runtime_record->start_time, Debug_Runtime_Get_ms(1), Debug_Runtime_Get_ms(2), Debug_Runtime_Get_ms(3), Debug_Runtime_Get_ms(4), Debug_Runtime_Get_ms(5), Debug_Runtime_Get_ms(6), Debug_Runtime_Get_ms(7), Debug_Runtime_Get_ms(8), Debug_Runtime_Get_ms(9), Debug_Runtime_Get_ms(10), Debug_Runtime_Get_ms(11), Debug_Runtime_Get_ms(12));
 	
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP boot_cp_start-wkp:%d, pll_select-wkp:%d, pll_lock-wkp:%d, boot_cp_end-wkp:%d, cp_task_start-wkp:%d,CP_ENTER_WFI:%d, AP_ENTER_WFI:%d, delta_dsleep_time:%d, WAKEUP:%d,schedule_time:%d,g_freq_32k:%d",
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d",
 			Debug_Runtime_Get_ms(13), Debug_Runtime_Get_ms(14), Debug_Runtime_Get_ms(15), Debug_Runtime_Get_ms(16), (uint32_t)(g_db_cp_schedule_time - g_dp_runtime_record->start_time), g_lpm_deepsleep_recovery_info->cp_enter_wfi_tick, *(uint32_t *)0x60011018, g_lpm_deepsleep_recovery_info->ap_cp_delta_time, g_dp_runtime_record->start_time, g_db_cp_schedule_time, g_freq_32k);
 }
 #endif 
@@ -383,7 +383,7 @@ void DeepSleep_Recovery(void)
 		{
 			HWREGB(BAK_MEM_RC32K_CALI_PERMIT) = 1;  
 #if LPM_LOG_DEBUG
-			xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP g_lpm_deepsleep_recovery_info->frc_flag:%d, temper:%d", g_lpm_deepsleep_recovery_info->frc_flag,gTempera_old);
+			xy_printf(0,PLATFORM, WARN_LOG, "%d%d", g_lpm_deepsleep_recovery_info->frc_flag,gTempera_old);
 #endif
 			// 长时间深睡的补偿会失准，因此需要协议栈重新进行cell detect
 			g_lpm_deepsleep_recovery_info->frc_flag = 0;
@@ -406,9 +406,9 @@ void DeepSleep_Recovery(void)
 	diag_filter_refresh_heart_if_needed();
 
 #if LPM_LOG_DEBUG
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP g_step_phy_cnt: %d, cur_utcms: %lld, utccnt_before_sleep: %lld, utccnt_after_sleep: %lld,wakeup_status: %x, pll_divn_old:%d, pll_divn_cur:%d frc_divn:%d frc_flag:%d temper:%d",(uint32_t)(g_step_phy_cnt/SubFrameCntRld),g_utccnt_after_dp/32,g_lpm_deepsleep_recovery_info->utccnt_before_sleep,g_utccnt_after_dp,AONPRCM->WAKEUP_STATUS,g_pll_divn_old,g_pll_divn_cur,g_lpm_deepsleep_recovery_info->frc_clk_divn, g_lpm_deepsleep_recovery_info->frc_flag,gTempera_old);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) sum:%d frc_callback(%d,%d,%d,%d) sum:%d phytimer_trigger:%d", g_lpm_deepsleep_recovery_info->HFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->SFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->subframe_before_sleep,g_lpm_deepsleep_recovery_info->countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_frc_aftersleep_sum,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,g_frc_callback_sum,platform_trigger_phytimer_record);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP utc_alarm: %x, %x, %x,cur_utcreg:%x, %x, %x, g_debug_utccnt_after_sleep:%lld test_rc:%d %d",ggdebug_alarm_cal,ggdebug_alarm_time,ggdebug_alarm_cnt,g_debug_cal4,g_debug_time4,g_debug_cnt4,g_debug_utccnt_after_sleep ,HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%lld%lld%lld%x%d%d%d%d%d",(uint32_t)(g_step_phy_cnt/SubFrameCntRld),g_utccnt_after_dp/32,g_lpm_deepsleep_recovery_info->utccnt_before_sleep,g_utccnt_after_dp,AONPRCM->WAKEUP_STATUS,g_pll_divn_old,g_pll_divn_cur,g_lpm_deepsleep_recovery_info->frc_clk_divn, g_lpm_deepsleep_recovery_info->frc_flag,gTempera_old);
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d", g_lpm_deepsleep_recovery_info->HFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->SFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->subframe_before_sleep,g_lpm_deepsleep_recovery_info->countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_frc_aftersleep_sum,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,g_frc_callback_sum,platform_trigger_phytimer_record);
+	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%lld%d%d",ggdebug_alarm_cal,ggdebug_alarm_time,ggdebug_alarm_cnt,g_debug_cal4,g_debug_time4,g_debug_cnt4,g_debug_utccnt_after_sleep ,HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
 #endif
 
 }
@@ -777,9 +777,9 @@ void DeepSleep_Debug_Before()
 	// 计算获取温度所需时间
 	frc_cal_temp = ((frc_temperature_debug_a.FRC_Reg1.SFN_Number * 10 + frc_temperature_debug_a.FRC_Reg0.subframe) * 1920 + frc_temperature_debug_a.FRC_Reg0.countInSubFrame) - ((frc_temperature_debug_b.FRC_Reg1.SFN_Number * 10 + frc_temperature_debug_b.FRC_Reg0.subframe) * 1920 + frc_temperature_debug_b.FRC_Reg0.countInSubFrame) ;
 	
-	xy_printf(0,PLATFORM,WARN_LOG,"LPM_DEEPSLEEP Ps_ullsleeptime_ms:%d,Ps_advance_ms:%d,wakeup_ms:%lld,set_time(%d,%d,%d,%d),callback(%d,%d,%d,%d) test_rc:%d %d RC_SRC:%d,%d", (unsigned long)Ps_Lpminfo.ullsleeptime_ms,(unsigned long)Ps_Lpminfo.deepsleep_advance_ms,dsleep_wakeup_time,gLocalFRC_debug.FRC_Reg1.HFN_Number,gLocalFRC_debug.FRC_Reg1.SFN_Number,gLocalFRC_debug.FRC_Reg0.subframe,gLocalFRC_debug.FRC_Reg0.countInSubFrame,gPhyTimerCallback.callBackFRC.FRC_Reg1.HFN_Number,gPhyTimerCallback.callBackFRC.FRC_Reg1.SFN_Number,gPhyTimerCallback.callBackFRC.FRC_Reg0.subframe,gPhyTimerCallback.callBackFRC.FRC_Reg0.countInSubFrame,  HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT), PRCM_32KClkSrcGet(),HWREGB(BAK_MEM_32K_CLK_SRC));
+	xy_printf(0,PLATFORM,WARN_LOG,"%d%d%lld%d%d%d%d%d%d%d%d%d%d%d%d", (unsigned long)Ps_Lpminfo.ullsleeptime_ms,(unsigned long)Ps_Lpminfo.deepsleep_advance_ms,dsleep_wakeup_time,gLocalFRC_debug.FRC_Reg1.HFN_Number,gLocalFRC_debug.FRC_Reg1.SFN_Number,gLocalFRC_debug.FRC_Reg0.subframe,gLocalFRC_debug.FRC_Reg0.countInSubFrame,gPhyTimerCallback.callBackFRC.FRC_Reg1.HFN_Number,gPhyTimerCallback.callBackFRC.FRC_Reg1.SFN_Number,gPhyTimerCallback.callBackFRC.FRC_Reg0.subframe,gPhyTimerCallback.callBackFRC.FRC_Reg0.countInSubFrame,  HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT), PRCM_32KClkSrcGet(),HWREGB(BAK_MEM_32K_CLK_SRC));
 
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP temperature debug frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) frc3(%d,%d,%d,%d) delta_frc_cnt:%d delatfrc_ms:%d enter_dp_tick:%d", \
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d", \
             frc_temperature_debug_b.FRC_Reg1.HFN_Number, frc_temperature_debug_b.FRC_Reg1.SFN_Number, frc_temperature_debug_b.FRC_Reg0.subframe, frc_temperature_debug_b.FRC_Reg0.countInSubFrame,\
 			frc_temperature_debug_a.FRC_Reg1.HFN_Number, frc_temperature_debug_a.FRC_Reg1.SFN_Number, frc_temperature_debug_a.FRC_Reg0.subframe, frc_temperature_debug_a.FRC_Reg0.countInSubFrame,\
 			frc_sleep_time_debug_b.FRC_Reg1.HFN_Number, frc_sleep_time_debug_b.FRC_Reg1.SFN_Number, frc_sleep_time_debug_b.FRC_Reg0.subframe, frc_sleep_time_debug_b.FRC_Reg0.countInSubFrame,\
@@ -794,26 +794,26 @@ void DeepSleep_Debug_After()
 {
 #if LPM_LOG_DEBUG
 	utc_cal_debug = (g_utccnt_after_sleep_debug - g_lpm_deepsleep_recovery_info->utccnt_before_sleep);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP ps_sleep_type: %d, ps_ulltime_ms: %lld, ps_ullsleeptime_ms: %lld, ps_standby_advance_ms: %d, platform_standby_advance_ms: %d, wakeup_status: %x, wakeup_int: %x, 40004020: %x test_rc:%d %d", Ps_Lpminfo.ucTauEdrxOtherType, Ps_Lpminfo.ulltime_ms, Ps_Lpminfo.ullsleeptime_ms, Ps_Lpminfo.deepsleep_advance_ms, g_platform_deepsleep_advance_ms, g_deepsleep_wakeup_status, g_deepsleep_wakeup_int, g_deepsleep_wakeup_int2,  HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP g_step_phy_cnt: %ld (ms), sleep_time_set: %lld (ms), utc_before: %lld, utc_after: %lld, MCNT: %d, PLL_old: %d, PLL_cur: %d, p_b: %x, p_a: %x, p_b2: %x, p_a2: %x", g_step_phy_cnt / 1920, get_Dsleep_time(), g_lpm_deepsleep_recovery_info->utccnt_before_sleep, g_utccnt_after_sleep_debug, g_mcnt_after_debug, g_pll_divn_old_debug, g_pll_divn_cur_debug, g_pending_before_dp , g_pending_after_dp, g_pending_before_dp2 , g_pending_after_dp2 );
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%lld%lld%d%d%x%x%x%d%d", Ps_Lpminfo.ucTauEdrxOtherType, Ps_Lpminfo.ulltime_ms, Ps_Lpminfo.ullsleeptime_ms, Ps_Lpminfo.deepsleep_advance_ms, g_platform_deepsleep_advance_ms, g_deepsleep_wakeup_status, g_deepsleep_wakeup_int, g_deepsleep_wakeup_int2,  HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+	xy_printf(0,PLATFORM, WARN_LOG, "%ld%lld%lld%lld%d%d%d%x%x%x%x", g_step_phy_cnt / 1920, get_Dsleep_time(), g_lpm_deepsleep_recovery_info->utccnt_before_sleep, g_utccnt_after_sleep_debug, g_mcnt_after_debug, g_pll_divn_old_debug, g_pll_divn_cur_debug, g_pending_before_dp , g_pending_after_dp, g_pending_before_dp2 , g_pending_after_dp2 );
 
 	delta_phy_time_debug = ((g_SFN_Number_after_sleep_debug * 10 + g_subframe_after_sleep_debug) * 1920 + g_countInSubFrame_after_sleep_debug) - (( g_lpm_deepsleep_recovery_info->SFN_Number_before_sleep * 10 + g_lpm_deepsleep_recovery_info->subframe_before_sleep ) * 1920 + g_lpm_deepsleep_recovery_info->countInSubFrame_before_sleep);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP delta_sleep_phy_cnt_cal :%lld, delta_phy_cnt: %d, utc_cal_debug: %lld, %lld,g_freq_32k: %d, last_mcnt_temp: %d, temp_after_sleep: %d, frc_clk_divn:%d",g_step_phy_cnt, delta_phy_time_debug, utc_cal_debug, utc_cal_debug/32, g_freq_32k, gTempera_old, g_tcmcnt_info.temp_after,g_lpm_deepsleep_recovery_info->frc_clk_divn);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP g_step_phy_cnt: %d, cur_utcms: %lld, utccnt_before_sleep: %lld, utccnt_after_sleep: %lld,wakeup_status: %x",(uint32_t)(g_step_phy_cnt/SubFrameCntRld),g_utccnt_after_dp/32,g_lpm_deepsleep_recovery_info->utccnt_before_sleep,g_utccnt_after_dp,AONPRCM->WAKEUP_STATUS );
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) sum:%d frc_callback(%d,%d,%d,%d) sum:%d", g_lpm_deepsleep_recovery_info->HFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->SFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->subframe_before_sleep,g_lpm_deepsleep_recovery_info->countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_frc_aftersleep_sum,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,g_frc_callback_sum);
-	xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP utc_alarm: %x, %x, %x,cur_utcreg:%x, %x, %x,p_b_urc:%x, %x",ggdebug_alarm_cal,ggdebug_alarm_time,UTCClkCntConvert(ggdebug_alarm_cnt),g_debug_cal4,g_debug_time4,UTCClkCntConvert(g_debug_cnt4),g_pending_before_urc,g_pending_before_urc2);
+	xy_printf(0,PLATFORM, WARN_LOG, "%lld%d%lld%lld%d%d%d%d",g_step_phy_cnt, delta_phy_time_debug, utc_cal_debug, utc_cal_debug/32, g_freq_32k, gTempera_old, g_tcmcnt_info.temp_after,g_lpm_deepsleep_recovery_info->frc_clk_divn);
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%lld%lld%lld%x",(uint32_t)(g_step_phy_cnt/SubFrameCntRld),g_utccnt_after_dp/32,g_lpm_deepsleep_recovery_info->utccnt_before_sleep,g_utccnt_after_dp,AONPRCM->WAKEUP_STATUS );
+	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d", g_lpm_deepsleep_recovery_info->HFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->SFN_Number_before_sleep,g_lpm_deepsleep_recovery_info->subframe_before_sleep,g_lpm_deepsleep_recovery_info->countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_frc_aftersleep_sum,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,g_frc_callback_sum);
+	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x",ggdebug_alarm_cal,ggdebug_alarm_time,UTCClkCntConvert(ggdebug_alarm_cnt),g_debug_cal4,g_debug_time4,UTCClkCntConvert(g_debug_cnt4),g_pending_before_urc,g_pending_before_urc2);
 
 #if DEEPSLEEP_ADVANCE_TIME_CALCULTATE	
 #if CP_FAST_RECOVERY_FUNCTION
 		extern volatile uint32_t g_pad[10];
 		extern volatile uint32_t g_pad_index[10];
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP FR alarm(%x, %x) FR_begin(%x, %x) FR_end(%x, %x) exit_critical(%x, %x)", g_db_FR_begin_timer_alarm, g_db_FR_begin_cnt_alarm, g_db_FR_begin_timer, g_db_FR_begin_cnt, g_db_FR_end_timer, g_db_FR_end_cnt, g_exit_critical_timer, g_exit_critical_cnt );
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x", g_db_FR_begin_timer_alarm, g_db_FR_begin_cnt_alarm, g_db_FR_begin_timer, g_db_FR_begin_cnt, g_db_FR_end_timer, g_db_FR_end_cnt, g_exit_critical_timer, g_exit_critical_cnt );
 
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP g_debug_cal_dp:%x, g_debug_time_dp:%x, g_debug_cnt_dp:%x,", g_debug_alarm_cal_dp, g_debug_alarm_time_dp, UTCClkCntConvert(g_debug_alarm_cnt_dp));
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP FR resetore(%x, %x) rf_sido(%x, %x) mpu_protect(%x, %x)",g_db_FR_resetore_timer,g_db_FR_resetore_cnt,g_db_FR_rf_sido_timer,g_db_FR_rf_sido_cnt,g_db_FR_mpu_protect_timer,g_db_FR_mpu_protect_cnt);
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP FR diag_port(%x, %x) at_uart_fast(%x, %x) rf_uart(%x, %x) Sys_Up_URC(%x, %x)", g_db_FR_diag_port_timer,g_db_FR_diag_port_cnt,g_db_FR_at_uart_fast_timer,g_db_FR_at_uart_fast_cnt,g_db_FR_rf_uart_timer,g_db_FR_rf_uart_cnt,g_db_FR_Sys_Up_URC_timer,g_db_FR_Sys_Up_URC_cnt);
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP FR delaylock(%x, %x) user_led(%x, %x) wdt(%x, %x) SFW_CfgCnt(%x, %x)",g_db_FR_xy_delaylock_timer,g_db_FR_xy_delaylock_cnt,g_db_FR_user_led_timer,g_db_FR_user_led_cnt,g_db_FR_wdt_timer,g_db_FR_wdt_cnt,g_db_FR_SFW_CfgCnt_timer,g_db_FR_SFW_CfgCnt_cnt );
-		xy_printf(0,PLATFORM, WARN_LOG, "LPM_DEEPSLEEP FR DeepSleep_Recovery(%x, %x) PHY_Event(%x, %x)", g_db_FR_DeepSleep_Recovery_timer,g_db_FR_DeepSleep_Recovery_cnt,g_db_FR_PHY_Event_timer,g_db_FR_PHY_Event_cnt);
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x", g_debug_alarm_cal_dp, g_debug_alarm_time_dp, UTCClkCntConvert(g_debug_alarm_cnt_dp));
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x",g_db_FR_resetore_timer,g_db_FR_resetore_cnt,g_db_FR_rf_sido_timer,g_db_FR_rf_sido_cnt,g_db_FR_mpu_protect_timer,g_db_FR_mpu_protect_cnt);
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x", g_db_FR_diag_port_timer,g_db_FR_diag_port_cnt,g_db_FR_at_uart_fast_timer,g_db_FR_at_uart_fast_cnt,g_db_FR_rf_uart_timer,g_db_FR_rf_uart_cnt,g_db_FR_Sys_Up_URC_timer,g_db_FR_Sys_Up_URC_cnt);
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x",g_db_FR_xy_delaylock_timer,g_db_FR_xy_delaylock_cnt,g_db_FR_user_led_timer,g_db_FR_user_led_cnt,g_db_FR_wdt_timer,g_db_FR_wdt_cnt,g_db_FR_SFW_CfgCnt_timer,g_db_FR_SFW_CfgCnt_cnt );
+		xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x", g_db_FR_DeepSleep_Recovery_timer,g_db_FR_DeepSleep_Recovery_cnt,g_db_FR_PHY_Event_timer,g_db_FR_PHY_Event_cnt);
 		if(g_if_fast_recovery == 1)
 		{
 			lpm_time_debug();

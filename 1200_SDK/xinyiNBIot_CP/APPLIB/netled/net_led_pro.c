@@ -142,7 +142,7 @@ void net_led_task()
 	{
 		osMessageQueueGet(at_led_q, &rcv_msg, NULL, osWaitForever);
 
-		xy_printf(0,XYAPP, WARN_LOG, "led net is %d\r\n",rcv_msg->msg_id);
+		xy_printf(0,XYAPP, WARN_LOG, "%d",rcv_msg->msg_id);
 
 	
 		switch (rcv_msg->msg_id)

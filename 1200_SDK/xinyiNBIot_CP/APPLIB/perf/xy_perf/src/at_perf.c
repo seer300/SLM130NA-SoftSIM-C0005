@@ -49,7 +49,7 @@ int at_XYPERF_req(char *at_buf, char **prsp_cmd)
 		// ipv4
 		if (!xy_tcpip_v4_is_ok())
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf ps netif ipv4 is not ok!");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			return ATERR_NOT_NET_CONNECT;
 		}
 	}
@@ -58,7 +58,7 @@ int at_XYPERF_req(char *at_buf, char **prsp_cmd)
 		// ipv6
 		if (!xy_tcpip_v6_is_ok())
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "xyperf ps netif ipv6 is not ok!");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			return ATERR_NOT_NET_CONNECT;
 		}
 	}

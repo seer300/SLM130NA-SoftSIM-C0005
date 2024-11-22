@@ -47,7 +47,7 @@ extern uint8_t g_nv_ioldo1_mode;   //ioldo1的电压模式
 当前圈定的代码主要为AT通道和命令处理，以及IPC核间通道消息处理。模组形态仍然是RAM上运行，无特别风险*/
 // BAN_WRITE_FLASH=1
 #ifndef __OPENCPU_FUNC 
-#if BAN_WRITE_FLASH
+#if ((MODULE_VER==0)&&(BAN_WRITE_FLASH!=2))
 #define __OPENCPU_FUNC  __FLASH_FUNC   
 #else
 #define __OPENCPU_FUNC  __RAM_FUNC

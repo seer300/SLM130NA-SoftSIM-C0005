@@ -433,7 +433,10 @@ typedef struct
     unsigned char    ucHpplmnSrhClose:1;                                     //##0##
     unsigned char    ucFollow3gppProtFlg:1;                                  //##0##
     unsigned char    ucPadding7:3;                                           //##0##
-	unsigned char    aucPadding3[409];/* in all :1536 */
+    unsigned char    ucPadding8:4;                                           //##0##
+    unsigned char    ucEhplmnNum:4;                                          //##0##
+    unsigned char    aucEhplmn[15][3];                                       //##0##, format as: 64F01164F012
+    unsigned char    aucPadding3[363];/* in all :1536 */
 }T_NasNvInfo;
 
 

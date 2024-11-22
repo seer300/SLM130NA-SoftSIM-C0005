@@ -652,7 +652,7 @@ int cis_create(char *ip, unsigned int port, int is_bs, char* auth)
 
 	if(is_onenet_task_running(0))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] Onenet is running.....");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_OK;
 	}
 		
@@ -666,14 +666,14 @@ int cis_create(char *ip, unsigned int port, int is_bs, char* auth)
 
 	if(cfg_len == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] Onenet config error");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		return XY_Err_Parameter;
 	}		
 
 	onenet_context_config = (onenet_context_config_t *)find_proper_onenet_context_config(cfg_len, 0, cfg_len);
 	if (onenet_context_config == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] no free onenet_context_configs.");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		if (config != NULL)
 			xy_free(config);
 		return  XY_ERR;
@@ -691,7 +691,7 @@ int cis_create(char *ip, unsigned int port, int is_bs, char* auth)
 
 	contextRef = (onenet_context_reference_t *)get_free_onet_context_ref();
 	if (contextRef == NULL) {
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] no free onenet_context_refs.");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		if (config != NULL)
 			xy_free(config);
 		return XY_ERR;
@@ -700,7 +700,7 @@ int cis_create(char *ip, unsigned int port, int is_bs, char* auth)
 	ret = onet_init(contextRef, onenet_context_config);
 	if(ret != CIS_RET_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] init failed.");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		if (config != NULL)
 			xy_free(config);
 		return XY_ERR;
@@ -940,25 +940,25 @@ int cis_addobj(int objId, int insCount, char* insBitmap, int attrCount, int actC
 	onenet_resume_session();
 
     if (!is_onenet_task_running(0)) {
-        xy_printf(0,XYAPP, WARN_LOG, "[CIS] cis is not running!");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return XY_Err_NotAllowed;
     }
 
 	if(objId<0 || insCount<0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] error:objId(%d),insCount(%d)", objId, insCount);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", objId, insCount);
 		goto param_error;
 	}	
 	
 	if(insCount != (int)strlen(insBitmap))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] error:insBitmap(%s),len(%d)", insBitmap, strlen(insBitmap));
+		xy_printf(0,XYAPP, WARN_LOG, "%s%d", insBitmap, strlen(insBitmap));
 		goto param_error;
 	}	
 
 	if(attrCount<0 || actCount<0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS] error:attrCount(%d),actCount(%d)", attrCount, actCount);
+		xy_printf(0,XYAPP, WARN_LOG, "%d%d", attrCount, actCount);
 		goto param_error;
 	}	
 
@@ -970,7 +970,7 @@ int cis_addobj(int objId, int insCount, char* insBitmap, int attrCount, int actC
 	param.insBitmap = xy_malloc(param.insCount + 1);
 	cis_memcpy(param.insBitmap, insBitmap, param.insCount);
 	param.insBitmap[param.insCount] = '\0';
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS] cis is addobj!");
+	xy_printf(0,XYAPP, WARN_LOG, "");
     osMutexAcquire(g_onenet_mutex, osWaitForever);
     errorcode = onet_mipladdobj_req(onenet_context_refs[0].onenet_context, &param);
     osMutexRelease(g_onenet_mutex);
@@ -1132,7 +1132,7 @@ ackid)
 		uri.resourceId = resId;
 		cis_uri_update(&uri);
 		notifyParam.msgId = xy_get_observeMsgId(onenet_context_refs[0].onenet_context, &uri);
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe mid(%d)", notifyParam.msgId);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", notifyParam.msgId);
 		if(notifyParam.msgId == -1)
 			goto status_error;
 	}
@@ -1148,13 +1148,13 @@ ackid)
 	notifyParam.value = NULL;
 	if(len == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe at value(NULL)");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto param_error;
 	}
 	else
 	{
 		if (XY_OK != xy_get_notify_value(value, &notifyParam)) {
-			xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe get value error");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			goto param_error;
 		}		
 	}
@@ -1166,7 +1166,7 @@ ackid)
 	osMutexAcquire(g_onenet_mutex, osWaitForever);
 	errorcode = onet_miplnotify_req(onenet_context_refs[notifyParam.ref].onenet_context, &notifyParam);
 	osMutexRelease(g_onenet_mutex);
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe errorcode(%d)", errorcode);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", errorcode);
 
 	if (errorcode != CIS_RET_OK && errorcode != COAP_205_CONTENT)
 		goto param_error;
@@ -1269,7 +1269,7 @@ int cis_notify_asyn(int msgId, int objId, int insId, int resId, int valueType, i
 		uri.resourceId = resId;
 		cis_uri_update(&uri);
 		notifyParam.msgId = xy_get_observeMsgId(onenet_context_refs[0].onenet_context, &uri);
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe mid(%d)", notifyParam.msgId);
+		xy_printf(0,XYAPP, WARN_LOG, "%d", notifyParam.msgId);
 		if(notifyParam.msgId == -1)
 			goto status_error;
 	}
@@ -1284,13 +1284,13 @@ int cis_notify_asyn(int msgId, int objId, int insId, int resId, int valueType, i
 
 	if(len == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe at value(NULL)");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		goto param_error;
 	}
 	else
 	{
 		if (XY_OK != xy_get_notify_value(value, &notifyParam)) {
-			xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe get value error");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 			goto param_error;
 		}		
 	}
@@ -1298,7 +1298,7 @@ int cis_notify_asyn(int msgId, int objId, int insId, int resId, int valueType, i
 	osMutexAcquire(g_onenet_mutex, osWaitForever);
 	errorcode = onet_miplnotify_req(onenet_context_refs[notifyParam.ref].onenet_context, &notifyParam);
 	osMutexRelease(g_onenet_mutex);
-	xy_printf(0,XYAPP, WARN_LOG, "[CIS]observe errorcode(%d)", errorcode);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", errorcode);
 
 	if (errorcode != CIS_RET_OK && errorcode != COAP_205_CONTENT)
 		goto param_error;

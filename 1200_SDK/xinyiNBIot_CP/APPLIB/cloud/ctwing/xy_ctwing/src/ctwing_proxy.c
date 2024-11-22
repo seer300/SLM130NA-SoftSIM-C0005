@@ -147,13 +147,13 @@ proxy_config_callback ctlwProxyConfigProc(uint8_t req_type,uint8_t* paramList, u
         
         if(at_parse_param("%d,%47s,%d[1-65535],%d[300-2592000]",paramList, &cloudType, serverIP, &port, &lifetime)!= AT_OK || strlen(serverIP) == 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] parameter parsing failed");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             goto exit;
         }
         
         if(ctlw_cloud_setting(serverIP, port, lifetime, AUTHMODE_SIMPLIFIED) != CTIOT_NB_SUCCESS)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw cloud setting failed");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             goto exit;
         }
 
@@ -161,7 +161,7 @@ proxy_config_callback ctlwProxyConfigProc(uint8_t req_type,uint8_t* paramList, u
 
         if(ctlw_cloud_register(CTLW_PROXY_TIMEOUT) != CTIOT_NB_SUCCESS)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw cloud setting failed");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             ctlw_set_abstract_cloud_flag(0);//注册失败,清除当前注册由抽象云AT发起及维持标记
             goto exit;
         }
@@ -212,17 +212,17 @@ proxy_send_callback ctlwProxySendProc(uint8_t req_type,uint8_t* paramList, uint8
 
         if(at_parse_param("%d(0-2), %d[1-1024], %p[], %d[0|1]", paramList, &dataReqType, &dataLen, &data, &msgType) !=AT_OK)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] parse error\r\n");
+            xy_printf(0,XYAPP, WARN_LOG, "");
             return ret;
         }
         switch (dataReqType)
         {
             case CTLW_PROXY_SEND_DATA:
             {   
-                xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw proxy send");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 if(dataLen == -1 || data == NULL || msgType == -1)
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw proxy send parse error\r\n");
+                    xy_printf(0,XYAPP, WARN_LOG, "");
                     break;
                 }
                 
@@ -230,7 +230,7 @@ proxy_send_callback ctlwProxySendProc(uint8_t req_type,uint8_t* paramList, uint8
 
                 if(ctlw_cloud_send_data(data, sendMode, CTLW_PROXY_TIMEOUT) != CTIOT_NB_SUCCESS)
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw cloud send data error\r\n");
+                    xy_printf(0,XYAPP, WARN_LOG, "");
                     break;
                 }
                 ret = CLOUD_PROXY_SUCCESS;
@@ -238,11 +238,11 @@ proxy_send_callback ctlwProxySendProc(uint8_t req_type,uint8_t* paramList, uint8
             }
             case CTLW_PROXY_UPDATE: //update
             {
-                xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw proxy update");
+                xy_printf(0,XYAPP, WARN_LOG, "");
 
                 if(ctlw_cloud_update(CTLW_PROXY_TIMEOUT) != CTIOT_NB_SUCCESS)
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw cloud send updata error\r\n");
+                    xy_printf(0,XYAPP, WARN_LOG, "");
                     break; 
                 }
                 ret = CLOUD_PROXY_SUCCESS;
@@ -250,11 +250,11 @@ proxy_send_callback ctlwProxySendProc(uint8_t req_type,uint8_t* paramList, uint8
             }
             case CTLW_PROXY_DEREG: //去注册
             {
-                xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw proxy deregister");
+                xy_printf(0,XYAPP, WARN_LOG, "");
                 
                 if(ctlw_cloud_deregister(CTLW_PROXY_TIMEOUT) != CTIOT_NB_SUCCESS)
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "[CTLW_PROXY] ctlw cloud deregister error\r\n");
+                    xy_printf(0,XYAPP, WARN_LOG, "");
                     
                     break; 
                 }

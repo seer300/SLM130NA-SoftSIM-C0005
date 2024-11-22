@@ -333,7 +333,7 @@ static int atiny_fota_downloaded_state_recv_notify_ack(atiny_fota_state_s *thi, 
 	//金卡OPENCPU产品不允许写flash，但FOTA下载容许写，此处用于金卡OPENCPU产品下载完成后保存配置信息，用于FOTA升级重启后自动连云
 	if(Is_OpenCpu_Ver() && cloud_save_file(CDP_CONFIG_NVM_FILE_NAME,(void*)g_cdp_config_data, sizeof(cdp_config_nvm_t)) != XY_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG,"write cdp config data failed\r\n");
+		xy_printf(0,XYAPP, WARN_LOG,"");
 	}
 
 

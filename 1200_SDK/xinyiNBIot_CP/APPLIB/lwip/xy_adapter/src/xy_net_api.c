@@ -192,13 +192,13 @@ bool xy_dns_set2(ip_addr_t *ip_addr, int index, bool save)
     dns_setserver(index, ip_addr);
     if (save)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "dns addr backup for index:%d", index);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", index);
 
         // 写文件系统需一次性写整块内容，故这里先将原本文件系统的内容读出来，根据index修改对应的dns配置，整合后再将整块内容写入文件系统
         if (XY_ERR == cloud_read_file(DNS_SERVER_ADDR_NVM_FILE_NAME, (void *)&dns_default[0], sizeof(ip_addr_t) * DNS_MAX_SERVERS))
         {
             // 这里不允许读文件系统失败的情况，开机后PDP激活前已保证文件系统里有默认dns配置
-            xy_printf(0, XYAPP, WARN_LOG, "dns addr backup for index:%d fail", index);
+            xy_printf(0, XYAPP, WARN_LOG, "%d", index);
         }
 
         dns_default[index] = *ip_addr;
@@ -475,7 +475,7 @@ extern uint8_t g_OOS_flag;
 bool ps_is_oos()
 {
 	if(g_OOS_flag == 1)
-			xy_printf(0,XYAPP, WARN_LOG, "OOS will drop packet!");
+			xy_printf(0,XYAPP, WARN_LOG, "");
 
     return g_OOS_flag;
 }
@@ -487,7 +487,7 @@ uint32_t g_flow_ctl = 0;
 bool is_Uplink_FlowCtl_Open()
 {
 	if(g_flow_ctl == 1)
-		xy_printf(0,XYAPP, WARN_LOG, "uplink flow ctl drop!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	
 	return g_flow_ctl;
 }
@@ -522,23 +522,23 @@ bool xy_IpAddr_Check(char *ipaddr, uint8_t iptype)
     uint32_t ip_len;
     if (ipaddr == NULL || (ip_len = strlen(ipaddr)) == 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "check ip vaild but ipaddr null");
+        xy_printf(0,XYAPP, WARN_LOG, "");
         return 0;
     }
     if (iptype != IPV4_TYPE && iptype != IPV6_TYPE)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "check ip vaild not support type:%d", iptype);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", iptype);
         return 0;
     }
 
     if (iptype == IPV4_TYPE && ip_len >= INET_ADDRSTRLEN)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "check ip vaild v4 addr len overlay:%d", ip_len);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", ip_len);
         return 0;
     }
     if (iptype == IPV6_TYPE && ip_len >= INET6_ADDRSTRLEN)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "check ip vaild v6 addr len overlay:%d", ip_len);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", ip_len);
         return 0;
     }
 
@@ -547,7 +547,7 @@ bool xy_IpAddr_Check(char *ipaddr, uint8_t iptype)
         struct sockaddr_in addr;
         if (inet_pton4(ipaddr, ipaddr + ip_len, &addr.sin_addr) != 1)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "check ip vaild v4 addr[%s] invalid", ipaddr);
+            xy_printf(0,XYAPP, WARN_LOG, "%s", ipaddr);
             return 0;
         }
     }
@@ -556,11 +556,11 @@ bool xy_IpAddr_Check(char *ipaddr, uint8_t iptype)
         struct sockaddr_in6 addr;
         if (inet_pton6(ipaddr, ipaddr + ip_len, &addr.sin6_addr) != 1)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "check ip vaild v6 addr[%s] invalid", ipaddr);
+            xy_printf(0,XYAPP, WARN_LOG, "%s", ipaddr);
             return 0;
         }
     }
-    xy_printf(0,XYAPP, WARN_LOG, "check ip vaild addr[%s] valid", ipaddr);
+    xy_printf(0,XYAPP, WARN_LOG, "%s", ipaddr);
     return 1;
 }
 
@@ -572,7 +572,7 @@ int32_t xy_socket_by_host(const char* host, Sock_IPType type, uint8_t proto, uin
     if (proto != IPPROTO_UDP && proto != IPPROTO_TCP)
         return -1;
 
-    xy_printf(0, XYAPP, WARN_LOG, "socket by host[%s] ip_type:%d,proto:%d,local port:%d", host, type, proto, local_port);
+    xy_printf(0, XYAPP, WARN_LOG, "%s%d%d%d", host, type, proto, local_port);
 
     int32_t fd = -1;
     int32_t dns_ret = -1;
@@ -598,7 +598,7 @@ IPV4_PROCESS:
         {
             hint.ai_family = AF_INET;
             if ((dns_ret = getaddrinfo(host, strPort, &hint, &result)) != 0)
-                xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host getaddrinfo ipv4 err:%d", dns_ret);
+                xy_printf(0,XYAPP, WARN_LOG, "%d", dns_ret);
         }
         // 优先尝试创建IPv4网路的socket，若失败，再尝试创建IPv6网路的socket，若均失败，返回-1
         if ( (Sock_IPv46 == type) && (dns_ret != 0) )
@@ -613,7 +613,7 @@ IPV6_PROCESS:
         {
             hint.ai_family = AF_INET6;
             if ((dns_ret = getaddrinfo(host, strPort, &hint, &result)) != 0)
-                xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host getaddrinfo ipv6 err:%d", dns_ret);
+                xy_printf(0,XYAPP, WARN_LOG, "%d", dns_ret);
         }
         // 优先尝试创建IPv6网路的socket，若失败，再尝试创建IPv4网路的socket，若均失败，返回-1
         if ( (Sock_IPv64 == type) && (dns_ret != 0) )
@@ -651,16 +651,16 @@ IPV6_PROCESS:
 
     if ((fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol)) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host socket create err:%d %d", errno, fd);
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d", errno, fd);
         goto ERROR;
     }
-    xy_printf(0, XYAPP, WARN_LOG, "xy_socket_by_host create succ:%d,%d,%d", result->ai_family, result->ai_socktype, fd);
+    xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", result->ai_family, result->ai_socktype, fd);
     
     //local_port参数为0时，bind过程中由LWIP内部随机分配本地端口号
     //特殊场景，比如drx/edrx唤醒接收下行包时，需要绑定具体的本地端口，否则无法接收到下行数据。
 	if (bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) == -1)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "xy_socket_by_host socket bind err:%d %d", errno, fd);
+        xy_printf(0, XYAPP, WARN_LOG, "%d%d", errno, fd);
         close(fd);
         fd = -1;
         goto ERROR;
@@ -669,7 +669,7 @@ IPV6_PROCESS:
     // 建立TCP连接需要一次connect完成3次握手，对于同一个远端UDP connect能够使用send等接口节省使用sendto等带来的开支
 	if (connect(fd, result->ai_addr, result->ai_addrlen) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host socket connect err:%d %d", errno, fd);
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d", errno, fd);
         close(fd);
         int family = result->ai_family;
         // 这里一定要先释放，因为可能会重走DNS域名解析流程
@@ -698,7 +698,7 @@ int32_t xy_socket_by_host2(const char* host, Sock_IPType type, uint8_t proto, ui
         return -1;
 
 
-    xy_printf(0, XYAPP, WARN_LOG, "socket by host[%s] ip_type:%d,proto:%d,local port:%d", host, type, proto, local_port);
+    xy_printf(0, XYAPP, WARN_LOG, "%s%d%d%d", host, type, proto, local_port);
 
     int32_t fd = -1;
     int32_t dns_ret = -1;
@@ -724,7 +724,7 @@ IPV4_PROCESS:
         {
             hint.ai_family = AF_INET;
             if ((dns_ret = getaddrinfo(host, strPort, &hint, &result)) != 0)
-                xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host getaddrinfo ipv4 err:%d", dns_ret);
+                xy_printf(0,XYAPP, WARN_LOG, "%d", dns_ret);
         }
         // 优先尝试创建IPv4网路的socket，若失败，再尝试创建IPv6网路的socket，若均失败，返回-1
         if ( (Sock_IPv46 == type) && (dns_ret != 0) )
@@ -739,7 +739,7 @@ IPV6_PROCESS:
         {
             hint.ai_family = AF_INET6;
             if ((dns_ret = getaddrinfo(host, strPort, &hint, &result)) != 0)
-                xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host getaddrinfo ipv6 err:%d", dns_ret);
+                xy_printf(0,XYAPP, WARN_LOG, "%d", dns_ret);
         }
         // 优先尝试创建IPv6网路的socket，若失败，再尝试创建IPv4网路的socket，若均失败，返回-1
         if ( (Sock_IPv64 == type) && (dns_ret != 0) )
@@ -777,16 +777,16 @@ IPV6_PROCESS:
 
     if ((fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol)) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "xy_socket_by_host socket create err:%d %d", errno, fd);
+        xy_printf(0,XYAPP, WARN_LOG, "%d%d", errno, fd);
         goto ERROR;
     }
-    xy_printf(0, XYAPP, WARN_LOG, "xy_socket_by_host create succ:%d,%d,%d", result->ai_family, result->ai_socktype, fd);
+    xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", result->ai_family, result->ai_socktype, fd);
     
     //local_port参数为0时，bind过程中由LWIP内部随机分配本地端口号
     //特殊场景，比如drx/edrx唤醒接收下行包时，需要绑定具体的本地端口，否则无法接收到下行数据。
 	if (bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) == -1)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "xy_socket_by_host socket bind err:%d %d", errno, fd);
+        xy_printf(0, XYAPP, WARN_LOG, "%d%d", errno, fd);
         close(fd);
         fd = -1;
         goto ERROR;
@@ -807,7 +807,7 @@ bool xy_socket_local_info(int32_t fd, ip_addr_t *local_ipaddr, uint16_t *local_p
     int sockaddr_len = sizeof(struct sockaddr_storage);
     if (getsockname(fd, (struct sockaddr *)&local_addr, &sockaddr_len) != 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "get sock local addr fail:%d", errno);
+        xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
         return 0;
     }
 

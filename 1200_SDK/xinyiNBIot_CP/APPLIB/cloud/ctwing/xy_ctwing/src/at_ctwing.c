@@ -35,7 +35,7 @@ char *ctlw_at_err_build_info(int err_no, char *file, int line)
 			memcpy(xy_file, file + strlen(file) - 19, 19);
 		else
 			memcpy(xy_file, file, strlen(file));
-		xy_printf(0,XYAPP, WARN_LOG,"+CTLW ERROR:%d,line:%d,file:%s\r\n", err_no, line, xy_file);
+		xy_printf(0,XYAPP, WARN_LOG,"%d%d%s", err_no, line, xy_file);
 	}
 
 	return at_str;

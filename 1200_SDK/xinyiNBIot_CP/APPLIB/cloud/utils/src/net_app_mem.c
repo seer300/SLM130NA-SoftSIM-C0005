@@ -52,14 +52,14 @@ void cloud_bakup_mem_init()
             if(*((uint32_t *)g_cloud_mem_p) == xy_chksum(g_cloud_mem_p + CLOUD_BAKUP_HEAD, CLOUD_CFG_LEN))
             {
                 //校验通过，内存内容有效，正常使用
-                xy_printf(0,PLATFORM,WARN_LOG, "[BAN_WRITE_FLASH]cloud data check success");
+                xy_printf(0,PLATFORM,WARN_LOG, "");
 				memset((g_cloud_mem_p + CLOUD_CFG_LEN),0,(CLOUD_BAKUP_LEN - CLOUD_CFG_LEN));
 				return;
             }
             else
             {
                 //校验失败，内存内容无效
-                xy_printf(0,PLATFORM,WARN_LOG, "[BAN_WRITE_FLASH]cloud data error,clean all");
+                xy_printf(0,PLATFORM,WARN_LOG, "");
                 memset(g_cloud_mem_p,0,CLOUD_BAKUP_LEN);
             }
         }
@@ -77,7 +77,7 @@ void SaveCloudCfgByAP(void)//一旦配置文件发生过变化，就需要进行
         if(memcmp(tmp, g_cloud_mem_p + CLOUD_BAKUP_HEAD, CLOUD_CFG_LEN) == 0)       //配置文件内容无变化不需要写flash
         {
             xy_free(tmp);
-            xy_printf(0,PLATFORM,WARN_LOG, "[BAN_WRITE_FLASH]cloud cfg data no change");
+            xy_printf(0,PLATFORM,WARN_LOG, "");
             return;
         }
 
@@ -86,7 +86,7 @@ void SaveCloudCfgByAP(void)//一旦配置文件发生过变化，就需要进行
 
         whether_in_list = 1;
         lpm_nv_write_buff_add((uint32_t)Address_Translation_CP_To_AP(FS_FLASH_BASE), g_cloud_mem_p, CLOUD_FLASH_SAVE_LEN);
-        xy_printf(0,PLATFORM,WARN_LOG, "[BAN_WRITE_FLASH]insert cloud data for AP flash write");
+        xy_printf(0,PLATFORM,WARN_LOG, "");
     }
 }
 

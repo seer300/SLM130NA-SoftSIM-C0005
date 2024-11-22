@@ -1216,7 +1216,7 @@ void registration_step(st_context_t * contextP,
                 }
 
                 interval = lasttime + lifetime - currentTime;   			
-                xy_printf(0,XYAPP, WARN_LOG, "[CIS]time %d,%d",interval,currentTime);
+                xy_printf(0,XYAPP, WARN_LOG, "%d%d",interval,currentTime);
 
                 if(interval <= 0)
                 {

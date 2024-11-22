@@ -63,7 +63,7 @@ time_t atiny_gettime_s(time_t *p)
 	(void) p;
 
     uint32_t t = cloud_gettime_s();
-    xy_printf(0,XYAPP, WARN_LOG, "[king][atiny_gettime_s]%d", t);
+    xy_printf(0,XYAPP, WARN_LOG, "%d", t);
     return t;
 }
 

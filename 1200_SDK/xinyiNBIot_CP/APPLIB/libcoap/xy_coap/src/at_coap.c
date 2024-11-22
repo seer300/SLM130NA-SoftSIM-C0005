@@ -42,7 +42,7 @@ int g_stop_recv_packet_flag = 0;
  *******************************************************************************************/
 void coap_recv_packet_task()
 {
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] recv packet thread begin\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
     //wait PDP active
     if(!xy_tcpip_is_ok())
         xy_assert(0);
@@ -52,7 +52,7 @@ void coap_recv_packet_task()
 	g_coaprecvpacket_handle = NULL;
 	osThreadExit();
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] recv packet thread end\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 }
 
 /*******************************************************************************************
@@ -89,7 +89,7 @@ int at_COAPCREATE_req(char *at_buf, char **prsp_cmd)
 	memset(remote_ip, 0, strlen(at_buf));
 	int ret = AT_END;
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CREATE BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type != AT_CMD_REQ)
     {
@@ -118,7 +118,7 @@ int at_COAPCREATE_req(char *at_buf, char **prsp_cmd)
     }
 
     coap_task_create();
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CREATE END\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
 ERR_PROC:
     if(remote_ip)
@@ -141,7 +141,7 @@ int at_COAPDEL_req(char *at_buf, char **prsp_cmd)
 
     (void) at_buf;
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] DEL BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type != AT_CMD_ACTIVE)
     {
@@ -174,7 +174,7 @@ int at_COAPDEL_req(char *at_buf, char **prsp_cmd)
     coapClientCfg.coap_client = NULL;
     g_stop_recv_packet_flag = 0;
 	memset(g_coap_serverip,0,20);
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] DEL END\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 ERR_PROC:
 
     return AT_END;
@@ -197,7 +197,7 @@ int at_COAPHEAD_req(char *at_buf, char **prsp_cmd)
     token = xy_malloc(strlen(at_buf));
 	memset(token, 0, strlen(at_buf));
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG HEAD BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type != AT_CMD_REQ)
     {
@@ -224,7 +224,7 @@ int at_COAPHEAD_req(char *at_buf, char **prsp_cmd)
 
     xy_config_coap_head(msgid,token,tkl);
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG HEAD END\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     xy_free(token);
     return AT_END;
@@ -263,7 +263,7 @@ int at_COAPOPTION_req(char *at_buf, char **prsp_cmd)
     char *format = NULL;
     // void *p[] = {&opt_count};
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG OPTION BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type == AT_CMD_REQ) {
 
@@ -280,13 +280,13 @@ int at_COAPOPTION_req(char *at_buf, char **prsp_cmd)
 
         format = xy_malloc(opt_count*strlen(",%d,%s,"));
 		memset(format, 0x00, opt_count*strlen(",%d,%s,"));
-        xy_printf(0,XYAPP, WARN_LOG,"[COAP] opt_count = %d\n",opt_count);
+        xy_printf(0,XYAPP, WARN_LOG,"%d",opt_count);
         CoapOptionData option[opt_count];
         memset (&option,0,sizeof(CoapOptionData)*opt_count);
         form = format;
         for(i=0;i <2*opt_count;i+=2)
         {
-            xy_printf(0,XYAPP, WARN_LOG,"[COAP] i = %d",i);
+            xy_printf(0,XYAPP, WARN_LOG,"%d",i);
             option[i/2].optValue = xy_malloc(strlen(at_buf));
 
             strcat(form, ",%d,%s");
@@ -314,7 +314,7 @@ int at_COAPOPTION_req(char *at_buf, char **prsp_cmd)
             }
         }
 
-        xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG OPTION END\n");
+        xy_printf(0,XYAPP, WARN_LOG,"");
 
 ERR_PROC:
         for(i=0;i <opt_count;i++)
@@ -357,7 +357,7 @@ int at_COAPSEND_req(char *at_buf, char **prsp_cmd)
     char *type   = NULL;
     char *data   = NULL;
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] SEND BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type != AT_CMD_REQ)
     {
@@ -404,7 +404,7 @@ int at_COAPSEND_req(char *at_buf, char **prsp_cmd)
             goto ERR_PROC;
         }
         tans_data[data_len]= '\0';
-        xy_printf(0,XYAPP, WARN_LOG,"[COAP] tans_data = %d,%s\n",tans_data,tans_data);
+        xy_printf(0,XYAPP, WARN_LOG,"%d%s",tans_data,tans_data);
     }
 
     if (0 != xy_coap_asy_send(coapClientCfg.coap_client, type,method, tans_data,data_len))
@@ -413,7 +413,7 @@ int at_COAPSEND_req(char *at_buf, char **prsp_cmd)
         goto ERR_PROC;
     }
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] SEND END\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
 ERR_PROC:
     if(method)
@@ -443,7 +443,7 @@ int at_QCOAPCFG_req(char *at_buf, char **prsp_cmd)
     char* showStr = xy_malloc(strlen(at_buf));
 	memset(showStr, 0, strlen(at_buf));
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type == AT_CMD_REQ)
     {
@@ -481,12 +481,12 @@ int at_QCOAPCFG_req(char *at_buf, char **prsp_cmd)
     }
     else if(g_req_type == AT_CMD_QUERY)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG AT_CMD_QUERY\n");
+        xy_printf(0,XYAPP, WARN_LOG,"");
     }
 #if (AT_CUT!=1)
     else if(g_req_type == AT_CMD_TEST)
     {
-        xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG AT_CMD_TEST\n");
+        xy_printf(0,XYAPP, WARN_LOG,"");
     }
 #endif
     else
@@ -494,7 +494,7 @@ int at_QCOAPCFG_req(char *at_buf, char **prsp_cmd)
 
     if(showStr)
         xy_free(showStr);
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG END\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
     return AT_END;
 
 PRAR_ERR_PROC:
@@ -520,7 +520,7 @@ int at_QCOAPADDRES_req(char *at_buf, char **prsp_cmd)
     coap_resource_t *coap_resource = NULL;
 	memset(resource, 0, strlen(at_buf));
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG RES BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type == AT_CMD_REQ)
     {
@@ -540,7 +540,7 @@ int at_QCOAPADDRES_req(char *at_buf, char **prsp_cmd)
 	    coap_add_attr(coap_resource, coap_make_str_const(resource), coap_make_str_const(resource), 0);
 	    coap_add_resource(coapClientCfg.coap_client, coap_resource);
 
-	    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG RES END\n");
+	    xy_printf(0,XYAPP, WARN_LOG,"");
 		
     }
 #if (AT_CUT!=1)
@@ -648,7 +648,7 @@ int at_QCOAPHEAD_req(char *at_buf, char **prsp_cmd)
     char * tokenStr = NULL;
 	memset(token, 0, strlen(at_buf));
 
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG HEAD BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type == AT_CMD_REQ) {
 
@@ -720,7 +720,7 @@ int at_QCOAPHEAD_req(char *at_buf, char **prsp_cmd)
 	
 	   xy_config_coap_head(msgid,tokenStr,tkl);
 	
-	   xy_printf(0,XYAPP, WARN_LOG,"[COAP] CONFIG HEAD END\n");
+	   xy_printf(0,XYAPP, WARN_LOG,"");
 
 	}
 #if (AT_CUT!=1)
@@ -765,7 +765,7 @@ int at_QCOAPSEND_req(char *at_buf, char **prsp_cmd)
     char *remote_ip = NULL;
 
 	
-    xy_printf(0,XYAPP, WARN_LOG,"[COAP] SEND BEGIN\n");
+    xy_printf(0,XYAPP, WARN_LOG,"");
 
     if(g_req_type == AT_CMD_REQ) {
 		
@@ -832,7 +832,7 @@ int at_QCOAPSEND_req(char *at_buf, char **prsp_cmd)
            goto ERR_PROC;
         }
 	
-	   xy_printf(0,XYAPP, WARN_LOG,"[COAP] SEND END\n");
+	   xy_printf(0,XYAPP, WARN_LOG,"");
 	}
 #if (AT_CUT!=1)
 	else if(g_req_type == AT_CMD_TEST) {

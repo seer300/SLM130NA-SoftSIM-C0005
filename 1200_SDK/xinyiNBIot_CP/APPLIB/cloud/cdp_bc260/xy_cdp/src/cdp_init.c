@@ -38,7 +38,7 @@ bool cdp_storage_uicc_isvalid()
 
 	int uicc_type = 0;
 	xy_get_UICC_TYPE(&uicc_type);
-	xy_printf(0,XYAPP, WARN_LOG, "uicc_type:%d", uicc_type);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", uicc_type);
 
 	if((0xFFFF+1) == uicc_type)
 		return 0;

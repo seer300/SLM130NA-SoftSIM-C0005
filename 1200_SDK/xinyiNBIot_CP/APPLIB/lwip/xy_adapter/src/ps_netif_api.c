@@ -89,7 +89,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 		dst.addr = *((unsigned int *)(data + 16));
 		inet_ntoa_r(src.addr, ip_src_str, 16);
 		inet_ntoa_r(dst.addr, ip_dst_str, 16);
-		xy_printf(0,XYAPP, WARN_LOG, "ip packet info: total_len %u, id %u, protocol %d, src ip %s, dst ip %s, len %u", total_len, id, protocol, ip_src_str, ip_dst_str, len);
+		xy_printf(0,XYAPP, WARN_LOG, "%u%u%d%s%s%u", total_len, id, protocol, ip_src_str, ip_dst_str, len);
 		if (total_len != len)
 		{
 			return;
@@ -99,7 +99,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 		{
 			sub_header_len = 8;
 			data_len = total_len - ip_header_len - sub_header_len;
-			xy_printf(0,XYAPP, WARN_LOG, "ip packet info: icmp, %s, from %s to %s, data len %u", link_str, ip_src_str, ip_dst_str, data_len);
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%s%u", link_str, ip_src_str, ip_dst_str, data_len);
 		}
 		else if (protocol == IPPROTO_TCP) // tcp
 		{
@@ -130,8 +130,8 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 			{
 				strcat(tcp_flags_str, "F"); // FIN
 			}
-			xy_printf(0,XYAPP, WARN_LOG, "ip packet info: tcp, %s, from %s:%d to %s:%d", link_str, ip_src_str, src_port, ip_dst_str, dst_port);
-			xy_printf(0,XYAPP, WARN_LOG, "ip packet info: seqno %u, ackno %u, flags %s, data len %u", seqno, ackno, tcp_flags_str, data_len);
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%s%d", link_str, ip_src_str, src_port, ip_dst_str, dst_port);
+			xy_printf(0,XYAPP, WARN_LOG, "%u%u%s%u", seqno, ackno, tcp_flags_str, data_len);
 		}
 		else if (protocol == IPPROTO_UDP) // udp
 		{
@@ -139,7 +139,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 			dst_port = lwip_ntohs(*((unsigned short *)(cur + 2)));
 			sub_header_len = 8;
 			data_len = total_len - ip_header_len - sub_header_len;
-			xy_printf(0,XYAPP, WARN_LOG, "ip packet info: udp, %s, from %s:%d to %s:%d, data len %u",
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%s%d%u",
 						  link_str, ip_src_str, src_port, ip_dst_str, dst_port, data_len);
 		}
 	}
@@ -155,7 +155,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 		memcpy(dst.addr, (unsigned char *)(data + 24), 16);
 		inet6_ntoa_r(src.addr, ip_src_str, 40);
 		inet6_ntoa_r(dst.addr, ip_dst_str, 40);
-		xy_printf(0,XYAPP, WARN_LOG, "ip6 packet info: total_len %u, protocol %d, src ip %s, dst ip %s, len %u", payload_len, protocol, ip_src_str, ip_dst_str, len);
+		xy_printf(0,XYAPP, WARN_LOG, "%u%d%s%s%u", payload_len, protocol, ip_src_str, ip_dst_str, len);
 		if (payload_len + 40 != len)
 		{
 			return;
@@ -165,7 +165,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 		{
 			sub_header_len = 8;
 			data_len = payload_len - sub_header_len;
-			xy_printf(0,XYAPP, WARN_LOG, "ip6 packet info: icmp6, %s, from %s to %s, data len %u", link_str, ip_src_str, ip_dst_str, data_len);
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%s%u", link_str, ip_src_str, ip_dst_str, data_len);
 		}
 		else if (protocol == IPPROTO_UDP)
 		{
@@ -173,7 +173,7 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 			dst_port = lwip_ntohs(*((unsigned short *)(cur + 2)));
 			sub_header_len = 8;
 			data_len = payload_len - sub_header_len;
-			xy_printf(0,XYAPP, WARN_LOG, "ip6 packet info: udp, %s, from %s:%d to %s:%d, data len %u",
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%s%d%u",
 						  link_str, ip_src_str, src_port, ip_dst_str, dst_port, data_len);
 		}
 		else if (protocol == IPPROTO_TCP)
@@ -205,8 +205,8 @@ void ip_packet_information_print(unsigned char *data, unsigned short len, char i
 			{
 				strcat(tcp_flags_str, "F"); // FIN
 			}
-			xy_printf(0,XYAPP, WARN_LOG, "ip6 packet info: tcp, %s, from %s:%d to %s:%d", link_str, ip_src_str, src_port, ip_dst_str, dst_port);
-			xy_printf(0,XYAPP, WARN_LOG, "ip6 packet info: seqno %u, ackno %u, flags %s, data len %u", seqno, ackno, tcp_flags_str, data_len);			
+			xy_printf(0,XYAPP, WARN_LOG, "%s%s%d%s%d", link_str, ip_src_str, src_port, ip_dst_str, dst_port);
+			xy_printf(0,XYAPP, WARN_LOG, "%u%u%s%u", seqno, ackno, tcp_flags_str, data_len);			
 		}
 	}
 }
@@ -251,7 +251,7 @@ int send_ps_packet_to_tcpip(void *data, unsigned short len, unsigned char cid)
 	err = ps_temp->ps_eth->input(p, ps_temp->ps_eth);
 	if (err != ERR_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "send ps packet to tcpip ERR!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 		pbuf_free(p); //tcpip_input的返回,需要手动释放pbuf
 		return XY_ERR;
 	}
@@ -263,7 +263,7 @@ int send_packet_to_user(unsigned char cid, int len, char *data)
 	/* 芯翼内部灌包测试使用，开启后平台不处理下行数据 */
 	if (g_rate_test == 1)
 		return 0;
-	xy_printf(0, XYAPP, WARN_LOG, "send_packet_to_proxy");
+	xy_printf(0, XYAPP, WARN_LOG, "");
 	proxy_downlink_data_t downlink_data = {0};
 	downlink_data.cid = cid;
 	downlink_data.len = len;
@@ -271,7 +271,7 @@ int send_packet_to_user(unsigned char cid, int len, char *data)
 
 	if (send_msg_2_proxy(PROXY_MSG_IPDATA, &downlink_data, sizeof(proxy_downlink_data_t)) == 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "ipdata proxy queue full, drop!");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		xy_free(data);
 	}
 	return 1;
@@ -293,7 +293,7 @@ err_t send_ip_packet_to_ps_net(struct netif *netif, struct pbuf *p)
 		uint16_t offset_to = 0;
 		user_ipdata = (void *)xy_malloc(pos_offset);
 		memset(user_ipdata, 0, pos_offset);
-		xy_printf(0,XYAPP, WARN_LOG, "ip data write to ps,mem addr=0x%X", user_ipdata);
+		xy_printf(0,XYAPP, WARN_LOG, "%X", user_ipdata);
 		do
 		{
 			if (q->soc_id >= 0 && q->soc_id < MEMP_NUM_NETCONN)
@@ -309,7 +309,7 @@ err_t send_ip_packet_to_ps_net(struct netif *netif, struct pbuf *p)
 		ps_ipdata_info.rai = RAI_REL_UP;
 		ps_ipdata_info.cid = 0xFD;
 		g_null_udp_rai = 0;
-		xy_printf(0, XYAPP, WARN_LOG, "g_null_udp_rai: %d,cid: %d", g_null_udp_rai, ps_ipdata_info.cid);
+		xy_printf(0, XYAPP, WARN_LOG, "%d%d", g_null_udp_rai, ps_ipdata_info.cid);
 	}
 	else if(udp_seq_id != -1 && g_udp_send_rai[udp_seq_id] != RAI_NULL)
 	{
@@ -322,10 +322,10 @@ err_t send_ip_packet_to_ps_net(struct netif *netif, struct pbuf *p)
 		ps_ipdata_info.cid = g_working_cid;
 	}
 
-	// xy_printf(0, XYAPP, WARN_LOG, "udp_seq_id=%d, rai=%d", udp_seq_id, g_udp_send_rai[udp_seq_id]);
+	// xy_printf(0, XYAPP, WARN_LOG, "%d%d", udp_seq_id, g_udp_send_rai[udp_seq_id]);
 	if (udp_seq_id != -1)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "g_udp_send_seq=%d,rai=%d", g_udp_send_seq[udp_seq_id], g_udp_send_rai[udp_seq_id]);
+		xy_printf(0, XYAPP, WARN_LOG, "%d%d", g_udp_send_seq[udp_seq_id], g_udp_send_rai[udp_seq_id]);
 	}
 	ps_ipdata_info.data_type = 0;
 	ps_ipdata_info.data_len = p->tot_len;
@@ -360,7 +360,7 @@ END:
 void proc_downlink_packet(proxy_downlink_data_t* downlink_data)
 {
 	xy_assert(downlink_data != NULL);
-	xy_printf(0,XYAPP, WARN_LOG, "recv ipdata from nas!!");
+	xy_printf(0,XYAPP, WARN_LOG, "");
 
 	unsigned char cid = downlink_data->cid;
 	int len = downlink_data->len;
@@ -368,7 +368,7 @@ void proc_downlink_packet(proxy_downlink_data_t* downlink_data)
 
 	if (is_sleep_locked(LPM_DEEPSLEEP) == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "worklock have free,but recv downlink packet!!!");
+		xy_printf(0,XYAPP, WARN_LOG, "");
 	}
 
 	ip_packet_information_print(rcv_data, len, 1);
@@ -378,7 +378,7 @@ void proc_downlink_packet(proxy_downlink_data_t* downlink_data)
 #endif
 
 	send_ps_packet_to_tcpip(rcv_data, len, cid);
-	xy_printf(0,XYAPP, WARN_LOG, "send ps packet to tcpip len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "%d", len);
 }
 
 err_t netif_ps_output_ipv4(struct netif *netif, struct pbuf *p, const ip4_addr_t *ipaddr)
@@ -402,16 +402,16 @@ static uint16_t ps_netif_get_mtu()
 	if (g_working_cid != INVALID_CID && xy_get_ipv4_mtu(g_working_cid, &ps_mtu) == ATC_AP_TRUE && ps_mtu > 0)
 	{
 		mtu = ps_mtu;
-		xy_printf(0, XYAPP, WARN_LOG, "get mtu val from ps:%d", mtu);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", mtu);
 	}
 	else if (g_softap_fac_nv->mtu)
 	{
 		mtu = g_softap_fac_nv->mtu;
-		xy_printf(0, XYAPP, WARN_LOG, "get mtu val from facnv:%d", mtu);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", mtu);
 	}
 	else
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "get mtu val from defconfig:%d", mtu);
+		xy_printf(0, XYAPP, WARN_LOG, "%d", mtu);
 	}
 	return mtu;
 }
@@ -580,7 +580,7 @@ void netif_status_callback_proc(struct netif *netif)
 			/* IPv4 Only */
 			s_Netif_IpType = IPV4_TYPE;
 			ipaddr_ntoa_r(netif_ip_addr4(netif), ipaddr, XY_IPADDR_STRLEN_MAX);
-			xy_printf(0, XYAPP, WARN_LOG, "[netif cb]only ipv4 and addr:%s[0x%X]", ipaddr, g_softap_var_nv->ipv4_addr);
+			xy_printf(0, XYAPP, WARN_LOG, "%s%X", ipaddr, g_softap_var_nv->ipv4_addr);
 			if (g_softap_var_nv->ipv4_addr != netif_ip4_addr(netif)->addr)
 			{
 				psNetifEventInd(EVENT_PSNETIF_IPV4_VALID);
@@ -591,7 +591,7 @@ void netif_status_callback_proc(struct netif *netif)
 			/* IPv6 Only */
 			s_Netif_IpType = IPV6_TYPE;
 			ipaddr_ntoa_r(netif_ip_addr6(netif, 1), ipaddr, XY_IPADDR_STRLEN_MAX);
-			xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv6 only and addr:%s[0x%X%X]", ipaddr, g_softap_var_nv->ipv6_addr[14], g_softap_var_nv->ipv6_addr[15]);
+			xy_printf(0, XYAPP, WARN_LOG, "%s%X%X", ipaddr, g_softap_var_nv->ipv6_addr[14], g_softap_var_nv->ipv6_addr[15]);
 			if (memcmp(g_softap_var_nv->ipv6_addr, netif_ip6_addr(netif, 1), sizeof(g_softap_var_nv->ipv6_addr)))
 			{
 				psNetifEventInd(EVENT_PSNETIF_IPV6_VALID);
@@ -603,7 +603,7 @@ void netif_status_callback_proc(struct netif *netif)
 			s_Netif_IpType = IPV46_TYPE;
 			ipaddr_ntoa_r(netif_ip_addr4(netif), ipaddr, XY_IPADDR_STRLEN_MAX);
 			ipaddr_ntoa_r(netif_ip_addr6(netif, 1), ipaddr1, XY_IPADDR_STRLEN_MAX);
-			xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv4v6 valid, ipv4:%s[0x%X],ipv6:%s[0x%X%X]", ipaddr, g_softap_var_nv->ipv4_addr, ipaddr1, g_softap_var_nv->ipv6_addr[14], g_softap_var_nv->ipv6_addr[15]);
+			xy_printf(0, XYAPP, WARN_LOG, "%s%X%s%X%X", ipaddr, g_softap_var_nv->ipv4_addr, ipaddr1, g_softap_var_nv->ipv6_addr[14], g_softap_var_nv->ipv6_addr[15]);
 			if ( (g_softap_var_nv->ipv4_addr != netif_ip4_addr(netif)->addr) || memcmp(g_softap_var_nv->ipv6_addr, netif_ip6_addr(netif, 1), sizeof(g_softap_var_nv->ipv6_addr)) )
 			{			
 				psNetifEventInd(EVENT_PSNETIF_IPV4V6_VALID);
@@ -623,14 +623,14 @@ void netif_status_callback_proc(struct netif *netif)
 				{
 					//发送rs包超时，上报无可用ip地址消息
 					s_Netif_IpType = IPV6PREPARING_TYPE;
-					xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv6 only,but rs send timeout");
+					xy_printf(0, XYAPP, WARN_LOG, "");
 					psNetifEventInd(EVENT_PSNETIF_INVALID);
 				}
 				else
 				{
 					s_Netif_IpType = IPV4_IPV6PREPARING_TYPE;
 					ipaddr_ntoa_r(netif_ip_addr4(netif), ipaddr, XY_IPADDR_STRLEN_MAX);
-					xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv4v6, but rs send timeout, use ipv4:%s[0x%X]", ipaddr, g_softap_var_nv->ipv4_addr);
+					xy_printf(0, XYAPP, WARN_LOG, "%s%X", ipaddr, g_softap_var_nv->ipv4_addr);
 					if (g_softap_var_nv->ipv4_addr != netif_ip4_addr(netif)->addr)
 					{
 						psNetifEventInd(EVENT_PSNETIF_IPV4_VALID);
@@ -643,12 +643,12 @@ void netif_status_callback_proc(struct netif *netif)
 				{
 					//发送rs包超时，上报无可用ip地址消息
 					s_Netif_IpType = IPV6PREPARING_TYPE;
-					xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv6 only, ipv6 addr preparing");
+					xy_printf(0, XYAPP, WARN_LOG, "");
 				}
 				else
 				{
 					s_Netif_IpType = IPV4_IPV6PREPARING_TYPE;
-					xy_printf(0, XYAPP, WARN_LOG, "[netif cb]ipv4v6, ipv6 addr preparing");
+					xy_printf(0, XYAPP, WARN_LOG, "");
 				}
 			}
 		}
@@ -679,7 +679,7 @@ void netif_status_callback_proc(struct netif *netif)
 		sys_untimeout(nd6_ra_timeout_handler, netif);
 		s_Netif_IpType = IP_TYPE_INVALID;
 		memset(g_softap_var_nv->ipv6_addr, 0, sizeof(ip6_addr_t));
-		xy_printf(0, XYAPP, WARN_LOG, "[netif cb]netif down");
+		xy_printf(0, XYAPP, WARN_LOG, "");
 		psNetifEventInd(EVENT_PSNETIF_INVALID);
 	}
 }
@@ -712,7 +712,7 @@ int ps_netif_deactivate(uint8_t cid)
 	struct ps_netif *netif_tmp = find_netif_by_cid(cid);
 	if (netif_tmp == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "deactive cid:%u pdp fail", cid);
+		xy_printf(0,XYAPP, WARN_LOG, "%u", cid);
 		return XY_ERR;
 	}
 
@@ -770,7 +770,7 @@ void user_dns_config(ip_addr_t *dns_ipaddr, uint8_t ip_type)
     if (XY_ERR == cloud_read_file(DNS_SERVER_ADDR_NVM_FILE_NAME, (void *)&dns_default[0], sizeof(ip_addr_t) * DNS_MAX_SERVERS))
     {
         // 这里需保证保证文件系统里有默认dns配置
-		xy_printf(0, PLATFORM, WARN_LOG, "[user_dns_config]nvm dns read fail");
+		xy_printf(0, PLATFORM, WARN_LOG, "");
 		if (ipaddr_aton(XY_DEFAULT_V4_PRIDNS, &dns_default[DEFAULT_V4_PRIDNS_INDEX]))
 			dns_setserver(DEFAULT_V4_PRIDNS_INDEX, &dns_default[DEFAULT_V4_PRIDNS_INDEX]);
 
@@ -785,7 +785,7 @@ void user_dns_config(ip_addr_t *dns_ipaddr, uint8_t ip_type)
     }
 	else
 	{
-		xy_printf(0, PLATFORM, WARN_LOG, "[user_dns_config]nvm dns read ok");
+		xy_printf(0, PLATFORM, WARN_LOG, "");
 	}
 
 	/* OPENCPU文件系统读取无效，直接根据协议栈上报及代码默认写死的dns进行配置 */
