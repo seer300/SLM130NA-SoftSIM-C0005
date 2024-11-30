@@ -42,7 +42,7 @@ static bool send_null_udp_paket(char *remote_ip,unsigned short remote_port)
 
 	if (s < 0)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "");
+		xy_printf(0, XYAPP, WARN_LOG, "xyari create null udp socket fail");
 		return false;
 	}
 
@@ -51,7 +51,7 @@ static bool send_null_udp_paket(char *remote_ip,unsigned short remote_port)
 	if(1 != inet_aton(remote_ip, &remote_sockaddr.sin_addr))
 	{
 		close(s);
-		xy_printf(0, XYAPP, WARN_LOG, "");
+		xy_printf(0, XYAPP, WARN_LOG, "xyari create null udp socket fail");
 		return false;
 	}
 	

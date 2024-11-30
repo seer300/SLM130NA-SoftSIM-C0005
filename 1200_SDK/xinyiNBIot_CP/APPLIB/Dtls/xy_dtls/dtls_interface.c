@@ -17,7 +17,7 @@
 
 static void dtls_debug(void *ctx, int level, const char *file, int line, const char *str)
 {
-	xy_printf(0, XYAPP, WARN_LOG, "%d%s%d%s", \
+	xy_printf(0, XYAPP, WARN_LOG, "[MBEDTLS][%d:%s:%d] %s\r\n", \
 		level, __FILE__, __LINE__, str);
 }
 
