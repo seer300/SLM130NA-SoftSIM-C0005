@@ -16,6 +16,8 @@ goto:success
     goto :eof
 
 :success
+    @REM 编译成功 自动执行cp_AllbinsF.bat
+    call cp_AllbinsF.bat
     exit /B 0
 
 :error

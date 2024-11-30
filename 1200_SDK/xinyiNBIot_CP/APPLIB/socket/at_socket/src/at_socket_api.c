@@ -413,8 +413,8 @@ void socket_timer_calback(void)
 #endif
 
     if (g_socket_timeout_status == SOCK_TCP_CTL_TIMEOUT) {
-        socket_context_t* ctx = g_socket_ctx[g_socket_id];
-        close(ctx->fd);
+        // socket_context_t* ctx = g_socket_ctx[g_socket_id];
+        socket_close(g_socket_id);
     } else if (g_socket_timeout_status == SOCK_UDP_CTL_TIMEOUT) {
         char *report_buf = xy_malloc(32);
         

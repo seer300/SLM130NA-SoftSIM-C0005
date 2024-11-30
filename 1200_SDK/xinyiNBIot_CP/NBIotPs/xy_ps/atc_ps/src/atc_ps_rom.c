@@ -327,7 +327,7 @@ const ST_ATC_COMMAND_ANAL_TABLE ATC_Plus_CommandTable[] =
 #endif
 //
     { {(unsigned char *)"+CPWD"      },    ATC_CPWD_LNB_Command           },
-    { {(unsigned char *)"+CPIN"      },    ATC_CPIN_LNB_Command           },
+    // { {(unsigned char *)"+CPIN"      },    ATC_CPIN_LNB_Command           },
     { {(unsigned char *)"+CLCK"      },    ATC_CLCK_LNB_Command           },
     //{ (unsigned char *)"+NRB"        ,   ATC_NRB_LNB_Command            },
     { {(unsigned char *)"+NUESTATS"   },   ATC_NUESTATS_LNB_Command       },

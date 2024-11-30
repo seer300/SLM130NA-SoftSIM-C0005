@@ -1,11 +1,15 @@
+/** 
+* @file     ss_fs.c
+* @date     2024-06-25
+* @author   Onomondo
+* @brief    filesystem wrapper of the xy platform in accordance to onomondo-uicc expectations
+*/
+
 #include "xy_fs.h"
 #include "xy_system.h"
-
 #include "onomondo/softsim/fs.h"
 
 #define SOFTSIM_DISK_TYPE FS_DEFAULT
-// #define SOFTSIM_DISK_TYPE FS_USER // Tested... Not working as expected.
-
 
 ss_FILE ss_fopen(char *path, char *mode)
 {
@@ -38,7 +42,7 @@ size_t ss_fwrite(const void *prt, size_t size, size_t count, ss_FILE f)
     if (bytes < 0)
         return 0;
     
-    return bytes; // might be required to device result by size.
+    return bytes;
 };
 
 
