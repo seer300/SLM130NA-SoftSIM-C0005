@@ -420,7 +420,7 @@ void StandBy_Debug_Before()
 	uint64_t ullUsrAppExpSleepTime_ms = 0;
 	ullUsrAppExpSleepTime_ms = LPM_GetExpectedIdleTick(READY_TO_STANDBY);
 
-	xy_printf(0,PLATFORM,WARN_LOG,"%d%d%lld", (unsigned long)Ps_Lpminfo.ullsleeptime_ms,(unsigned long)Ps_Lpminfo.standby_advance_ms,ullUsrAppExpSleepTime_ms);
+	xy_printf(0,PLATFORM,WARN_LOG,"LPM_STANDBY Ps_ullsleeptime_ms:%d,Ps_advance_ms:%d,ullUsrAppExpSleepTime_ms:%lld", (unsigned long)Ps_Lpminfo.ullsleeptime_ms,(unsigned long)Ps_Lpminfo.standby_advance_ms,ullUsrAppExpSleepTime_ms);
 #endif
     // 阻塞等待log全部输出完成
     while ((diag_list_is_all_list_empty() == 0) || (diag_port_is_send_complete() == 0));
@@ -491,30 +491,30 @@ int __RAM_FUNC StandBy_Process( void )
 
 #if LPM_LOG_DEBUG
 	utc_cal_debug = (g_utccnt_after_sleep_debug - g_lpm_standby_info.utccnt_before_sleep) * g_mcnt_after_debug / 122880;
-	xy_printf(0,PLATFORM, WARN_LOG, "%d%lld%lld%d%d%x%x%x%d%d", Ps_Lpminfo.ucTauEdrxOtherType, Ps_Lpminfo.ulltime_ms, Ps_Lpminfo.ullsleeptime_ms, Ps_Lpminfo.standby_advance_ms, LPM_PLATFORM_STANDBY_ADVANCE_MS, g_standby_wakeup_status, g_standby_wakeup_int, g_standby_wakeup_int2, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
-	xy_printf(0,PLATFORM, WARN_LOG, "%ld%lld%lld%lld%d%d%d%x%x%x%x", g_step_phy_cnt / 1920, g_standby_sleep_ms, g_lpm_standby_info.utccnt_before_sleep, g_utccnt_after_sleep_debug, g_mcnt_after_debug, g_pll_divn_old_debug, g_pll_divn_cur_debug,g_pending_before_sb , g_pending_after_sb, g_pending_before_sb2 , g_pending_after_sb2 );
-	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d", g_lpm_standby_info.HFN_Number_before_sleep,g_lpm_standby_info.SFN_Number_before_sleep,g_lpm_standby_info.subframe_before_sleep,g_lpm_standby_info.countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,platform_trigger_phytimer_record,g_freq_32k,g_lpm_standby_info.frc_clk_divn);
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY ps_sleep_type: %d, ps_ulltime_ms: %lld, ps_ullsleeptime_ms: %lld, ps_sb_advance_ms: %d, platform_advance_ms: %d, wakeup_status: %x, wakeup_int: %x, coreprcm_wkup: %x, test_rc:%d %d", Ps_Lpminfo.ucTauEdrxOtherType, Ps_Lpminfo.ulltime_ms, Ps_Lpminfo.ullsleeptime_ms, Ps_Lpminfo.standby_advance_ms, LPM_PLATFORM_STANDBY_ADVANCE_MS, g_standby_wakeup_status, g_standby_wakeup_int, g_standby_wakeup_int2, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY g_step_phy_cnt: %ld (ms), sleep_time_set: %lld (ms), utc_before: %lld, utc_after: %lld, MCNT: %d, PLL_old: %d, PLL_cur: %d, pb_sb: %x, pa_sb: %x, pb_sb2: %x, pa_sb2: %x", g_step_phy_cnt / 1920, g_standby_sleep_ms, g_lpm_standby_info.utccnt_before_sleep, g_utccnt_after_sleep_debug, g_mcnt_after_debug, g_pll_divn_old_debug, g_pll_divn_cur_debug,g_pending_before_sb , g_pending_after_sb, g_pending_before_sb2 , g_pending_after_sb2 );
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) frc_callback(%d,%d,%d,%d),phytimer_trigger:%d,g_freq_32k: %d,frc_clk_divn: %d", g_lpm_standby_info.HFN_Number_before_sleep,g_lpm_standby_info.SFN_Number_before_sleep,g_lpm_standby_info.subframe_before_sleep,g_lpm_standby_info.countInSubFrame_before_sleep,gFrcTime_after.FRC_Reg1.HFN_Number,gFrcTime_after.FRC_Reg1.SFN_Number,gFrcTime_after.FRC_Reg0.subframe,gFrcTime_after.FRC_Reg0.countInSubFrame,g_HFN_callback,g_SFN_callback,g_subframe_callback,g_countInSubFrame_callback,platform_trigger_phytimer_record,g_freq_32k,g_lpm_standby_info.frc_clk_divn);
 
 	if(  g_lpm_standby_info.HFN_Number_before_sleep == g_HFN_Number_after_sleep_debug )
 	{
 		delta_phy_time_debug = ((g_SFN_Number_after_sleep_debug * 10 + g_subframe_after_sleep_debug) * 1920 + g_countInSubFrame_after_sleep_debug) - (( g_lpm_standby_info.SFN_Number_before_sleep * 10 + g_lpm_standby_info.subframe_before_sleep ) * 1920 + g_lpm_standby_info.countInSubFrame_before_sleep);
-		xy_printf(0,PLATFORM, WARN_LOG, "%lld%d%lld%d%d",g_step_phy_cnt, delta_phy_time_debug, utc_cal_debug, gTempera_old, g_tcmcnt_info.temp_after);
+		xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY delta_sleep_phy_cnt_cal :%lld, delta_phy_cnt: %d, utc_cal_debug: %lld, last_mcnt_temp: %d, temp_after_sleep: %d",g_step_phy_cnt, delta_phy_time_debug, utc_cal_debug, gTempera_old, g_tcmcnt_info.temp_after);
 	}
 
-	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY utc_phytimer_snapshot utc_moment:(%x, %x, %x), wakeup_event_set utc_moment:(%x, %x, %x)", \
 			g_debug_before_cal0, g_debug_before_time0, g_debug_before_cnt0, g_debug_before_cal1, g_debug_before_time1, g_debug_before_cnt1);
-	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%d%d%lld", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY  exit_wfi utc_alarm:(%x, %x, %x), exit_wfi utc_moment:(%x, %x, %x), ap_enter_wfi utc_moment(%x, %d), record_tick:%d, offset:%lld", \
 			g_debug_alarm_cal0, g_debug_alarm_time0, g_debug_alarm_cnt0, g_debug_cal0, g_debug_time0, g_debug_cnt0, *(uint32_t *)0x60011010, *(uint32_t *)0x60011014, g_debug_record_tickbase, g_debug_rtc_offset);
-	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY  phytimer_compensate utc_alarm:(%x, %x, %x), before_phytimer_compensate utc_moment:(%x, %x, %x)", \
 			g_debug_alarm_cal1, g_debug_alarm_time1, g_debug_alarm_cnt1, g_debug_cal1, g_debug_time1, g_debug_cnt1);
-	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY pll_stable utc_moment:(%x, %x, %x), phytimer_trigger_event_set utc_moment:(%x, %x, %x)", \
 			g_debug_cal2, g_debug_time2, g_debug_cnt2, g_debug_cal3, g_debug_time3, g_debug_cnt3);
-	xy_printf(0,PLATFORM, WARN_LOG, "%x%x%x%x%x%x", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY  phytimer_compensate_begin utc_moment:(%x, %x, %x), phytimer_compensate_end utc_moment:(%x, %x, %x)", \
 			g_debug_cal5, g_debug_time5, g_debug_cnt5, g_debug_cal4, g_debug_time4, g_debug_cnt4);
 
 	delta_phy_time_debug = ((frc_temperature_debug_a.FRC_Reg1.SFN_Number * 10 + frc_temperature_debug_a.FRC_Reg0.subframe) * 1920 + frc_temperature_debug_a.FRC_Reg0.countInSubFrame) - ((frc_temperature_debug_b.FRC_Reg1.SFN_Number * 10 + frc_temperature_debug_b.FRC_Reg0.subframe) * 1920 + frc_temperature_debug_b.FRC_Reg0.countInSubFrame) ;
 		
-	xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d", \
+	xy_printf(0,PLATFORM, WARN_LOG, "LPM_STANDBY temperature debug frcbefore(%d,%d,%d,%d) frcafter(%d,%d,%d,%d) delta_frc_cnt:%d delatfrc_ms:%d", \
             frc_temperature_debug_b.FRC_Reg1.HFN_Number, frc_temperature_debug_b.FRC_Reg1.SFN_Number, frc_temperature_debug_b.FRC_Reg0.subframe, frc_temperature_debug_b.FRC_Reg0.countInSubFrame,\
 			frc_temperature_debug_a.FRC_Reg1.HFN_Number, frc_temperature_debug_a.FRC_Reg1.SFN_Number, frc_temperature_debug_a.FRC_Reg0.subframe, frc_temperature_debug_a.FRC_Reg0.countInSubFrame, delta_phy_time_debug , delta_phy_time_debug/1920);
 

@@ -29,7 +29,7 @@ osTimerId_t at_wait_farps_rsp_timer = NULL;
 static void wait_nearps_rsp_timeout_proc(osTimerId_t timerId)
 {
     xy_assert(timerId != NULL);
-	xy_printf(0,PLATFORM, WARN_LOG, "%p", timerId);
+	xy_printf(0,PLATFORM, WARN_LOG, "at_send_wait_rsp with timer: [%p] timeout!!!", timerId);
 
     osMessageQueueId_t queue_Id = at_related_queue_4_user(timerId);
 
@@ -77,7 +77,7 @@ static int get_handle_rst_vp(osMessageQueueId_t rcv_fifo, char *prefix, char *in
         osMessageQueueGet(rcv_fifo, &rcv_msg, NULL, osWaitForever);
         char *rsp_at = rcv_msg->data;
 
-        xy_printf(0,PLATFORM, WARN_LOG, "%s", rsp_at);
+        xy_printf(0,PLATFORM, WARN_LOG, "user rsp:%s\r\n", rsp_at);
         if (rsp_at == NULL)
             xy_assert(0);
 
@@ -312,11 +312,11 @@ int at_send_wait_rsp(char *req_at, char *info_fmt, int timeout, ...)
     va_start(vp, timeout);
 
     //Step1: deal with abnormal situation
-    xy_printf(0,PLATFORM, WARN_LOG, "%s", req_at);
+    xy_printf(0,PLATFORM, WARN_LOG, "user req:%s", req_at);
 
     //发送AT命令后该接口处于阻塞状态，不可在软定时器和RTC的回调中使用该接口！
     char *curTaskName = (char *)(osThreadGetName(osThreadGetId()));
-    xy_printf(0,PLATFORM, WARN_LOG, "%s", curTaskName);
+    xy_printf(0,PLATFORM, WARN_LOG, "current task:%s", curTaskName);
     if (strstr(curTaskName, "Tmr Svc") || strstr(curTaskName, RTC_TMR_THREAD_NAME) ||
         strstr(curTaskName, AT_CTRL_THREAD_NAME))
     {
@@ -344,17 +344,17 @@ int at_send_wait_rsp(char *req_at, char *info_fmt, int timeout, ...)
 	timer_attr.name = "wait_nearps";
     timer_Id = osTimerNew((osTimerFunc_t)(wait_nearps_rsp_timeout_proc), osTimerOnce, NULL, &timer_attr);
     xy_assert(timer_Id != NULL);
-    xy_printf(0,PLATFORM, WARN_LOG, "%p%s", timer_Id, curTaskName);
+    xy_printf(0,PLATFORM, WARN_LOG, "create timer: [%p] for user:%s", timer_Id, curTaskName);
 
     queue_Id = osMessageQueueNew(10, sizeof(void *), NULL);
     xy_assert(queue_Id != NULL);
-    xy_printf(0,PLATFORM, WARN_LOG, "%p%s", queue_Id, curTaskName);
+    xy_printf(0,PLATFORM, WARN_LOG, "create queue: [%p] for user:%s", queue_Id, curTaskName);
 
     //Step3: create a context associated with current task
     ctx = get_avail_atctx_4_user(from_proxy);
     xy_assert(ctx != NULL);
     userFd = ctx->fd;
-    xy_printf(0,PLATFORM, WARN_LOG, "%d", userFd);
+    xy_printf(0,PLATFORM, WARN_LOG, "get available at fd: [%d] for user", userFd);
     ctx->user_queue_Id = queue_Id;
     ctx->user_ctx_tmr = timer_Id;
 
@@ -370,14 +370,14 @@ int at_send_wait_rsp(char *req_at, char *info_fmt, int timeout, ...)
     at_errno = send_msg_2_atctl(AT_MSG_RCV_STR_FROM_FARPS, req_at, strlen(req_at), ctx);
     xy_assert(at_errno == AT_OK);
     at_errno = get_handle_rst_vp(queue_Id, prefix, info_fmt, &vp);
-    xy_printf(0,PLATFORM, WARN_LOG, "%d", at_errno);
+    xy_printf(0,PLATFORM, WARN_LOG, "USER_RSP:%d\r\n", at_errno);
     xy_assert(at_errno != -1);
 
 END_PROC:
     //Step1: delete the related queue
     if (queue_Id != NULL)
     {
-        xy_printf(0,PLATFORM, WARN_LOG, "%p", queue_Id);
+        xy_printf(0,PLATFORM, WARN_LOG, "delete queue fd: [%p]", queue_Id);
     	void *elem = NULL;
         while (osMessageQueueGet(queue_Id, &elem, NULL, 0) == osOK)
         {
@@ -441,7 +441,7 @@ char *at_err_build_info(int err_no, char *file, int line)
 			memcpy(xy_file, file + strlen(file) - 19, 19);
 		else
 			memcpy(xy_file, file, strlen(file));
-		xy_printf(0,PLATFORM, WARN_LOG,"%s%d%s", get_at_err_string(err_no), line, xy_file);
+		xy_printf(0,PLATFORM, WARN_LOG,"DebugInfo:%s,line:%d,file:%s\r\n", get_at_err_string(err_no), line, xy_file);
 	}
 	return at_str;
 }

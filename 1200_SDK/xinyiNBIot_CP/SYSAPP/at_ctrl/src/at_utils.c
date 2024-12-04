@@ -252,7 +252,7 @@ int covertEscToAscII(char* p)
 		if (index_val == esc_table[i].ch)
 		{
 			*p = esc_table[i].esc_ch;
-			xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+			xy_printf(0,PLATFORM, WARN_LOG, "match esc table and changed:%d", *p);
 			return 1;
 		}
 	}
@@ -263,13 +263,13 @@ int covertEscToAscII(char* p)
 		if(isHexChar(*(p + 2)) && isHexChar(*(p + 3)))
 		{
 			*p = (covertHextoNum(*(p + 2)) << 4) + covertHextoNum(*(p + 3));
-			xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+			xy_printf(0,PLATFORM, WARN_LOG, "hex changed:%d", *p);
 			return 3;
 		}
 		else if(isHexChar(*(p + 2)))
 		{
 			*p = covertHextoNum(*(p + 2));
-			xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+			xy_printf(0,PLATFORM, WARN_LOG, "hex changed:%d", *p);
 			return 2;			
 		}
 	}
@@ -278,19 +278,19 @@ int covertEscToAscII(char* p)
 	if (isOctChar(*(p + 1)) && isOctChar(*(p + 2)) && isOctChar(*(p + 3)))
 	{
 		*p = (char)(((*(p + 1) - '0') << 6) + ((*(p + 2) - '0') << 3) + (*(p + 3) - '0'));
-		xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+		xy_printf(0,PLATFORM, WARN_LOG, "oct changed:%d", *p);
 		return 3;
 	}
 	else if (isOctChar(*(p + 1)) && isOctChar(*(p + 2)))
 	{
 		*p = (char)(((*(p + 1) - '0') << 3) + (*(p + 2) - '0'));
-		xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+		xy_printf(0,PLATFORM, WARN_LOG, "oct changed:%d", *p);
 		return 2;
 	}
 	else if (isOctChar(*(p + 1)))
 	{
 		*p = (char)(*(p + 1) - '0');
-		xy_printf(0,PLATFORM, WARN_LOG, "%d", *p);
+		xy_printf(0,PLATFORM, WARN_LOG, "oct changed:%d", *p);
 		return 1;
 	}
 

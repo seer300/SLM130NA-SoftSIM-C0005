@@ -38,14 +38,14 @@ void AtcAp_CascadeAtProc_NextAt()
         return;
     }
 
-    AtcAp_PrintLog(0, LRRC_THREAD_ID, WARN_LOG, "%d%d",
+    AtcAp_PrintLog(0, LRRC_THREAD_ID, WARN_LOG, "[AtcAp_CascadeAtProc_NextAt] ucCascadeAtFlg=%d, ucCascadeAtCnt=%d",
             g_AtcApInfo.atCascateInfo.ucCascadeAtFlg,
             g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
 
     pCascadeAtInfo = &g_AtcApInfo.atCascateInfo;
     if(NULL == pCascadeAtInfo->pCasaadeAtBuff)
     {
-        AtcAp_PrintLog(0, LRRC_THREAD_ID, WARN_LOG, "");
+        AtcAp_PrintLog(0, LRRC_THREAD_ID, WARN_LOG, "[AtcAp_CascadeAtProc_NextAt]pCasaadeAtBuff : null");
         return;
     }
 
@@ -112,13 +112,13 @@ static unsigned char AtcAp_IsCascateAtChk(ATC_AP_MSG_DATA_REQ_STRU* pDataReq)
     
     if(ATC_AP_FALSE == pDataReq->ucExternalFlg)
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_IsCascateAtChk] ucExternalFlg=0");
         return ATC_AP_FALSE;
     }
 
     if(ATC_AP_TRUE == g_AtcApInfo.atCascateInfo.ucCascadeAtFlg) //abnormal:waitting for cascade at to end
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_IsCascateAtChk] abnormal:waitting for cascade at to end");
         AtcAp_SendErrorRsp();
         return ATC_AP_TRUE;
     }
@@ -153,13 +153,13 @@ static unsigned char AtcAp_IsCascateAtChk(ATC_AP_MSG_DATA_REQ_STRU* pDataReq)
         g_AtcApInfo.atCascateInfo.usLen = pDataReq->usMsgLen;
         g_AtcApInfo.atCascateInfo.offset = 0;
 
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_IsCascateAtChk] new cascade at");
         AtcAp_CascadeAtProc_NextAt();
         
         return ATC_AP_TRUE;
     }
 
-    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_IsCascateAtChk] no cascade at");
     return ATC_AP_FALSE;
 }
 
@@ -286,7 +286,7 @@ static ATC_AP_MSG_DATA_REQ_STRU* AtcAp_GetFirstAtcDataReqFromList()
 
 static unsigned char AtcAp_MsgProc_AtcApDataReq(ATC_AP_MSG_DATA_REQ_STRU* pAtcDataReq)
 {
-    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%s%d%d%d",pAtcDataReq->aucMsgData, pAtcDataReq->ucExternalFlg, pAtcDataReq->ulSemaId, pAtcDataReq->ucTaskSource);
+    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "AtcAp_MsgProc_AtcApDataReq: cmd=%s, ucExternalFlg=%d, ulSemaId=%d, TaskSource=%d",pAtcDataReq->aucMsgData, pAtcDataReq->ucExternalFlg, pAtcDataReq->ulSemaId, pAtcDataReq->ucTaskSource);
     if(ATC_AP_TRUE == pAtcDataReq->ucExternalFlg)
     {
         if(ATC_AP_FALSE == AtcAp_CurrEventChk_IsWaitSmsPdu())
@@ -422,7 +422,7 @@ void  AtcAp_DataIndProc_RegEventInd(unsigned char* pRecvMsg, unsigned short usLe
     {
         if(pNode->eventId == ulEvnetId && NULL != pNode->callback)
         {
-            AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%d",pCmdEvent->usEvent);
+            AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_DataIndProc_RegEventInd]: CB event=%d",pCmdEvent->usEvent);
             pNode->callback(ulEvnetId, (void*)pRecvMsg, usLen);
         }
         pNode = (ST_ATC_AP_PS_EVENT_REGISTER_INFO*)(pNode->node.next);
@@ -438,11 +438,11 @@ static void AtcAp_MsgProc_AtcApDataInd(ATC_MSG_DATA_IND_STRU* pAtcDataInd)
 
     if(ATC_AP_TRUE == AtcAp_MsgProc_UserAtCnf(pAtcDataInd))
     {
-        AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%d%d",pAtcDataInd->ucSeqNum, pCmdEvent->usEvent);
+        AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_MsgProc_AtcApDataInd]: ucSeqNum=%d, event=%d, userAtCnf",pAtcDataInd->ucSeqNum, pCmdEvent->usEvent);
     }
     else
     {
-        AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%d%d",pAtcDataInd->ucSeqNum, pCmdEvent->usEvent);
+        AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_MsgProc_AtcApDataInd]: ucSeqNum=%d, event=%d",pAtcDataInd->ucSeqNum, pCmdEvent->usEvent);
     }
 
     AtcAp_SendMsg2AtcAp((void*)pAtcDataInd, &g_AtcApInfo.MsgInfo_EventCb);

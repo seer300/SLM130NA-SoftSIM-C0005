@@ -375,7 +375,7 @@ static uint8_t Character_Send_Blocking(uint8_t *txbuff, uint32_t txlen)
 #endif	
 					//xy_assert(0);
 					while(osSemaphoreAcquire(g_smartcard_sem, osNoWait) == osOK);
-					PrintLog(0, PLATFORM, WARN_LOG, "%x%x",ISO7816_GetFifoByteNum(),HWREGB(SM_DBGSTAT));
+					PrintLog(0, PLATFORM, WARN_LOG, "uSim tx fail pos1,fifo_num=%x,SM_DBGSTAT=%x",ISO7816_GetFifoByteNum(),HWREGB(SM_DBGSTAT));
 					return SC_FAILURE;
 				}
 			}
@@ -421,7 +421,7 @@ static uint8_t Character_Send_Blocking(uint8_t *txbuff, uint32_t txlen)
 #endif	
 				//xy_assert(0);
 				while(osSemaphoreAcquire(g_smartcard_sem, osNoWait) == osOK);
-				PrintLog(0, PLATFORM, WARN_LOG, "%x%x",ISO7816_GetFifoByteNum(),HWREGB(SM_DBGSTAT));
+				PrintLog(0, PLATFORM, WARN_LOG, "uSim tx fail pos2,fifo_num=%x,SM_DBGSTAT=%x",ISO7816_GetFifoByteNum(),HWREGB(SM_DBGSTAT));
 				return SC_FAILURE;
 			}
 		}
@@ -901,7 +901,7 @@ uint8_t ATR_Receive(uint8_t *characters)
 		
 		if(SC_FAILURE ==result)
 		{
-			PrintLog(0, PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d", \
+			PrintLog(0, PLATFORM, WARN_LOG, "uSim TS timeout!debug_atr_data:%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", \
 						debug_atr_data[0],debug_atr_data[1],debug_atr_data[2],debug_atr_data[3],debug_atr_data[4],\
 						debug_atr_data[5],debug_atr_data[6],debug_atr_data[7],debug_atr_data[8],debug_atr_data[9],\
 						debug_atr_data[10],debug_atr_data[11],debug_atr_data[12],debug_atr_data[13],debug_atr_data[14] );	
@@ -914,11 +914,11 @@ uint8_t ATR_Receive(uint8_t *characters)
 			debug_atr_data[null_data_num] = data;
 			null_data_num++;
 			
-			PrintLog(0, PLATFORM, WARN_LOG, "%d",null_data_num);
+			PrintLog(0, PLATFORM, WARN_LOG, "uSim TS dirty %d",null_data_num);
 			// by default,1 byte = 12 etu,1 etu = DEFAULT_Fd/DEFAULT_Dd,40000/372/12=9
 			if(null_data_num > 15)
 			{
-				PrintLog(0, PLATFORM, WARN_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d%d%d%d", \
+				PrintLog(0, PLATFORM, WARN_LOG, "uSim TS dirty exit!debug_atr_data:%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,", \
 						debug_atr_data[0],debug_atr_data[1],debug_atr_data[2],debug_atr_data[3],debug_atr_data[4],\
 						debug_atr_data[5],debug_atr_data[6],debug_atr_data[7],debug_atr_data[8],debug_atr_data[9],\
 						debug_atr_data[10],debug_atr_data[11],debug_atr_data[12],debug_atr_data[13],debug_atr_data[14] );
@@ -1238,7 +1238,7 @@ void SimCard_PowerReset(unsigned char mode, char vol_class)
 
 	if(SimCard_SimVccSelect(vol_class) == 0)
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "");
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim VoltageSelect fail");
 		return;
 	}
 	
@@ -1261,26 +1261,26 @@ void SimCard_PowerReset(unsigned char mode, char vol_class)
 
 	if(SC_FAILURE==result)
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x%x%x%x%x%d%d", ATR_Rsp[0],ATR_Rsp[1],ATR_Rsp[2],ATR_Rsp[3],ATR_Rsp[4],ATR_Rsp[5],ATR_Rsp[6],ATR_Rsp[7],ATR_Rsp[8],ATR_Rsp[9],HWREGB(SM_DBGSTAT),HWREGB(SM_ATRSTAT),F_div_D,SC7816_Item.profile.clk_div);
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim ATR Failed: %x,%x,%x,%x,%x,%x,%x,%x,%x,%x,SM_DBGSTAT=%x,SM_ATRSTAT=%x,F/D=%d,clkdiv=%d", ATR_Rsp[0],ATR_Rsp[1],ATR_Rsp[2],ATR_Rsp[3],ATR_Rsp[4],ATR_Rsp[5],ATR_Rsp[6],ATR_Rsp[7],ATR_Rsp[8],ATR_Rsp[9],HWREGB(SM_DBGSTAT),HWREGB(SM_ATRSTAT),F_div_D,SC7816_Item.profile.clk_div);
 #if SIM_DEBUG_CODE
-        PrintLog(0, PLATFORM, WARN_LOG, "%x%x%x%x%x",tickcnt_before_iso7816_recv,tickcnt_after_iso7816_recv,g_iso7816_debug_timeout,g_iso7816_debug_plllock,g_iso7816_debug_sysclk);
+        PrintLog(0, PLATFORM, WARN_LOG, "uSim ATR debug: tick_before=%x,tick_after=%x,timeout=%x,ANAXTALRDY=%x,syclkflag=%x",tickcnt_before_iso7816_recv,tickcnt_after_iso7816_recv,g_iso7816_debug_timeout,g_iso7816_debug_plllock,g_iso7816_debug_sysclk);
 #endif	        
 		return;
 	}
 	else if(SC7816_Item.profile.class_clock !=0 && (SC7816_Item.profile.class_clock & vol_class) == 0)
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "%d",vol_class);
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim VoltageClass: %d Failed",vol_class);
 		return;
 	}
 	else
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "%x%x%x%x%x%x%x%x%x%x", ATR_Rsp[0],ATR_Rsp[1],ATR_Rsp[2],ATR_Rsp[3],ATR_Rsp[4],ATR_Rsp[5],ATR_Rsp[6],ATR_Rsp[7],ATR_Rsp[8],ATR_Rsp[9]);
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim ATR = %x,%x,%x,%x,%x,%x,%x,%x,%x,%x", ATR_Rsp[0],ATR_Rsp[1],ATR_Rsp[2],ATR_Rsp[3],ATR_Rsp[4],ATR_Rsp[5],ATR_Rsp[6],ATR_Rsp[7],ATR_Rsp[8],ATR_Rsp[9]);
 	}
 	
 	ATR_process();
 	if(SC7816_Item.profile.T_protocol_used == PROTOCOL_T1)
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "");
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim T=1!");
 	}
 
 	SimCard_SwitchPPSOrCmd();
@@ -1328,7 +1328,7 @@ void PPS_Exchange()
 	ISO7816_SwitchToTxFromRx();
 	if(!(HWREGB(SM_FIFOSTAT) & SM_FIFOSTAT_EMPTY_Msk))
 	{
-        PrintLog(0, PLATFORM, WARN_LOG, "%x%x", HWREGB(SM_FIFONUM), HWREGB(SM_DBGSTAT));
+        PrintLog(0, PLATFORM, WARN_LOG, "uSim debug:switch tx error,FIFONUM = %x,SM_DBGSTAT = %x", HWREGB(SM_FIFONUM), HWREGB(SM_DBGSTAT));
         ISO7816_FifoFlush();
 	}
 //    SIM_SmartCard_WT(8);
@@ -1346,7 +1346,7 @@ void PPS_Exchange()
 	txdata[3] = PPS_request.PCK;
 	if(SC_FAILURE == Character_Send_Blocking(txdata,4))
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "");
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim PPS tx fail");
 		SC7816_Item.pps_state=STATE_PPS_FAILURE;
 		return;
 	}
@@ -1492,7 +1492,7 @@ void PPS_Exchange()
 	
     //SIM_SmartCard_WT(10);
 
-	PrintLog(0, PLATFORM, WARN_LOG, "%d%d", F_div_D, SC7816_Item.profile.clk_div);
+	PrintLog(0, PLATFORM, WARN_LOG, "uSim PPS config:F_div_D = %d, CLK_DIV = %d", F_div_D, SC7816_Item.profile.clk_div);
 
 
 }
@@ -1585,14 +1585,14 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 	{
 		SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 
-		PrintLog(0, PLATFORM, WARN_LOG, "");		
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim Not in T0 or T1 state");		
 
 		return SC_FAILURE;
 	}
 
     if(!(HWREGB(SM_FIFOSTAT) & SM_FIFOSTAT_EMPTY_Msk))
 	{
-        PrintLog(0, PLATFORM, WARN_LOG, "%x%x", HWREGB(SM_FIFONUM), HWREGB(SM_DBGSTAT));
+        PrintLog(0, PLATFORM, WARN_LOG, "uSim debug:Fifo not empty before T0_CMD,FIFONUM = %x,SM_DBGSTAT = %x", HWREGB(SM_FIFONUM), HWREGB(SM_DBGSTAT));
         ISO7816_FifoFlush();
         SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
         return SC_FAILURE;
@@ -1649,7 +1649,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 	txdata[4] = p3;
 	if(SC_FAILURE == Character_Send_Blocking(txdata,5))
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "");
+		PrintLog(0, PLATFORM, WARN_LOG, "uSim T0 tx fail pos1");
 		SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 		return SC_FAILURE;
 	}
@@ -1762,7 +1762,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 					{
 						if(SC_FAILURE == Character_Send_Blocking(&TxAPDU.data[tx_num],TxAPDU.Lc-tx_num))
 						{
-							PrintLog(0, PLATFORM, WARN_LOG, "");
+							PrintLog(0, PLATFORM, WARN_LOG, "uSim T0 tx fail pos2");
 							SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 							return SC_FAILURE;
 						}
@@ -1781,7 +1781,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 				}
 				else 
 				{
-					PrintLog(0, PLATFORM, WARN_LOG, "");
+					PrintLog(0, PLATFORM, WARN_LOG, "uSim INS wrong Lc and Le");
 					SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 					return SC_FAILURE;
 
@@ -1815,7 +1815,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 					{
 						if(SC_FAILURE == Character_Send_Blocking(&TxAPDU.data[tx_num],1))
 						{
-							PrintLog(0, PLATFORM, WARN_LOG, "");
+							PrintLog(0, PLATFORM, WARN_LOG, "uSim T0 tx fail pos3");
 							SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 							return SC_FAILURE;
 						}
@@ -1835,7 +1835,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 				}
 				else 
 				{
-					PrintLog(0, PLATFORM, WARN_LOG, "");
+					PrintLog(0, PLATFORM, WARN_LOG, "uSim COMPLEMENT INS wrong Lc and Le");
 					SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 					return SC_FAILURE;
 
@@ -1857,7 +1857,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 			}
 			default:
 			{
-				PrintLog(0, PLATFORM, WARN_LOG, "");
+				PrintLog(0, PLATFORM, WARN_LOG, "uSim wrong STATE_T0_CMD");
 				SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 				
 				//while(1);
@@ -1871,7 +1871,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 			{
 				if(sim_rx_num<TxAPDU.Le)
 				{
-					PrintLog(0, PLATFORM, WARN_LOG, "");
+					PrintLog(0, PLATFORM, WARN_LOG, "uSim sim_rx_num less than Le");
 					SC7816_Item.T0_state	=	STATE_T0_CMD_FAILURE;
 					return SC_FAILURE;
 
@@ -1891,7 +1891,7 @@ uint8_t T0_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 			}
 			//if((RxAPDU.sw1!=0x90) && (RxAPDU.sw1!=0x91) && (RxAPDU.sw1!=0x61)  && (RxAPDU.sw1!=0x6C) && (RxAPDU.sw1!=0x63))
 			{
-				PrintLog(0,PLATFORM,WARN_LOG,"%d%x%x%x%x%x%x%x", SC7816_Item.current_procedure,TxAPDU.cla,TxAPDU.ins,TxAPDU.p1,TxAPDU.p2,p3,RxAPDU.sw1,RxAPDU.sw2);
+				PrintLog(0,PLATFORM,WARN_LOG,"uSim T0_Cmd_Handler : current_procedure=%d,[CLA,INS,P1,P2,P3]=[%x,%x,%x,%x,%x],sw=[%x %x]", SC7816_Item.current_procedure,TxAPDU.cla,TxAPDU.ins,TxAPDU.p1,TxAPDU.p2,p3,RxAPDU.sw1,RxAPDU.sw2);
 
 			}
 
@@ -2262,7 +2262,7 @@ uint8_t T1_Adjust_IFSD(uint8_t ifsd)
 	{
 		SC7816_Item.T1_state	=	STATE_T1_CMD_FAILURE;
 
-		xy_printf(0,PLATFORM, WARN_LOG, "");		
+		xy_printf(0,PLATFORM, WARN_LOG, "uSim adjust IFSD Fail:Not in T1 state");		
 
 		return SC_FAILURE;
 	}
@@ -2285,7 +2285,7 @@ uint8_t T1_Adjust_IFSD(uint8_t ifsd)
 	if(result == SC_FAILURE)
 	{
 		SC7816_Item.T1_state = STATE_T1_CMD_FAILURE;
-		xy_printf(0,PLATFORM, WARN_LOG, "");
+		xy_printf(0,PLATFORM, WARN_LOG, "uSim adjust IFSD:rcv failure");
 		return SC_FAILURE;
 	}
 	else
@@ -2322,7 +2322,7 @@ uint8_t T1_SendSblockGetResponse(uint8_t cmdtype,uint8_t s_inf_data)
 	{
 		//SC7816_Item.T1_state	=	STATE_T1_CMD_FAILURE;
 
-		xy_printf(0,PLATFORM, WARN_LOG, "");		
+		xy_printf(0,PLATFORM, WARN_LOG, "uSim send sblock fail:Not in T1 state");		
 
 		return SC_FAILURE;
 	}
@@ -2343,7 +2343,7 @@ uint8_t T1_SendSblockGetResponse(uint8_t cmdtype,uint8_t s_inf_data)
 	if(result == SC_FAILURE)
 	{
 		//SC7816_Item.T1_state = STATE_T1_CMD_FAILURE;
-		xy_printf(0,PLATFORM, WARN_LOG, "");
+		xy_printf(0,PLATFORM, WARN_LOG, "uSim send sblock fail:rcv failure");
 		return SC_FAILURE;
 	}
 	else
@@ -2425,7 +2425,7 @@ uint8_t T1_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 	{
 		SC7816_Item.T1_state	=	STATE_T1_CMD_FAILURE;
 
-		xy_printf(0,PLATFORM, WARN_LOG, "");		
+		xy_printf(0,PLATFORM, WARN_LOG, "uSim Not in T1 state");		
 
 		return SC_FAILURE;
 	}
@@ -2505,7 +2505,7 @@ uint8_t T1_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 				if(result == SC_FAILURE)
 				{
 					SC7816_Item.T1_state=STATE_T1_CMD_FAILURE;
-					xy_printf(0,PLATFORM, WARN_LOG, "");
+					xy_printf(0,PLATFORM, WARN_LOG, "uSim T1 CMD:rcv failure");
 					return SC_FAILURE;
 				}
 				else
@@ -2532,7 +2532,7 @@ uint8_t T1_Cmd_Handler(uint8_t *Txbuff, uint8_t *Rxbuff, uint32_t* len)
 							return SC_SUCCESS;
 						}
 						
-						xy_printf(0,PLATFORM, WARN_LOG, "");
+						xy_printf(0,PLATFORM, WARN_LOG, "uSim T1 CMD:rcv I");
 
 					}
 					else if(block_type == BLOCK_R)
@@ -2630,13 +2630,13 @@ void sim_apdu_process(uint8_t *pApduBuf,uint8_t *pRxBuffer,uint32_t *uLen)
 				}
                 Smartcard_Sleep_Disable();
 				SimCard_PowerReset(pApduBuf[0], vol_class[loop]);
-                PrintLog(0, PLATFORM, WARN_LOG, "%d%d",Get_Sys_Div(),Get_Peri2_Div());
+                PrintLog(0, PLATFORM, WARN_LOG, "uSim syshclkdiv %d,pclk2div %d",Get_Sys_Div(),Get_Peri2_Div());
 				if(SC7816_Item.current_procedure ==	PROCEDURE_PPS)
 				{
 					PPS_Exchange();
 					if(SC7816_Item.current_procedure !=	PROCEDURE_T0_CMD && SC7816_Item.current_procedure != PROCEDURE_T1_CMD)
 					{
-						PrintLog(0, PLATFORM, WARN_LOG, "%x%x%x%x%x%x", PPS_response_debug.PPSS, PPS_response_debug.PPS0, PPS_response_debug.PPS1, PPS_response_debug.PPS2, PPS_response_debug.PPS3,HWREGB(SM_DBGSTAT));
+						PrintLog(0, PLATFORM, WARN_LOG, "uSim PPS failed:PPS_response = %x,%x,%x,%x,%x,SM_DBGSTAT=%x", PPS_response_debug.PPSS, PPS_response_debug.PPS0, PPS_response_debug.PPS1, PPS_response_debug.PPS2, PPS_response_debug.PPS3,HWREGB(SM_DBGSTAT));
 					}
 				}
 				
@@ -2667,14 +2667,14 @@ void sim_apdu_process(uint8_t *pApduBuf,uint8_t *pRxBuffer,uint32_t *uLen)
 					if(	loop >= loopmax 
 						|| (SC7816_Item.profile.class_clock !=0 && (SC7816_Item.profile.class_clock & vol_class[loop]) == 0) )
 					{
-						PrintLog(0, PLATFORM, WARN_LOG, "");
+						PrintLog(0, PLATFORM, WARN_LOG, "uSim initial failed!");
                         osDelay(50);
 						break;//out while
 					}
 					else
 					{
                         //delay & try next voltage
-                        PrintLog(0, PLATFORM, WARN_LOG, "");
+                        PrintLog(0, PLATFORM, WARN_LOG, "uSim first volclass initial failed!");
                         osDelay(50);	
 					}
 				}
@@ -2711,9 +2711,9 @@ void sim_apdu_process(uint8_t *pApduBuf,uint8_t *pRxBuffer,uint32_t *uLen)
 					pRxBuffer[1] = 0x01;
 					*uLen=2;
 
-					PrintLog(0,PLATFORM,WARN_LOG,"%x%x%x%x%x%x", pApduBuf[0],pApduBuf[1],pApduBuf[2],pApduBuf[3],pApduBuf[4],HWREGB(SM_DBGSTAT));
+					PrintLog(0,PLATFORM,WARN_LOG,"uSim SC7816_command fail,[CLA,INS,P1,P2,P3]=[%x,%x,%x,%x,%x],SM_DBGSTAT=%x", pApduBuf[0],pApduBuf[1],pApduBuf[2],pApduBuf[3],pApduBuf[4],HWREGB(SM_DBGSTAT));
 #if SIM_DEBUG_CODE
-                    PrintLog(0, PLATFORM, WARN_LOG, "%x%x%x%x%x",tickcnt_before_iso7816_recv,tickcnt_after_iso7816_recv,g_iso7816_debug_timeout,g_iso7816_debug_plllock,g_iso7816_debug_sysclk);
+                    PrintLog(0, PLATFORM, WARN_LOG, "uSim recv debug: tick_before=%x,tick_after=%x,timeout=%x,ANAXTALRDY=%x,syclkflag=%x",tickcnt_before_iso7816_recv,tickcnt_after_iso7816_recv,g_iso7816_debug_timeout,g_iso7816_debug_plllock,g_iso7816_debug_sysclk);
 #endif	
 
 					SimCard_Deactivation();

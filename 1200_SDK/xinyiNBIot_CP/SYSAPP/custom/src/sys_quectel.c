@@ -33,7 +33,7 @@ void Sys_Up_URC_95()
         g_npsmr_status = 0;
     }
 
-	xy_printf(0,PLATFORM, WARN_LOG, "%d%x%d%x%x", Get_Boot_Reason(), Get_Boot_Sub_Reason(),g_softap_var_nv->ps_deepsleep_state,HWREG(0x40000000),HWREG(0x40000008));
+	xy_printf(0,PLATFORM, WARN_LOG, "+DBGINFO:BootR %d,SubR 0x%x,PS state %d,REG %x %x\r\n", Get_Boot_Reason(), Get_Boot_Sub_Reason(),g_softap_var_nv->ps_deepsleep_state,HWREG(0x40000000),HWREG(0x40000008));
 }
 
 extern T_LPM_INFO Ps_Lpminfo;
@@ -105,7 +105,7 @@ void Sys_Down_URC_95(void)
             }
         }
 
-		xy_printf(0, PLATFORM, WARN_LOG,"%s",sys_down_str);
+		xy_printf(0, PLATFORM, WARN_LOG,"URC: %s",sys_down_str);
 		
         if(!is_urc_drop())
 			send_powerdown_urc_to_ext(sys_down_str, strlen(sys_down_str));

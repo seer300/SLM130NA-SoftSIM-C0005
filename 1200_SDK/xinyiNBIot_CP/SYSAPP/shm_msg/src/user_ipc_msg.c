@@ -31,12 +31,12 @@ void usr_msg_test1(void *param)
 {
 	if(param == NULL)
 	{
-		PrintLog(0, PLATFORM, WARN_LOG, "");
+		PrintLog(0, PLATFORM, WARN_LOG, "RECV is NULL");
 		send_usr_msg(ICM_USER_MSG1,NULL,0);
 		return;
 	}
 	char *out_ptr = (char *)Address_Translation_AP_To_CP((unsigned int)(param));
-	PrintLog(0, PLATFORM, WARN_LOG, "%s", out_ptr);
+	PrintLog(0, PLATFORM, WARN_LOG, "RECV:%s", out_ptr);
 	send_usr_msg(ICM_USER_MSG1,out_ptr,strlen(out_ptr));
 }
 

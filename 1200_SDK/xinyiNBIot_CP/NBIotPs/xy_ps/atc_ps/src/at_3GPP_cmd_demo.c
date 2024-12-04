@@ -39,7 +39,7 @@ void atc_interface_call_demo_01()
     
     ret = xy_atc_interface_call("AT+CGDCONT=1,IP\r\n", NULL, (void*)NULL);
     
-    xy_printf(0,PLATFORM, WARN_LOG, "%d", ret); 
+    xy_printf(0,PLATFORM, WARN_LOG, "[atc_interface_call_demo_01] ret=%d", ret); 
 }
 
 /**
@@ -62,7 +62,7 @@ void atc_interface_call_demo_02()
         sprintf(pLogData, "cid=%d, apn=%s", tCgcongrdpCnf.stPara.aucPdpDynamicInfo[0].ucCid, tCgcongrdpCnf.stPara.aucPdpDynamicInfo[0].aucApn);
     }
     
-    xy_printf(0,PLATFORM, WARN_LOG, "%s", pLogData);
+    xy_printf(0,PLATFORM, WARN_LOG, "[atc_interface_call_demo_02] %s", pLogData);
     xy_free(pLogData);
 }
 
@@ -79,7 +79,7 @@ void atc_interface_call_demo_03()
         return;
     }
 
-    xy_printf(0,PLATFORM, WARN_LOG, "%d%s", tResult.cid, tResult.apn);
+    xy_printf(0,PLATFORM, WARN_LOG, "[atc_interface_call_demo_03] cid=%d, apn=%s", tResult.cid, tResult.apn);
     xy_free(tResult.apn);
 }
 

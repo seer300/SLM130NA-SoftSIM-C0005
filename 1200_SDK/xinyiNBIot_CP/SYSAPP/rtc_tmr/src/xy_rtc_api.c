@@ -90,7 +90,7 @@ bool Set_UT_by_ntp(char *ser_name, int timeout, int zone_sec)
 
 	if (0 != query_ntp(&arg))
 	{
-		xy_printf(0,PLATFORM, WARN_LOG, "");
+		xy_printf(0,PLATFORM, WARN_LOG, "error!set rtc by ntp,fail get time!");
 		return 0;
 	}
 

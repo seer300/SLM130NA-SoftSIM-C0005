@@ -611,7 +611,7 @@ __FLASH_FUNC void flash_task_entry(void)
 	{
 		osMessageQueueGet(g_flash_MsgQueue, &pflashPE, 0, osWaitForever); 
 
-	    PrintLog(0,PLATFORM,WARN_LOG,"%d%d%d%08x%08x%x", pflashPE->coretype, pflashPE->operation,
+	    PrintLog(0,PLATFORM,WARN_LOG,"[FLASH_LOG]flash task start: coretype %d operation %d aysn_flag %d destAddr %08x srcAddr %08x size %x", pflashPE->coretype, pflashPE->operation,
 						pflashPE->aysn_flag,pflashPE->destAddr, pflashPE->srcAddr, pflashPE->size);
 
 		//cp写flash时若此时ap在锁中断写flash,会造成双核卡死，当前的解决方法是优先处理ap的读写flash请求
@@ -690,7 +690,7 @@ __FLASH_FUNC void flash_task_entry(void)
 
 							flash_status->cp_status = cp_status_idle; //一次擦写结束
 
-						    PrintLog(0,PLATFORM,WARN_LOG,"%d%d%d%08x%08x%x", pflashPE->coretype, pflashPE->operation,
+						    PrintLog(0,PLATFORM,WARN_LOG,"[FLASH_LOG]flash task   end: coretype %d operation %d aysn_flag %d destAddr %08x srcAddr %08x size %x", pflashPE->coretype, pflashPE->operation,
 											pflashPE->aysn_flag,pflashPE->destAddr, pflashPE->srcAddr, pflashPE->size);
 
 							osCoreEnterCritical();
@@ -726,7 +726,7 @@ __FLASH_FUNC void flash_task_entry(void)
 			{
 				flash_task_operation((flash_PE_st *)pflashPE);
 
-				PrintLog(0,PLATFORM,WARN_LOG,"%d%d%d%08x%08x%x", pflashPE->coretype, pflashPE->operation,
+				PrintLog(0,PLATFORM,WARN_LOG,"[FLASH_LOG]flash task   end: coretype %d operation %d aysn_flag %d destAddr %08x srcAddr %08x size %x", pflashPE->coretype, pflashPE->operation,
 								pflashPE->aysn_flag,pflashPE->destAddr, pflashPE->srcAddr, pflashPE->size);
 
 

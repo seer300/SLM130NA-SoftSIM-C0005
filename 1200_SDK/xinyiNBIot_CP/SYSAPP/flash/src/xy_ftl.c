@@ -229,7 +229,7 @@ bool xy_ftl_read(uint32_t addr, uint8_t *data, uint32_t size)
 	{
 		if(osKernelGetState() >= osKernelRunning && osKernelIsRunningIdle()!= osOK && HWREGB(BAK_MEM_XY_DUMP) == 1)
 		{
-			PrintLog(0,PLATFORM,WARN_LOG,"%x%d%s%d", addr, size, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
+			PrintLog(0,PLATFORM,WARN_LOG,"[FLASH_LOG]xy_ftl_read find ftl fail: %x %d %s %d", addr, size, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
 			nv_read_fail_dbg(addr);
 		}
 		
@@ -367,13 +367,13 @@ bool ftl_write(uint32_t addr, uint8_t *data, uint32_t size, uint8_t asyn_flag, o
 	xy_choose_valid_ftl(page_addr_base,p_page_buf,&cur_ftl_idx, &next_ftl_idx);
 
 	if(osKernelGetState() >= osKernelRunning && osKernelIsRunningIdle()!= osOK && HWREGB(BAK_MEM_XY_DUMP) == 1)
-		PrintLog(0,PLATFORM,WARN_LOG,"%x%d%d%d%s%d", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
+		PrintLog(0,PLATFORM,WARN_LOG,"[running]xy_ftl_write: %x %d %d %d %s %d ", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
 
 	//flash中没有有效NV，一般是首次写入
 	if(cur_ftl_idx == -1)
 	{
 		if(osKernelGetState() >= osKernelRunning && osKernelIsRunningIdle()!= osOK && HWREGB(BAK_MEM_XY_DUMP) == 1)
-			PrintLog(0,PLATFORM,WARN_LOG,"%x%d%d%d%s%d", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
+			PrintLog(0,PLATFORM,WARN_LOG,"[running]xy_ftl_write find ftl fail: %x %d %d %d %s %d ", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
 
 		/* 出厂NV尚未保存，用main factory nv */
 		if(page_addr_base == NV_FLASH_FACTORY_BASE)
@@ -400,7 +400,7 @@ bool ftl_write(uint32_t addr, uint8_t *data, uint32_t size, uint8_t asyn_flag, o
 			flash_release_mutex(mutex_id);
 		
 		if(osKernelGetState() >= osKernelRunning && osKernelIsRunningIdle()!= osOK && HWREGB(BAK_MEM_XY_DUMP) == 1)
-			PrintLog(0,PLATFORM,WARN_LOG,"%x%d%d%d%s%d", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
+			PrintLog(0,PLATFORM,WARN_LOG,"[running]xy_ftl_write same: %x %d %d %d %s %d ", addr, size, asyn_flag, mutex_id, osThreadGetName(osThreadGetId()), Get_Boot_Sub_Reason());
 	
 		return 1;
 	}

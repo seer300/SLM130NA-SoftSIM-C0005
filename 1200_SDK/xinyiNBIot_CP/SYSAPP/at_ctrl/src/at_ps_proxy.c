@@ -18,7 +18,7 @@ extern void xy_atc_data_req(unsigned short usDataLen, unsigned char*pucData);
 //平台实现，PS调用，发送PS相关的URC及结果码，参考  at_rcv_from_nearps/send_rsp_at_to_ext
 void SendAtInd2User(char *pAt, unsigned int ulAtLen)
 {
-    xy_printf(0,PLATFORM, WARN_LOG, "%s",(const char *)pAt);
+    xy_printf(0,PLATFORM, WARN_LOG, "[SendAtInd2User] %s",(const char *)pAt);
 	send_msg_2_atctl(AT_MSG_RCV_STR_FROM_NEARPS, pAt,ulAtLen, &nearps_ctx);
 }
 
@@ -26,7 +26,7 @@ void SendAtInd2User(char *pAt, unsigned int ulAtLen)
 void SendAt2AtcAp(char *pAt, unsigned int ulAtLen)
 {
 	//SendAtInd2User("\r\nOK\r\n",strlen("\r\nOK\r\n"));
-    xy_printf(0,PLATFORM, WARN_LOG, "%s",pAt);
+    xy_printf(0,PLATFORM, WARN_LOG, "SendAt2AtcAp:%s",pAt);
     xy_atc_data_req(ulAtLen, (unsigned char*)pAt);
 }
 

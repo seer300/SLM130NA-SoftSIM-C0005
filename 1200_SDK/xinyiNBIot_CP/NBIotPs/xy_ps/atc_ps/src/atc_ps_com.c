@@ -254,14 +254,14 @@ void AtcAp_SendOkRsp()
 
     if(g_AtcApInfo.atCascateInfo.ucCascadeAtCnt > 1)
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendOkRsp]CascadeAtCnt = %d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
         g_AtcApInfo.atCascateInfo.ucCascadeAtCnt--;
         AtcAp_CascadeAtProc_NextAt();
         return;
     }
     else if( g_AtcApInfo.atCascateInfo.ucCascadeAtCnt == 0)
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendOkRsp]RedundancyRpt OK");
         return;
     }
 
@@ -298,11 +298,11 @@ void AtcAp_SendCmeeErr(unsigned short usErrCode)
     
     if( g_AtcApInfo.atCascateInfo.ucCascadeAtCnt > 1)
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendCmeeErr]CascadeAtCnt = %d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
     }
     else if( g_AtcApInfo.atCascateInfo.ucCascadeAtCnt == 0)
     {
-        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendCmeeErr]RedundancyRpt CME ERROR");
         return;
     }
 
@@ -376,11 +376,11 @@ void AtcAp_SendCmsErr(unsigned short usErrCode)
 
     if( g_AtcApInfo.atCascateInfo.ucCascadeAtCnt > 1)
     {
-        //AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
+        //AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendCmsErr]CascadeAtCnt = %d",g_AtcApInfo.atCascateInfo.ucCascadeAtCnt);
     }
     else if( g_AtcApInfo.atCascateInfo.ucCascadeAtCnt == 0)
     {
-        //AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "");
+        //AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[ATC_SendCmsErr]RedundancyRpt ERROR");
         return;
     }
 
@@ -413,7 +413,7 @@ void AtcAp_AtCacheLogHandle(unsigned char* pbuffer ,unsigned short usAtLogLen)
     ST_ATCNF_INFO*  pTemBuffer;
     unsigned char   i = 0;
     
-    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%d%s",g_AtcApInfo.stAtLogCacheList.ucAtLogCount, (const char *)pbuffer);
+    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_AtCacheLogHandle] %d   %s",g_AtcApInfo.stAtLogCacheList.ucAtLogCount, (const char *)pbuffer);
 
     if(g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList == NULL)
     {
@@ -435,7 +435,7 @@ void AtcAp_AtCacheLogHandle(unsigned char* pbuffer ,unsigned short usAtLogLen)
     g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList[g_AtcApInfo.stAtLogCacheList.ucAtLogCount - 1].pAtCnfBuf = AtcAp_Malloc(usAtLogLen + 1);
     AtcAp_MemCpy(g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList[g_AtcApInfo.stAtLogCacheList.ucAtLogCount - 1].pAtCnfBuf, pbuffer, usAtLogLen);
 
-    //AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%s", (const char *)g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList[g_AtcApInfo.stAtLogCacheList.ucAtLogCount - 1].pAtCnfBuf);
+    //AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_AtCacheLogHandle] %s", (const char *)g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList[g_AtcApInfo.stAtLogCacheList.ucAtLogCount - 1].pAtCnfBuf);
 
     if(g_AtcApInfo.usCurrRspEvent != D_ATC_AP_AT_CMD_RST)
     {
@@ -454,7 +454,7 @@ void AtcAp_AtCacheLogHandle(unsigned char* pbuffer ,unsigned short usAtLogLen)
         AtcAp_Free(g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList[i].pAtCnfBuf);
     }
     AtcAp_Free(g_AtcApInfo.stAtLogCacheList.pucAtLogCacheList);
-    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "%s",(const char *)pAllBuffer);
+    AtcAp_PrintLog(0,NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_AtCacheLogHandle] %s",(const char *)pAllBuffer);
 
 #if OLD_ATC
     AT_RCV_FROM_PS(pAllBuffer, g_AtcApInfo.stAtLogCacheList.ucAtTotalLogsize);
@@ -673,7 +673,7 @@ int AtcAp_SndDataReqToPs(unsigned char *pCodeStream, unsigned short usCodeStream
 
     pCmdEvent  = (UN_ATC_CMD_EVENT*)pCodeStream; 
 
-    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d%d%d", g_AtcApInfo.ucUserAtFlg, pAtcDataReq->ucSeqNum, pCmdEvent->stCgdcontParam.usEvent);
+    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_SndDataReqToPs] ucUserAtFlg=%d, ucSeqNum=%d, event=%d", g_AtcApInfo.ucUserAtFlg, pAtcDataReq->ucSeqNum, pCmdEvent->stCgdcontParam.usEvent);
     AtcAp_SendAtcDateReqToNas((unsigned char*)pAtcDataReq, usLen);
 
     return ATC_AP_TRUE;
@@ -711,7 +711,7 @@ int AtcAp_SndDataReqToShm(unsigned char *pCodeStream, unsigned short usCodeStrea
         AtcAp_MemCpy(pInterCoreMsg->aucMsgData, pCodeStream, usCodeStreamLen);
     }
     pCmdEvent  = (UN_ATC_CMD_EVENT*)pCodeStream; 
-    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "%d%d%d", g_AtcApInfo.ucUserAtFlg, pInterCoreMsg->ucSeqNum, pCmdEvent->stCgdcontParam.usEvent);
+    AtcAp_PrintLog(0, NAS_THREAD_ID, DEBUG_LOG, "[AtcAp_SndDataReqToShm] ucUserAtFlg=%d, ucSeqNum=%d, event=%d", g_AtcApInfo.ucUserAtFlg, pInterCoreMsg->ucSeqNum, pCmdEvent->stCgdcontParam.usEvent);
     
     ret = send_ps_shm_msg(pInterCoreMsg, usLen);
     AtcAp_Free(pInterCoreMsg);
