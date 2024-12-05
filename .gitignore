@@ -13,3 +13,5 @@ V1200FB10002R00C0005/elf/
 *.o
 *.pyc
 1200_SDK/xinyiNBIot_AP/SYSAPP/system/inc/timestamp.h
+exclusive-tools/NVEditor_V1200FB10002R00C0005P02/
+exclusive-tools/Logview_R1.5.3502_mini/
