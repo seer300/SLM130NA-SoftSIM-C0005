@@ -16,8 +16,10 @@ goto:success
     goto :eof
 
 :success
-    @REM 编译成功 自动执行cp_AllbinsF.bat
-    call cp_AllbinsF.bat
+    if "%~1"=="all" (
+        echo -------Compilation is complete, and automatic copying of files starts!-------
+        call cp_AllbinsF.bat
+    )
     exit /B 0
 
 :error
