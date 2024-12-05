@@ -209,24 +209,24 @@ int socket_open(socket_create_param_t *arg)
 	}
 	else
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "%s%d%d", __FUNCTION__, arg->id, result->ai_family);
+		xy_printf(0, XYAPP, WARN_LOG, "[%s]ai_family err:%d,%d", __FUNCTION__, arg->id, result->ai_family);
         ret = TCPIP_Err_DnsFail;
 		goto EXIT;
 	}
 
-	xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", result->ai_family, result->ai_socktype, result->ai_protocol);
+	xy_printf(0, XYAPP, WARN_LOG, "socket_open_task create,ai_family:%d,ai_socktype:%d,ai_protocol:%d", result->ai_family, result->ai_socktype, result->ai_protocol);
     /* 创建socket */
     if ((fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol)) == -1)
     {
-		xy_printf(0, XYAPP, WARN_LOG, "%d", errno);
+		xy_printf(0, XYAPP, WARN_LOG, "socket_open_task create err:%d", errno);
         ret = TCPIP_Err_SockCreate;
 		goto EXIT;
     }
-	xy_printf(0, XYAPP, WARN_LOG, "%d%x%d", fd, bind_addr, sizeof(bind_addr));
+	xy_printf(0, XYAPP, WARN_LOG, "socket_open_task band,fd:%d,band addr:0x%x,band addr len:%d", fd, bind_addr, sizeof(bind_addr));
     /* 绑定socket */
     if (bind(fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) == -1)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "%d", errno);
+        xy_printf(0, XYAPP, WARN_LOG, "socket_open_task sock bind errno:%d", errno);
         ret = TCPIP_Err_SockBind;
         goto EXIT;
     }
@@ -249,7 +249,7 @@ int socket_open(socket_create_param_t *arg)
 
     memcpy(ctx->ai_addr, result->ai_addr, 28);
     reset_socket_seq_state(arg->id);
-	xy_printf(0, XYAPP, WARN_LOG, "%d%s%d", ctx->fd, ctx->remote_ip, ctx->remote_port);
+	xy_printf(0, XYAPP, WARN_LOG, "\r\nsocket open fd:%d,remote ip:%s,remote port:%d\r\n", ctx->fd, ctx->remote_ip, ctx->remote_port);
     /* bind时如果local port为0，lwip会随机为local分配一个port，此处获取一下pcb中实际记录的local port */
     /* local port为0情况下, bind完成后需要获取lwip内部分配的local port */
     xy_socket_local_info(fd, NULL, &ctx->local_port); 
@@ -262,16 +262,16 @@ int socket_open(socket_create_param_t *arg)
 	    socket_setprop_nonblock(ctx->fd);
     ctx->state = SOCKET_STATE_CONNECTING;
 
-	xy_printf(0, PLATFORM, INFO_LOG, "%s%s%s", ipaddr_ntoa(result->ai_addr), ip4addr_ntoa(result->ai_addr), ip6addr_ntoa(result->ai_addr));
+	xy_printf(0, PLATFORM, INFO_LOG, "socket open with addr:%s,%s,%s", ipaddr_ntoa(result->ai_addr), ip4addr_ntoa(result->ai_addr), ip6addr_ntoa(result->ai_addr));
 	// 本地Socket作为客户端时，需要做connect
 	if(arg->service_type == SOCKET_TCP || arg->service_type == SOCKET_UDP)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "%d%x%d", fd, result->ai_addr, result->ai_addrlen);
+		xy_printf(0, XYAPP, WARN_LOG, "socket_open_task connect,fd:%d,ai addr:0x%x,ai addr len:%d", fd, result->ai_addr, result->ai_addrlen);
 		// TODO：UDP做connect的情况下，不适用于服务器回复包所带的IP地址发生变化的情况
 		if (connect(fd, result->ai_addr, result->ai_addrlen) == -1)
 		{
 			ret = TCPIP_Err_SockConnect;
-			xy_printf(0, XYAPP, WARN_LOG, "%d", errno);
+			xy_printf(0, XYAPP, WARN_LOG, "socket_open_task sock connect err:%d", errno);
 			goto EXIT;
 		}
 		ctx->state = SOCKET_STATE_CONNECTED;	
@@ -281,7 +281,7 @@ int socket_open(socket_create_param_t *arg)
 		if (listen(fd, SOCK_NUM - 1) != 0)
 		{
 			ret = TCPIP_Err_SockListen;
-			xy_printf(0, PLATFORM_AP, WARN_LOG, "%d%d", arg->id, errno);
+			xy_printf(0, PLATFORM_AP, WARN_LOG, "socket_open_task listen err:%d,%d", arg->id, errno);
 			goto EXIT;
 		}
 
@@ -290,7 +290,7 @@ int socket_open(socket_create_param_t *arg)
 	else
 	{
 		ret = XY_Err_Parameter;
-		xy_printf(0, PLATFORM_AP, WARN_LOG, "%d%d", arg->id, arg->service_type);
+		xy_printf(0, PLATFORM_AP, WARN_LOG, "socket_open_task service type err:%d,%d", arg->id, arg->service_type);
 		goto EXIT;		
 	}
     /* 保存udp socket上下文到文件系统,用于edrx/drx下行数据云恢复 */
@@ -334,7 +334,7 @@ int socket_accept(int sock_fd)
     
 	if (get_socket_id_by_fd(sock_fd, &serverID) == 0)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "%s%d", __FUNCTION__, sock_fd);
+        xy_printf(0, XYAPP, WARN_LOG, "[%s]don't find ctx:%d", __FUNCTION__, sock_fd);
         return TCPIP_Err_SockClosed;
     }
 		
@@ -343,7 +343,7 @@ int socket_accept(int sock_fd)
 
 	if ((sock_fd = accept(sock_fd, &client_addr, &client_addr_len)) == -1)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "%s%d%d%d", __FUNCTION__, sock_fd, errno, serverID);
+        xy_printf(0, XYAPP, WARN_LOG, "[%s]accept fail:%d,%d,%d", __FUNCTION__, sock_fd, errno, serverID);
         return TCPIP_Err_SockAccept;
     }
 		
@@ -355,7 +355,7 @@ int socket_accept(int sock_fd)
 #if VER_BC25
 		at_SOCKINCOMEFULL_URC();
 #endif
-		xy_printf(0, XYAPP, WARN_LOG, "%s%d%d", __FUNCTION__, sock_fd, serverID);
+		xy_printf(0, XYAPP, WARN_LOG, "[%s]not can use id:%d,%d", __FUNCTION__, sock_fd, serverID);
         return TCPIP_Err_SockAccept;  
     }
 	
@@ -570,13 +570,13 @@ int socket_create(socket_create_param_t* arg)
 
         if ((dns_ret = getaddrinfo(arg->remote_ip, strPort, &hint, &result)) != 0)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%d", dns_ret);
+            xy_printf(0,XYAPP, WARN_LOG, "[socket create]getaddrinfo err:%d", dns_ret);
             return -1;
         }
 
         if ((sock_fd = socket(result->ai_family, result->ai_socktype, result->ai_protocol)) == -1)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
+            xy_printf(0,XYAPP, WARN_LOG, "[socket create]create err:%d", errno);
             freeaddrinfo(result);
             return -1;
         }
@@ -600,7 +600,7 @@ int socket_create(socket_create_param_t* arg)
 
         if (sock_fd == -1)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
+            xy_printf(0,XYAPP, WARN_LOG, "[socket create]create err:%d", errno);
             return -1;
         }
         else
@@ -618,7 +618,7 @@ int socket_create(socket_create_param_t* arg)
         {
             if (inet_pton(AF_INET6, arg->local_ip, &(((struct sockaddr_in6 *)&bind_addr)->sin6_addr)) == -1)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "[sock bind]ipv6 inet_pton fail");
                 close(sock_fd);
                 return -1;
             }
@@ -632,7 +632,7 @@ int socket_create(socket_create_param_t* arg)
         {
             if (inet_pton(AF_INET, arg->local_ip, &(((struct sockaddr_in *)&bind_addr)->sin_addr)) == -1)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "[sock bind]ipv4 inet_pton fail");
                 close(sock_fd);
                 return -1;
             }
@@ -642,7 +642,7 @@ int socket_create(socket_create_param_t* arg)
     /* do bind */
     if (bind(sock_fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock bind]bind err:%d", errno);
         close(sock_fd);
         return -1;
     }
@@ -667,7 +667,7 @@ int socket_create(socket_create_param_t* arg)
     update_socket_infos_to_fs(sock_id, true);
 
     socket_set_state(sock_id, SOCKET_STATE_CREATED);
-    xy_printf(0,XYAPP, WARN_LOG, "%d", sock_id);
+    xy_printf(0,XYAPP, WARN_LOG, "[socket create]create success id(%d)", sock_id);
 	
     if (arg->proto == IPPROTO_UDP)
     {
@@ -688,13 +688,13 @@ int socket_connect(socket_conn_param_t* arg)
 
     if (!xy_tcpip_is_ok())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[sock conn] net not avail");
         return XY_Err_NoConnected;
     }
 
     if (!is_socketId_valid(id))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", arg->id);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) invalid", arg->id);
         return XY_Err_Parameter;
     }
 
@@ -705,13 +705,13 @@ int socket_connect(socket_conn_param_t* arg)
 //    if ( (ctx->af_type == 0 && (xy_IpAddr_Check(arg->remote_ip, IPV4_TYPE) == 0)) ||
 //         (ctx->af_type == 1 && (xy_IpAddr_Check(arg->remote_ip, IPV6_TYPE) == 0)) )
 //    {
-//        xy_printf(0,XYAPP, WARN_LOG, "%d", id);
+//        xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) ipcheck invalid", id);
 //        return XY_Err_Parameter;
 //    }
 
     if (ctx->remote_ip != NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d%s", id, ctx->remote_ip);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) remoteip non-null(%s)", id, ctx->remote_ip);
         return XY_Err_Parameter;
     }
 
@@ -730,7 +730,7 @@ int socket_connect(socket_conn_param_t* arg)
     snprintf(port_str, sizeof(port_str) - 1, "%d", ctx->remote_port);
     if ((dns_ret = getaddrinfo(ctx->remote_ip, port_str, &hint, &result)) != 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d%d", id, dns_ret);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) getaddrinfo err:%d", id, dns_ret);
         return XY_Err_DnsFail;
     }
 
@@ -739,7 +739,7 @@ int socket_connect(socket_conn_param_t* arg)
     if (connect(ctx->fd, result->ai_addr, result->ai_addrlen) == -1)
     {
         freeaddrinfo(result);
-        xy_printf(0,XYAPP, WARN_LOG, "%d%d", id, errno);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) connect err:%d", id, errno);
         return covert_to_socket_errcode(errno);
     }
 
@@ -747,7 +747,7 @@ int socket_connect(socket_conn_param_t* arg)
     socket_setprop_nonblock(ctx->fd);
 
     socket_set_state(ctx->sock_id, SOCKET_STATE_CONNECTED);
-    xy_printf(0,XYAPP, WARN_LOG, "%d", ctx->sock_id);
+    xy_printf(0,XYAPP, WARN_LOG, "[sock conn]socket id(%d) connect success", ctx->sock_id);
     freeaddrinfo(result);
     return XY_OK;
 }
@@ -790,7 +790,7 @@ int socket_send(socket_send_param_t *arg)
 
     if (!is_socketId_valid(id))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", id);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock send]socket id(%d) invalid", id);
         return XY_Err_Parameter;
     }
  
@@ -805,7 +805,7 @@ int socket_send(socket_send_param_t *arg)
     }
     else
     {
-        xy_printf(0, XYAPP, WARN_LOG, "%d%d", id, arg->sequence);
+        xy_printf(0, XYAPP, WARN_LOG, "[sock send]socket id(%d) seq:%d", id, arg->sequence);
     }
 
     /* TCP */
@@ -889,7 +889,7 @@ int socket_send(socket_send_param_t *arg)
 
     if (ret <= 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", id, g_socket_ctx[id]->fd, errno);
+		xy_printf(0,XYAPP, WARN_LOG, "socket[%d-%d] send errno:%d", id, g_socket_ctx[id]->fd, errno);
 		if ((errno == EHOSTUNREACH && arg->net_type == 1) || (errno == ENOTCONN && arg->net_type == 0) )
 		{
 			ret = covert_to_socket_errcode(errno);
@@ -933,7 +933,7 @@ int socket_close(int sock_id)
 {
     if (!is_socketId_valid(sock_id))
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", sock_id);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock close]socket id(%d) invalid", sock_id);
         return XY_Err_Parameter;
     }
 
@@ -943,7 +943,7 @@ int socket_close(int sock_id)
     {
     	/* 置标志位后,在at_sock_recv_thread中完成关闭socket操作 */
         ctx->quit = 1;
-        xy_printf(0,XYAPP, WARN_LOG, "%d", sock_id);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock close]socket id(%d) quit flag set 1!!!", sock_id);
     }
     else
     {
@@ -964,7 +964,7 @@ void socket_set_state(int id, int state)
         return;
     }
     g_socket_ctx[id]->state = state;
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d", id, state);
+    xy_printf(0,XYAPP, WARN_LOG, "socket id(%d) set state:%d", id, state);
     return;
 }
 
@@ -1222,7 +1222,7 @@ void socket_pack_qsosrsp(int *socket_ids, char *rsp_fmt, char **prsp_cmd)
 					{
 						char *new_lloc = xy_malloc(current_size + 100);
 						current_size += 100;
-						xy_printf(0,XYAPP, WARN_LOG, "%s", current_size);
+						xy_printf(0,XYAPP, WARN_LOG, "uart_send:%s\r\n", current_size);
 						memcpy(new_lloc, *prsp_cmd, offset);
 						xy_free(*prsp_cmd);
 						*prsp_cmd = new_lloc;

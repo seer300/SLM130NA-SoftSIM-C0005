@@ -22,7 +22,7 @@ void netif_down_close_socket(uint32_t eventId)
 				continue;
 #endif
 			g_socket_ctx[idx]->is_deact = 1;
-			xy_printf(0,XYAPP, WARN_LOG, "");
+			xy_printf(0,XYAPP, WARN_LOG, "socket quit set 1!!!");
 		}
 	}
 }
@@ -78,7 +78,7 @@ void at_sock_recv_thread(void)
 		{
 			if (errno == EBADF)
 			{
-				xy_assert(0);
+				//xy_assert(0);
 			}
 			else
 			{
@@ -98,7 +98,7 @@ void at_sock_recv_thread(void)
 
             if (g_socket_ctx[i] != NULL && FD_ISSET(g_socket_ctx[i]->fd, &exceptfds))
             {
-                xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+                xy_printf(0,XYAPP, WARN_LOG, "except exist,force to close socket[%d]", i);
                 del_socket_ctx_by_index(i, false);
                 continue;
 			}
@@ -114,10 +114,10 @@ void at_sock_recv_thread(void)
 			socklen_t fromlen = sizeof(struct sockaddr_storage);
 
 			// ioctl(g_socket_ctx[i]->fd, FIONREAD, &len);  //get the size of received data
-            // xy_printf(0,XYAPP, WARN_LOG, "%d%d", i, len);
+            // xy_printf(0,XYAPP, WARN_LOG, "socket[%d] fionread len:%d", i, len);
             // if (len == 0)
             // {
-            //     xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+            //     xy_printf(0,XYAPP, WARN_LOG, "socket[%d] recv 0 BYTES,force to close socket", i);
             //     del_socket_ctx_by_index(i, true);
 			// 	continue;
             // }
@@ -126,7 +126,7 @@ void at_sock_recv_thread(void)
 
 			remote_info = xy_malloc(sizeof(struct sockaddr_storage));
             read_len = recvfrom(g_socket_ctx[i]->fd, buf, AT_SOCKET_MAX_DATA_LEN, MSG_DONTWAIT, (struct sockaddr *)remote_info, &fromlen);
-            xy_printf(0,XYAPP, WARN_LOG, "%d%d", i, read_len);
+            xy_printf(0,XYAPP, WARN_LOG, "socket[%d] recv len:%d", i, read_len);
 			if (read_len < 0)
             {
                 if (errno == EWOULDBLOCK) // time out
@@ -137,7 +137,7 @@ void at_sock_recv_thread(void)
                 }
                 else
                 {
-                    xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+                    xy_printf(0,XYAPP, WARN_LOG, "socket[%d] read - BYTES,force to close socket", i);
                     del_socket_ctx_by_index(i, false);
 					// xy_free(buf);
 					xy_free(remote_info);
@@ -146,7 +146,7 @@ void at_sock_recv_thread(void)
             }
             else if (read_len == 0)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+                xy_printf(0,XYAPP, WARN_LOG, "socket[%d]read 0 BYTES,force to close socket", i);
                 del_socket_ctx_by_index(i, false);
 				// xy_free(buf);
 				xy_free(remote_info);
@@ -155,7 +155,7 @@ void at_sock_recv_thread(void)
 
             if (g_socket_ctx[i]->recv_ctl == 0)
             {
-				xy_printf(0,XYAPP, WARN_LOG, "%d%d", i, read_len);
+				xy_printf(0,XYAPP, WARN_LOG, "socket[%d]recv_ctl is 0, recv %d length downlink data!!!", i, read_len);
             	add_new_rcv_data_node(i, read_len, buf, remote_info);
 				continue;
 			}
@@ -166,7 +166,7 @@ void at_sock_recv_thread(void)
 out:
     xy_free(buf);
     xy_deReg_psnetif_callback(EVENT_PSNETIF_INVALID, netif_down_close_socket);
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "socket recv thread exit!!!");
     g_at_socket_rcv_thd = NULL;
     osThreadExit();
 }

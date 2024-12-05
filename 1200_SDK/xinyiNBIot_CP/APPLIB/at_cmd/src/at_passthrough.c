@@ -155,7 +155,7 @@ int at_ATD_req(char *at_buf,char **prsp_cmd)
 /************* FIXED LENGTH DEMO START *********************/
 void fixed_length_passthr_proc(char *buf, uint32_t len)
 {
-    xy_printf(0,XYAPP, WARN_LOG, "atd recv len:%d", len);
+	xy_printf(0,XYAPP, WARN_LOG, "fixed recv len:%d", len);
     if (passthr_fixed_buff_len == 0)
         return;
 

@@ -29,14 +29,14 @@ int at_NPING_req(char *at_buf,char **prsp_cmd)
 
 	if (!xy_tcpip_is_ok())
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "ps netif is not ok!");
 		ret = ATERR_NOT_NET_CONNECT;
         goto OUT;
     }
 
 	if (ps_is_oos())
 	{
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "ps netif is OOS!");
 		ret = ATERR_NOT_NET_CONNECT;
         goto OUT;
     }
@@ -77,7 +77,7 @@ static int domain_is_valid(uint8_t wan_iptype, const char *ipaddr)
 
 	ip_addr_t result;
 	int ret = ipaddr_aton(ipaddr, &result);
-	xy_printf(0, PLATFORM_AP, INFO_LOG, "%s%d%d%d", ipaddr, ret, ipaddr_len, result.type);
+	xy_printf(0, PLATFORM_AP, INFO_LOG, "ipaddr %s %d %d %d!", ipaddr, ret, ipaddr_len, result.type);
 	
 	if (!ret)
 	{
@@ -94,20 +94,20 @@ static int domain_is_valid(uint8_t wan_iptype, const char *ipaddr)
 		}
 		if (count == ipaddr_len)
 		{
-			xy_printf(0, PLATFORM_AP, INFO_LOG, "%s%s", __FUNCTION__, ipaddr);
+			xy_printf(0, PLATFORM_AP, INFO_LOG, "[%s]host only contain numbers are not supported:%s", __FUNCTION__, ipaddr);
 			return XY_ERR;
 		}
 	}
 	else if ( (wan_iptype == IPV4_TYPE && result.type == IPV6_TYPE) || (wan_iptype == IPV6_TYPE && result.type == IPV4_TYPE) )
 	{
-		xy_printf(0, PLATFORM_AP, INFO_LOG, "%s%d%d", __FUNCTION__, wan_iptype, result.type);
+		xy_printf(0, PLATFORM_AP, INFO_LOG, "[%s]iptype not active:%d,%d", __FUNCTION__, wan_iptype, result.type);
 		return XY_ERR;
 	}
 	
 	// IPV4地址格式做严格检查
 	if (result.type == IPV4_TYPE && xy_IpAddr_Check(ipaddr, result.type) == 0)
 	{
-		xy_printf(0, PLATFORM_AP, INFO_LOG, "%s");
+		xy_printf(0, PLATFORM_AP, INFO_LOG, "[%s]ipv4 addr format err");
 		return XY_ERR;
 	}
 
@@ -143,7 +143,7 @@ int at_QPING_req(char *at_buf, char **prsp_cmd)
         if (!xy_tcpip_is_ok() || ps_is_oos())
 		{
 			*prsp_cmd = AT_TCPIP_ERR(TCPIP_Err_PdpBroken);
-            xy_printf(0, PLATFORM_AP, INFO_LOG, "%s%d", __FUNCTION__, xy_tcpip_is_ok(), ps_is_oos());
+            xy_printf(0, PLATFORM_AP, INFO_LOG, "[%s]net status err:%d", __FUNCTION__, xy_tcpip_is_ok(), ps_is_oos());
 			goto OUT;
 		} 
 
@@ -189,7 +189,7 @@ int at_QPING_req(char *at_buf, char **prsp_cmd)
         if (!xy_tcpip_is_ok() || ps_is_oos())
 		{
 			*prsp_cmd = AT_TCPIP_ERR(TCPIP_Err_PdpBroken);
-            xy_printf(0, PLATFORM, INFO_LOG, "%s%d", __FUNCTION__, xy_tcpip_is_ok(), ps_is_oos());
+            xy_printf(0, PLATFORM, INFO_LOG, "[%s]net status err:%d", __FUNCTION__, xy_tcpip_is_ok(), ps_is_oos());
 			goto OUT;
 		} 
 

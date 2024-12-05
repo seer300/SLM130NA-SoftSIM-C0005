@@ -72,7 +72,7 @@ void xy_Soft_Reset(Soft_Reset_Type soft_rst_reason)
 
 void xy_fast_power_off()
 {
-	xy_printf(0,PLATFORM, WARN_LOG, "");
+	xy_printf(0,PLATFORM, WARN_LOG, "FASTOFF:AT+CFUN=5");
 
 	g_fast_off = 1;
 	clear_sleep_lock(LPM_ALL);
@@ -263,7 +263,7 @@ __RAM_FUNC void xy_runtime_get_exit(uint32_t id, uint32_t time_enter)
 
 void xy_runtime_debug(void)
 {
-	xy_printf(0,PLATFORM, DEBUG_LOG, "%d%d%d%d%d%d%d%d%d%d%d%d",  \
+	xy_printf(0,PLATFORM, DEBUG_LOG, "xy_runtime_debug freq 720000:PHYTMR_IRQn %d,TIM4_IRQn %d,DMAC1_IRQn %d,FLASH_WRITE %d,FLASH_ERASE %d,FLASH_ERASE1 %d,FLASH_PROTECT_EN %d,FLASH_PROTECT_DIS %d,MCNT_IRQn %d,UTC_IRQn %d,WAKEUP_IRQn %d,ISO7816_IRQn %d",  \
 			 rtc_record[PHYTMR_IRQn].rtc_record_timer, rtc_record[TIM4_IRQn].rtc_record_timer, rtc_record[DMAC1_IRQn].rtc_record_timer,\
 			 rtc_record[RTC_RECORD_FLASH_WRITE].rtc_record_timer, rtc_record[RTC_RECORD_FLASH_ERASE].rtc_record_timer, rtc_record[RTC_RECORD_FLASH_ERASE1].rtc_record_timer, \
 			 rtc_record[RTC_RECORD_FLASH_PROTECT_EN].rtc_record_timer, rtc_record[RTC_RECORD_FLASH_PROTECT_DIS].rtc_record_timer,rtc_record[MCNT_IRQn].rtc_record_timer,\

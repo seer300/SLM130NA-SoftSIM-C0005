@@ -679,13 +679,13 @@ static int OTA_downlink_packet_proc(char* data, uint32_t size)
 
 	if(g_softap_fac_nv->fota_close == 1 || g_fota_permit==0)
 	{
-        xy_printf(0, XYAPP, WARN_LOG, "");
+        xy_printf(0, XYAPP, WARN_LOG, "OTA_downlink_packet_proc fail,not permit!");
         return XY_ERR;
     }
 
     if (g_recv_size + input_len > g_flash_maxlen)
     {
-        xy_printf(0, XYAPP, WARN_LOG, "");
+        xy_printf(0, XYAPP, WARN_LOG, "error:Dtle file size too large!");
         return XY_ERR;
     }
 
@@ -706,18 +706,18 @@ static int OTA_downlink_packet_proc(char* data, uint32_t size)
         /* 差分包魔术字检测 */
         if (s_fota_delta_header->magic_num != FOTA_DELTA_MAGIC_NUM)
         {
-            xy_printf(0, XYAPP, WARN_LOG, "%d%d", s_fota_delta_header->magic_num, FOTA_DELTA_MAGIC_NUM);
+            xy_printf(0, XYAPP, WARN_LOG, "error: magic_num(%d) != %d", s_fota_delta_header->magic_num, FOTA_DELTA_MAGIC_NUM);
             return XY_ERR;
         }
 
         /* 差分包过大flash不足 */
         if ((Address_Translation_AP_To_CP(s_fota_delta_header->fota_packet_base)) < g_flash_base)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "");
+            xy_printf(0,XYAPP, WARN_LOG, "error: delta is too big");
             return XY_ERR;
         }
 
-        xy_printf(0, XYAPP, WARN_LOG, "%x", s_fota_delta_header->user_data_len);
+        xy_printf(0, XYAPP, WARN_LOG, "user_data_len: %x ", s_fota_delta_header->user_data_len);
 
         g_flash_maxlen = g_flash_maxlen - (Address_Translation_AP_To_CP(s_fota_delta_header->fota_packet_base) - g_flash_base);
         g_flash_base = Address_Translation_AP_To_CP(s_fota_delta_header->fota_packet_base);
@@ -725,7 +725,7 @@ static int OTA_downlink_packet_proc(char* data, uint32_t size)
 		//写入真正的差分包存放地址
 		g_fota_breakpoint_info->flash_base = g_flash_base;
 		g_fota_breakpoint_info->flash_maxlen = g_flash_maxlen;		
-        xy_printf(0, XYAPP, WARN_LOG, "%x%x", s_fota_delta_header->fota_packet_base, g_flash_maxlen);
+        xy_printf(0, XYAPP, WARN_LOG, "delta_save_addr: %x %x", s_fota_delta_header->fota_packet_base, g_flash_maxlen);
     }
 
     if (g_recv_size == (sizeof(delta_head_info_t)))
@@ -782,7 +782,7 @@ void OTA_upgrade_init()
         s_fota_delta_header = NULL;
     }
 	
-    xy_printf(0, XYAPP, WARN_LOG, "");
+    xy_printf(0, XYAPP, WARN_LOG, "[OTA_upgrade_init]Reset to complete!");
 }
 
 /*保存单个差分包*/
@@ -802,7 +802,7 @@ int OTA_save_one_packet(char* data, uint32_t size)
         //下载出错或续升后，已下载数据没有包含全部的差分包信息，需重新开始下载
         if (g_recv_size > 0 && g_recv_size < sizeof(delta_head_info_t))
         {
-            xy_printf(0,XYAPP, WARN_LOG, "");
+            xy_printf(0,XYAPP, WARN_LOG, "[OTA_save_one_packet]please restart fota!");
             return XY_Err_NotAllowed;
         }
 
@@ -817,7 +817,7 @@ int OTA_save_one_packet(char* data, uint32_t size)
 
 		OTA_update_state(XY_FOTA_DOWNLOADING);
 
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[OTA_save_one_packet] Init end");
     }
 
     if (OTA_downlink_packet_proc(data, size) != XY_OK)
@@ -846,17 +846,17 @@ int OTA_delta_check()
 
 	if(g_softap_fac_nv->fota_close == 1 || g_fota_permit==0)
 	{
-        xy_printf(0, XYAPP, WARN_LOG, "");
+        xy_printf(0, XYAPP, WARN_LOG, "OTA_delta_check fail,not permit!");
         return XY_ERR;
     }
 
     if (g_flash_base == 0 || g_recv_size <= sizeof(delta_head_info_t))
     {
-        xy_printf(0, XYAPP, WARN_LOG, "");
+        xy_printf(0, XYAPP, WARN_LOG, "[OTA]:check no recv data\n");
         return XY_ERR;
     }
 
-    xy_printf(0,XYAPP, WARN_LOG, "%x%d", g_flash_base, g_recv_size);
+    xy_printf(0,XYAPP, WARN_LOG, "[OTA]:flash_base:%x, recv_size:%d\n", g_flash_base, g_recv_size);
 
     buf = (uint8_t *)xy_malloc2(1024);
     if (buf == NULL)
@@ -873,7 +873,7 @@ int OTA_delta_check()
     memset(head_info, 0x00, sizeof(delta_head_info_t));
     xy_Flash_Read(g_flash_base + read_size, head_info, sizeof(delta_head_info_t));
 
-    xy_printf(0, XYAPP, WARN_LOG, "%d", head_info->sign_type);
+    xy_printf(0, XYAPP, WARN_LOG, "[OTA]:delta check mode:%d\n", head_info->sign_type);
 
     if (head_info->sign_type != NO_CHECK_OLD && head_info->sign_type != SHA_CHECK_OLD && head_info->sign_type != RSA_SHA_CHECK_OLD)
     {
@@ -937,7 +937,7 @@ int OTA_delta_check()
 		}
 		else
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "");
+			xy_printf(0,XYAPP, WARN_LOG, "[OTA]: FW integrity check failed");
 			ret = XY_ERR;
 			goto exit;
 		}
@@ -945,13 +945,13 @@ int OTA_delta_check()
 
     if(OTA_version_check(head_info) != XY_OK)
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "[OTA]: FW version check failed");
 		ret = XY_ERR;
 		goto exit;
 	}
 
 	OTA_update_state(XY_FOTA_DOWNLOADED);
-	xy_printf(0, XYAPP, WARN_LOG, "");
+	xy_printf(0, XYAPP, WARN_LOG, "[OTA]: FW validate success");
 	
 exit:
 	if(buf)
@@ -973,7 +973,7 @@ int OTA_upgrade_start()
 
 	if(g_softap_fac_nv->fota_close == 1 || g_fota_permit==0)
 	{
-        xy_printf(0, XYAPP, WARN_LOG, "");
+        xy_printf(0, XYAPP, WARN_LOG, "OTA_upgrade_start fail,not permit!");
         goto error;
     }
 
@@ -1016,7 +1016,7 @@ int OTA_upgrade_start()
     xy_Flash_Write(FOTA_PRIME_INFO_ADDR, &fota_def, sizeof(Flash_Secondary_Boot_Fota_Def));
     flash_interface_protect_enable();
 
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "[OTA_upgrade_start] updating");
 
     if (g_softap_fac_nv->fota_close == 1 || g_fota_permit==0)
 		goto error;

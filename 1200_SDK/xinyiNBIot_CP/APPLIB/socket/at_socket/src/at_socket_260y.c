@@ -355,7 +355,7 @@ int at_SOCKNMI_260Y_URC(int sock_id, uint32_t len, char *data, void *remoteinfo)
 	char urc_str[64];
     int access_mode = g_socket_ctx[sock_id]->access_mode;
 
-	xy_printf(0, PLATFORM, INFO_LOG, "%s%d%d%d%d", __FUNCTION__, __LINE__, access_mode, sock_id, len);
+	xy_printf(0, PLATFORM, INFO_LOG, "[%s-%d]recv:%d,%d,%d\n", __FUNCTION__, __LINE__, access_mode, sock_id, len);
     if (access_mode == SOCKET_DIRECT_SPIT_MODE)
 	{		
 		int str_len = 0;

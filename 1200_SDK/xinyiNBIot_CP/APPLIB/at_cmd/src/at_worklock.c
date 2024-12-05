@@ -167,7 +167,7 @@ int at_delaylock_act()
 		g_AT_lock_timer = osTimerNew((osTimerFunc_t)delaylock_timeout_cb, \
             osTimerOnce, NULL, &timer_attr);
 
-		xy_printf(0, PLATFORM_AP, WARN_LOG, "");
+		xy_printf(0, PLATFORM_AP, WARN_LOG, "create delay timer");
     }
 	
     osTimerStart(g_AT_lock_timer,delay_sec * 1000);
@@ -175,7 +175,7 @@ int at_delaylock_act()
 	/*云业务使用osdelay驱动主线程，osdelay默认不参与STANDBY唤醒，进而也需要申请延迟锁*/
     sleep_lock(g_AT_lock_fd, LPM_ALL);
 
-	xy_printf(0, PLATFORM_AP, WARN_LOG, "");   
+	xy_printf(0, PLATFORM_AP, WARN_LOG, "at_delaylock_act and sleep_lock");   
 	
     return XY_OK;
 }
@@ -192,11 +192,11 @@ int at_delaylock_deact()
 	if (g_AT_lock_timer != NULL && osTimerIsRunning(g_AT_lock_timer) == 1)
 	{
 		osTimerStop(g_AT_lock_timer);
-		xy_printf(0, PLATFORM_AP, WARN_LOG, "");   
+		xy_printf(0, PLATFORM_AP, WARN_LOG, "at_delaylock_deact  osTimerStop(g_AT_lock_timer)");   
 	}
 	else
 	{
-		xy_printf(0, PLATFORM_AP, WARN_LOG, "");   
+		xy_printf(0, PLATFORM_AP, WARN_LOG, "at_delaylock_deact  osTimerStop fail!!!");   
 	}
 	
 	sleep_unlock(g_AT_lock_fd, LPM_ALL);

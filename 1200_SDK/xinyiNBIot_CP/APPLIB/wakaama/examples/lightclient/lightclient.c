@@ -116,7 +116,7 @@ void * xiny_lwm2m_connect_server(uint16_t secObjInstID,
 
     if (uri == NULL) return NULL;
 
-    xy_printf(0,XYAPP, WARN_LOG, "%s", uri);
+    xy_printf(0,XYAPP, WARN_LOG, "Connecting to %s\r\n", uri);
 
     // parse uri in the form "coaps://[host]:[port]"
     if (0 == strncmp(uri, "coaps://", strlen("coaps://")))
@@ -149,7 +149,7 @@ void * xiny_lwm2m_connect_server(uint16_t secObjInstID,
 
     newConnP = (xiny_lwm2m_object_t *)(xiny_connection_create((xiny_connection_t *)(dataP->connList), dataP->sock, host, port, dataP->addressFamily));
     if (newConnP == NULL) {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "Connection creation failed.\r\n");
     }
     else {
         dataP->connList = newConnP;
@@ -195,112 +195,112 @@ void print_state(xiny_lwm2m_context_t * lwm2mH)
 {
     xiny_lwm2m_server_lwm2m_t * targetP;
 
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "State: ");
     switch(lwm2mH->state)
     {
     case xiny_STATE_INITIAL:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_INITIAL");
         break;
     case xiny_STATE_BOOTSTRAP_REQUIRED:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_BOOTSTRAP_REQUIRED");
         break;
     case xiny_STATE_BOOTSTRAPPING:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_BOOTSTRAPPING");
         break;
     case xiny_STATE_REGISTER_REQUIRED:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_REGISTER_REQUIRED");
         break;
     case xiny_STATE_REGISTERING:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_REGISTERING");
         break;
     case xiny_STATE_READY:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "xiny_STATE_READY");
         break;
     default:
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "Unknown !");
         break;
     }
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "\r\n");
 
     targetP = lwm2mH->xiny_bootstrapServerList;
 
     if (lwm2mH->xiny_bootstrapServerList == NULL)
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "No Bootstrap Server.\r\n");
     }
     else
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "Bootstrap Servers:\r\n");
         for (targetP = lwm2mH->xiny_bootstrapServerList ; targetP != NULL ; targetP = targetP->next)
         {
-        	xy_printf(0,XYAPP, WARN_LOG, "%d", targetP->secObjInstID);
-        	xy_printf(0,XYAPP, WARN_LOG, "%lu", (unsigned long)targetP->lifetime);
-        	xy_printf(0,XYAPP, WARN_LOG, "");
+        	xy_printf(0,XYAPP, WARN_LOG, " - Security Object ID %d", targetP->secObjInstID);
+        	xy_printf(0,XYAPP, WARN_LOG, "\tHold Off Time: %lu s", (unsigned long)targetP->lifetime);
+        	xy_printf(0,XYAPP, WARN_LOG, "\tstatus: ");
             switch(targetP->status)
             {
             case xiny_STATE_DEREGISTERED:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "DEREGISTERED\r\n");
                 break;
             case xiny_STATE_BS_HOLD_OFF:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "CLIENT HOLD OFF\r\n");
                 break;
             case xiny_STATE_BS_INITIATED:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "BOOTSTRAP INITIATED\r\n");
                 break;
             case xiny_STATE_BS_PENDING:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "BOOTSTRAP PENDING\r\n");
                 break;
             case xiny_STATE_BS_FINISHED:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "BOOTSTRAP FINISHED\r\n");
                 break;
             case xiny_STATE_BS_FAILED:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "BOOTSTRAP FAILED\r\n");
                 break;
             default:
-            	xy_printf(0,XYAPP, WARN_LOG, "%d", (int)targetP->status);
+            	xy_printf(0,XYAPP, WARN_LOG, "INVALID (%d)\r\n", (int)targetP->status);
             }
-            xy_printf(0,XYAPP, WARN_LOG, "");
+            xy_printf(0,XYAPP, WARN_LOG, "\r\n");
         }
     }
 
     if (lwm2mH->serverList == NULL)
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "No LWM2M Server.\r\n");
     }
     else
     {
-    	xy_printf(0,XYAPP, WARN_LOG, "");
+    	xy_printf(0,XYAPP, WARN_LOG, "LWM2M Servers:\r\n");
         for (targetP = lwm2mH->serverList ; targetP != NULL ; targetP = targetP->next)
         {
-        	xy_printf(0,XYAPP, WARN_LOG, "%d", targetP->shortID);
-        	xy_printf(0,XYAPP, WARN_LOG, "");
+        	xy_printf(0,XYAPP, WARN_LOG, " - Server ID %d", targetP->shortID);
+        	xy_printf(0,XYAPP, WARN_LOG, "\tstatus: ");
             switch(targetP->status)
             {
             case xiny_STATE_DEREGISTERED:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "DEREGISTERED\r\n");
                 break;
             case xiny_STATE_REG_PENDING:
-            	xy_printf(0,XYAPP, WARN_LOG, "");
+            	xy_printf(0,XYAPP, WARN_LOG, "REGISTRATION PENDING\r\n");
                 break;
             case xiny_STATE_REGISTERED:
-            	xy_printf(0,XYAPP, WARN_LOG, "%s%lu", targetP->location, (unsigned long)targetP->lifetime);
+            	xy_printf(0,XYAPP, WARN_LOG, "REGISTERED\tlocation: \"%s\"\tLifetime: %lus\r\n", targetP->location, (unsigned long)targetP->lifetime);
                 break;
             case xiny_STATE_REG_UPDATE_PENDING:
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "REGISTRATION UPDATE PENDING\r\n");
                 break;
             case xiny_STATE_REG_UPDATE_NEEDED:
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "REGISTRATION UPDATE REQUIRED\r\n");
                 break;
             case xiny_STATE_DEREG_PENDING:
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "DEREGISTRATION PENDING\r\n");
                 break;
             case xiny_STATE_REG_FAILED:
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "REGISTRATION FAILED\r\n");
                 break;
             default:
-                xy_printf(0,XYAPP, WARN_LOG, "%d", (int)targetP->status);
+                xy_printf(0,XYAPP, WARN_LOG, "INVALID (%d)\r\n", (int)targetP->status);
             }
-            xy_printf(0,XYAPP, WARN_LOG, "");
+            xy_printf(0,XYAPP, WARN_LOG, "\r\n");
         }
     }
 }
@@ -330,11 +330,11 @@ int lightclient_demo_proc()
 	/*
 	 *This call an internal function that create an IPv6 socket on the port 5683.
 	 */
-	xy_printf(0,XYAPP, WARN_LOG, "%s", localPort);
+	xy_printf(0,XYAPP, WARN_LOG, "Trying to bind LWM2M Client to port %s\r\n", localPort);
 	data.sock = xiny_create_socket(localPort, data.addressFamily);
 	if (data.sock < 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
+		xy_printf(0,XYAPP, WARN_LOG, "Failed to open socket: %d %s\r\n", errno, strerror(errno));
 		return -1;
 	}
 
@@ -345,7 +345,7 @@ int lightclient_demo_proc()
 	objArray[0] = xiny_get_security_object();
 	if (NULL == objArray[0])
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "Failed to create security object\r\n");
 		return -1;
 	}
 	data.securityObjP = objArray[0];
@@ -353,21 +353,21 @@ int lightclient_demo_proc()
 	objArray[1] = xiny_get_server_object();
 	if (NULL == objArray[1])
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "Failed to create server object\r\n");
 		return -1;
 	}
 
 	objArray[2] = xiny_get_object_device();
 	if (NULL == objArray[2])
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "Failed to create Device object\r\n");
 		return -1;
 	}
 
 	objArray[3] = get_test_object();
 	if (NULL == objArray[3])
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "Failed to create Test object\r\n");
 		return -1;
 	}
 
@@ -378,7 +378,7 @@ int lightclient_demo_proc()
 	lwm2mH = xiny_lwm2m_init(&data);
 	if (NULL == lwm2mH)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "xiny_lwm2m_init() failed\r\n");
 		return -1;
 	}
 
@@ -389,11 +389,11 @@ int lightclient_demo_proc()
 	result = xiny_lwm2m_configure(lwm2mH, name, NULL, NULL, OBJ_COUNT, objArray);
 	if (result != 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%X", result);
+		xy_printf(0,XYAPP, WARN_LOG, "xiny_lwm2m_configure() failed: 0x%X\r\n", result);
 		return -1;
 	}
 
-	xy_printf(0,XYAPP, WARN_LOG, "%s%s", name, localPort);
+	xy_printf(0,XYAPP, WARN_LOG, "LWM2M Client \"%s\" xiny_started on port %s.\r\n", name, localPort);
 
 	/*
 	 * We now enter in a while loop that will handle the communications from the server
@@ -420,7 +420,7 @@ int lightclient_demo_proc()
 		result = xiny_lwm2m_step(lwm2mH, &(tv.tv_sec));
 		if (result != 0)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "%X", result);
+			xy_printf(0,XYAPP, WARN_LOG, "xiny_lwm2m_step() failed: 0x%X\r\n", result);
 			return -1;
 		}
 
@@ -434,7 +434,7 @@ int lightclient_demo_proc()
 		{
 			if (errno != EINTR)
 			{
-			  xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
+			  xy_printf(0,XYAPP, WARN_LOG, "Error in select(): %d %s\r\n", errno, strerror(errno));
 			}
 		}
 		else if (result > 0)
@@ -459,7 +459,7 @@ int lightclient_demo_proc()
 
 				if (0 > numBytes)
 				{
-					xy_printf(0,XYAPP, WARN_LOG, "%d%s", errno, strerror(errno));
+					xy_printf(0,XYAPP, WARN_LOG, "Error in recvfrom(): %d %s\r\n", errno, strerror(errno));
 				}
 				else if (0 < numBytes)
 				{
@@ -478,7 +478,7 @@ int lightclient_demo_proc()
 						/*
 						 * This packet comes from an unknown peer
 						 */
-						xy_printf(0,XYAPP, WARN_LOG, "");
+						xy_printf(0,XYAPP, WARN_LOG, "xiny_received bytes ignored!\r\n");
 					}
 				}
 			}
@@ -497,7 +497,7 @@ int lightclient_demo_proc()
 	xiny_free_object_device(objArray[2]);
 	free_test_object(objArray[3]);
 
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "\r\n\n");
 	g_lightclient_handle=NULL;
 	osThreadExit();
 	return 0;
@@ -521,11 +521,11 @@ void lightclient_demo(void *args)
 	
 	app_delay_unlock();
 	
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "lightclient_demo start");
 
 	lightclient_demo_proc();
 
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "lightclient_demo end");
 
 	g_lightclient_handle=NULL;
 	osThreadExit();

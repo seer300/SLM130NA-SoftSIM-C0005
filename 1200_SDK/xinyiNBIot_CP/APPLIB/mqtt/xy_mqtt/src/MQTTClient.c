@@ -34,7 +34,7 @@ int MQTTSendPacket(MQTTClient* c, int length, Timer* timer)
     }
     else
     {
-        xy_printf(0,XYAPP, WARN_LOG,"");
+        xy_printf(0,XYAPP, WARN_LOG,"[MQTT] send packet timeout  \n");
         rc = FAILURE;
     }
     return rc;
@@ -150,7 +150,7 @@ int keepalive(MQTTClient* c)
             int len = MQTTSerialize_pingreq(c->buf, c->buf_size);
             if (len > 0 && (rc = MQTTSendPacket(c, len, &timer)) == SUCCESS) // send the ping packet
                 c->ping_outstanding = 1;
-            xy_printf(0,XYAPP, WARN_LOG,"%d%d",len,rc);
+            xy_printf(0,XYAPP, WARN_LOG,"[MQTT]send keeplive pkt len=%d rc=%d",len,rc);
         }
     }
 

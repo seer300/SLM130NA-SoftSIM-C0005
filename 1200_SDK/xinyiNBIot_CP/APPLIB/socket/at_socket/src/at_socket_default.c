@@ -842,7 +842,7 @@ int at_SOCKNMI_Default_URC(int id, uint32_t read_len, char *buf, void *remoteinf
         //+NSONMI:<socket>,<length>
         if (g_at_sck_report_mode == BUFFER_WITH_HINT || g_at_sck_report_mode == BUFFER_NO_HINT)
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%d%d", id, read_len);
+            xy_printf(0,XYAPP, WARN_LOG, "socket[%d] recv %d length downlink data!!!", id, read_len);
             if (g_at_sck_report_mode == BUFFER_WITH_HINT && g_socket_ctx[id]->firt_recv == 0)
             {
                 rsp_cmd = xy_malloc(36);

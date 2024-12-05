@@ -183,7 +183,7 @@ int del_socket_ctx_by_index(uint8_t idx, bool isquit)
 	SOCKET_CTX_LOCK();
 	if (g_socket_ctx[idx] != NULL)
 	{
-		xy_printf(0, PLATFORM, INFO_LOG, "%s%d%d%d", __FUNCTION__, idx, isquit, g_socket_ctx[idx]->state);
+		xy_printf(0, PLATFORM, INFO_LOG, "[%s]del:%d,%d,%d\n", __FUNCTION__, idx, isquit, g_socket_ctx[idx]->state);
         uint8_t net_type = g_socket_ctx[idx]->net_type;
         close(g_socket_ctx[idx]->fd);
 		struct rcv_data_nod *nod_next = NULL;
@@ -505,11 +505,11 @@ int proc_tcp_ack(int fd, uint32_t ackno, uint16_t ack_len)
 {
 	uint8_t id = 0;
 
-	xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", fd, ackno, ack_len);
+	xy_printf(0,XYAPP, WARN_LOG, "proc_tcp_ack socket fd:%d, ackno:%d, ack_len:%d", fd, ackno, ack_len);
 
 	if (get_socket_id_by_fd(fd, &id) != XY_OK)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "tcpack can not match conn_socket");
 		return XY_ERR;
 	}
 #if VER_BC25 || VER_260Y
@@ -563,11 +563,11 @@ int resume_udp_socket(socket_create_param_t* arg)
 	
 	af_type = (arg->af_type == 1) ? AF_INET6 : AF_INET;
 	
-	xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", af_type, SOCK_DGRAM, IPPROTO_UDP);
+	xy_printf(0, XYAPP, WARN_LOG, "socket_resume create,ai_family:%d,ai_socktype:%d,ai_protocol:%d", af_type, SOCK_DGRAM, IPPROTO_UDP);
     sock_fd = socket(af_type, SOCK_DGRAM, IPPROTO_UDP);
     if (sock_fd == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
+        xy_printf(0,XYAPP, WARN_LOG, "[socket create]create err:%d", errno);
         return -1;
     }
 
@@ -580,7 +580,7 @@ int resume_udp_socket(socket_create_param_t* arg)
         {
             if (inet_pton(AF_INET6, arg->local_ip, &(((struct sockaddr_in6 *)&bind_addr)->sin6_addr)) == -1)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "[sock bind]ipv6 inet_pton fail");
                 close(sock_fd);
                 return -1;
             }
@@ -594,17 +594,17 @@ int resume_udp_socket(socket_create_param_t* arg)
         {
             if (inet_pton(AF_INET, arg->local_ip, &(((struct sockaddr_in *)&bind_addr)->sin_addr)) == -1)
             {
-                xy_printf(0,XYAPP, WARN_LOG, "");
+                xy_printf(0,XYAPP, WARN_LOG, "[sock bind]ipv4 inet_pton fail");
                 close(sock_fd);
                 return -1;
             }
         }
     }
-	xy_printf(0, XYAPP, WARN_LOG, "%d%x%d", sock_fd, bind_addr, sizeof(bind_addr));
+	xy_printf(0, XYAPP, WARN_LOG, "socket_resume band,fd:%d,band addr:0x%x,band addr len:%d", sock_fd, bind_addr, sizeof(bind_addr));
     /* do bind */
     if (bind(sock_fd, (struct sockaddr *)&bind_addr, sizeof(bind_addr)) == -1)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", errno);
+        xy_printf(0,XYAPP, WARN_LOG, "[sock bind]bind err:%d", errno);
         close(sock_fd);
         return -1;
     }
@@ -640,17 +640,17 @@ int resume_udp_socket(socket_create_param_t* arg)
     //udp set socket recv/send non-block
     socket_setprop_nonblock(get_socket_fd(sock_id));
 #if VER_BC25 || VER_260Y
-	xy_printf(0, XYAPP, WARN_LOG, "%d%x%d", sock_fd, socket_ctx->ai_addr, 28);
+	xy_printf(0, XYAPP, WARN_LOG, "socket_resume connect,fd:%d,ai addr:0x%x,ai addr len:%d", sock_fd, socket_ctx->ai_addr, 28);
 	// TODO：UDP做connect的情况下，不适用于服务器回复包所带的IP地址发生变化的情况
 	if (connect(sock_fd, socket_ctx->ai_addr, 28) == -1)
 	{
-		xy_printf(0, PLATFORM, INFO_LOG, "%s", socket_ctx->remote_ip);
-		xy_printf(0, XYAPP, WARN_LOG, "%d", errno);
+		xy_printf(0, PLATFORM, INFO_LOG, "UDP resume connect fail, addr:%s", socket_ctx->remote_ip);
+		xy_printf(0, XYAPP, WARN_LOG, "socket_open_task sock connect err:%d", errno);
 		close(sock_fd);
         del_socket_ctx_by_index(sock_id, 0);
 		return -1;
 	}
-	xy_printf(0, PLATFORM, INFO_LOG, "%s", socket_ctx->remote_ip);
+	xy_printf(0, PLATFORM, INFO_LOG, "UDP resume connect success, addr:%s", socket_ctx->remote_ip);
 	socket_ctx->state = SOCKET_STATE_CONNECTED;
 #endif
     return 0;
@@ -661,12 +661,12 @@ void resume_socket_app()
     static uint8_t g_backup_udp_once = 0;
     if (g_at_socket_rcv_thd != NULL)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[resume_socket_app] fail--rcv thread is running!");
         goto END;
     }
     if (g_socket_udp_info == NULL || *(unsigned int *)g_socket_udp_info == 0xFFFFFFFF)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[resume_socket_app] fail--socket udp info is null");
         goto END;
     }
 
@@ -685,10 +685,10 @@ void resume_socket_app()
 
 			if (idx == (int8_t)-1 || g_socket_ctx[idx] != NULL|| g_socket_udp_info->udp_socket[i].local_port == 0)
 			{
-				xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+				xy_printf(0,XYAPP, WARN_LOG, "socket resume debug:%d", i);
 				continue;
 			}
-            xy_printf(0,XYAPP, WARN_LOG, "%d%d", i, g_socket_udp_info->udp_socket[i].local_port);
+            xy_printf(0,XYAPP, WARN_LOG, "[resume_socket_app] udp_socket[%d] local port:%d", i, g_socket_udp_info->udp_socket[i].local_port);
             sock_param[i] = xy_malloc(sizeof(socket_create_param_t));
 			memset(sock_param[i], 0, sizeof(socket_create_param_t));
 
@@ -708,7 +708,7 @@ void resume_socket_app()
 
 			if ((resume_udp_socket(sock_param[i])) != 0)
 			{
-				xy_printf(0, XYAPP, WARN_LOG, "%d%d", res, i);
+				xy_printf(0, XYAPP, WARN_LOG, "[resume_socket_app] udp_nack_err:%d,g_socket_ctx[%d] create fail!", res, i);
 			}
 #if VER_BC25 || VER_260Y
 			xy_free(sock_param[i]->remote_ip);
@@ -826,20 +826,20 @@ void urc_UDPSN_Callback(unsigned long eventId, void *param, int paramLen)
 
 	socket_fd = (unsigned short)((seq_soc_num & 0XFF00) >> 8);
 	seq_num = (unsigned short)(seq_soc_num & 0X00FF);
-    xy_printf(0, XYAPP, WARN_LOG, "%d%d%d", socket_fd, seq_num, send_status);
+    xy_printf(0, XYAPP, WARN_LOG, "socket_fd:%d, seq_num:%d, status:%d", socket_fd, seq_num, send_status);
 
     //socket context proc
 	if (get_socket_id_by_fd(socket_fd, &id) != XY_OK)
 		return;
 	if (seq_num > SEQUENCE_MAX || seq_num <= 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "UDPSEQUENCE ERR!!!");
 		return;
 	}
 
 	if (find_match_udp_node(id, (unsigned char)seq_num) == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "find no match udp mode!!!");
 		return;
 	}
 

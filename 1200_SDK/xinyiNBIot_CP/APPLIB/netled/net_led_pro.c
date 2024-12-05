@@ -142,9 +142,9 @@ void net_led_task()
 	{
 		osMessageQueueGet(at_led_q, &rcv_msg, NULL, osWaitForever);
 
-		xy_printf(0,XYAPP, WARN_LOG, "%d",rcv_msg->msg_id);
+		xy_printf(0,XYAPP, WARN_LOG, "led net is %d\r\n",rcv_msg->msg_id);
 
-	
+		
 		switch (rcv_msg->msg_id)
 		{
 		case LED_SLOWFLICKER:
@@ -180,6 +180,7 @@ void led_urc_CGEV_Callback(unsigned long eventId, void *param, int paramLen)
 	xy_assert(paramLen == sizeof(ATC_MSG_CGEV_IND_STRU));
 	ATC_MSG_CGEV_IND_STRU *cgev_urc = (ATC_MSG_CGEV_IND_STRU*)param;
 
+	//logT(cgev_urc->ucCgevEventId,"CGEV in");
 	switch(cgev_urc->ucCgevEventId)
 	{
 		case D_ATC_CGEV_ME_PDN_ACT:   

@@ -58,7 +58,7 @@ int at_CPOF_req(char *at_buf,char **prsp_cmd)
 int at_ASSERT_req(char *at_buf, char **prsp_cmd)
 {
 	int cmd = 0;
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "TEST ASSERT AND DUMP!");
 	if(g_req_type == AT_CMD_ACTIVE)
 	{
 		xy_assert(0);

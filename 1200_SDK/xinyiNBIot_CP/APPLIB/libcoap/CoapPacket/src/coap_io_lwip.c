@@ -139,17 +139,17 @@ coap_socket_send_pdu(coap_socket_t *sock, coap_session_t *session,
   * respective pbuf is already exclusively owned by the pdu. */
     int ret = 0;
     struct pbuf *pbuf_temp = NULL;
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d", ret, session->addr_info.remote.port);
+    xy_printf(0,XYAPP, WARN_LOG, "[king][coap_socket_send_pdu]start send:%d port:%d", ret, session->addr_info.remote.port);
     
     pbuf_realloc(pdu->pbuf, pdu->used_size + coap_pdu_parse_header_size(session->proto, pdu->pbuf->payload));
     pbuf_temp = pbuf_alloc(PBUF_TRANSPORT, pdu->pbuf->len, PBUF_RAM);
     pbuf_copy(pbuf_temp, pdu->pbuf);
-    xy_printf(0,XYAPP, WARN_LOG, "%x", pbuf_temp);
+    xy_printf(0,XYAPP, WARN_LOG, "[king][coap_socket_send_pdu]pbuf_temp1%x", pbuf_temp);
     ret = udp_sendto(sock->pcb, pbuf_temp, &session->addr_info.remote.addr,
     session->addr_info.remote.port);
-    xy_printf(0,XYAPP, WARN_LOG, "%x", pbuf_temp);
+    xy_printf(0,XYAPP, WARN_LOG, "[king][coap_socket_send_pdu]pbuf_temp2%x", pbuf_temp);
     pbuf_free(pbuf_temp);
-    xy_printf(0,XYAPP, WARN_LOG, "%d", ret);
+    xy_printf(0,XYAPP, WARN_LOG, "[king][coap_socket_send_pdu]end send:%d", ret);
 
     return pdu->used_size;
 }

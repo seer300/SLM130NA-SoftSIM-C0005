@@ -2779,7 +2779,7 @@ static void coap_retransmittimer_restart(coap_context_t *ctx) {
   coap_tick_t now, elapsed, delay;
 
   if (ctx->timer_configured) {
-    xy_printf(0,XYAPP, WARN_LOG,"");
+    xy_printf(0,XYAPP, WARN_LOG,"clearing\n");
     /* tcpip线程中调用不能加TCPIP锁 */
     if (!strstr(osThreadGetName(osThreadGetId()), TCPIP_THREAD_NAME))
       LOCK_TCPIP_CORE();
@@ -2808,7 +2808,7 @@ static void coap_retransmittimer_restart(coap_context_t *ctx) {
       delay = 0;
     }
 
-    xy_printf(0,XYAPP, WARN_LOG,"%d", delay);
+    xy_printf(0,XYAPP, WARN_LOG,"scheduling for %d ticks\n", delay);
     if (!strstr(osThreadGetName(osThreadGetId()), TCPIP_THREAD_NAME))
       LOCK_TCPIP_CORE();
     sys_timeout(delay, coap_retransmittimer_execute, (void *)ctx);

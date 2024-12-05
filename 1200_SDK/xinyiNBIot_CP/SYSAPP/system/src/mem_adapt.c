@@ -45,9 +45,9 @@ void* xy_MemAlloc(size_t size, uint8_t loose, uint8_t clean)
 	if(size > 0x1000 && osKernelGetState() >= osKernelRunning && osKernelIsRunningIdle()!= osOK && HWREGB(BAK_MEM_XY_DUMP) == 1)
 	{
 #if( XY_HEAP_MEMORY_MALLOC_WITH_RECORD )
-		PrintLog(0,PLATFORM,WARN_LOG,"%s%s%d%d", osThreadGetName(osThreadGetId()), file, line, size);
+		PrintLog(0,PLATFORM,WARN_LOG,"[XY_MALLOC] %s %s %d %d  ", osThreadGetName(osThreadGetId()), file, line, size);
 #else
-		PrintLog(0,PLATFORM,WARN_LOG,"%s%d", osThreadGetName(osThreadGetId()), size);
+		PrintLog(0,PLATFORM,WARN_LOG,"[XY_MALLOC] %s %d  ", osThreadGetName(osThreadGetId()), size);
 #endif
 	}
 	

@@ -27,7 +27,7 @@ osMutexId_t g_tudm_context_mutex = NULL;
 void dm_print_str(char * buf)
 {
 	char str[56] = {0};
-	xy_printf(0,XYAPP, WARN_LOG, "%d",strlen(buf));
+	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]Print_Len:%d,Print_Context:",strlen(buf));
 	for(int len = 0; len <= strlen(buf); len+=55)
 	{
 		strncpy(str, buf + len, 55);
@@ -54,7 +54,7 @@ int32_t dm_get_nccid(uint8_t *dm_nccid)
 {
 	if(xy_get_NCCID(dm_nccid,UCCID_LEN) == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM] get nccid failed\r\n");
 		return DM_PROC_FAILED;
 	}
 
@@ -66,7 +66,7 @@ int32_t dm_get_imsi(char *imsi)
 	//get ismi
 	if(xy_get_IMSI(imsi,16) == 0 || (imsi[0] == '0' && imsi[1] == '0' && (imsi[2] == '1' || imsi[2] == '2')))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_imsi,,imsi is invalid\n");
 		return DM_PROC_FAILED;
 	}
 	return DM_PROC_SUCCESS;
@@ -123,7 +123,7 @@ uint8_t dm_get_retry_num_def_val(void)
 	
 	uint8_t retry_num = dm_pcontext->uicc_type == UICC_TELECOM ? DM_TELE_RETRY_NUM_DEFAULT : DM_UNI_RETRY_NUM_DEFAULT;
 	
-	xy_printf(0,XYAPP, INFO_LOG, "%d",retry_num);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_retry_num_def_val,%d",retry_num);
 	
 	return retry_num;
 }
@@ -135,7 +135,7 @@ uint8_t dm_get_retry_num_def_val(void)
  */
 uint32_t dm_get_uni_reg_time_def_val(void)
 {
-	xy_printf(0,XYAPP, INFO_LOG, "%d",DM_UNI_REG_TIME_DEFAULT);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_uni_reg_time_def_val,%d",DM_UNI_REG_TIME_DEFAULT);
 	return (uint32_t)DM_UNI_REG_TIME_DEFAULT;
 }
 
@@ -151,7 +151,7 @@ uint16_t dm_get_port_def_val(void)
 	
 	uint16_t port = UICC_TELECOM ==  dm_pcontext->uicc_type ? DM_TELE_PORT_DEFAULT : DM_UNI_PORT_DEFAULT;
 
-	xy_printf(0,XYAPP, INFO_LOG, "%d",port);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_port_def_val,%d",port);
 
 	return port;
 }
@@ -175,7 +175,7 @@ void dm_get_host_def_val(char *host)
 		strncpy(host ,DM_UNI_HOST_DEFAULT, strlen(DM_UNI_HOST_DEFAULT));
 	}
 
-	xy_printf(0,XYAPP, INFO_LOG, "%s",host);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_host_def_val:%s",host);
 
 }
 
@@ -186,7 +186,7 @@ void dm_get_host_def_val(char *host)
  */
 uint16_t dm_get_retry_time_def_val()
 {
-	xy_printf(0,XYAPP, INFO_LOG, "%d",DM_RETRY_TIME_DEFAULT);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_retry_time_def_val,%d",DM_RETRY_TIME_DEFAULT);
 	
 	return (uint16_t)DM_RETRY_TIME_DEFAULT;
 }
@@ -200,7 +200,7 @@ uint16_t dm_get_retry_time_def_val()
 void dm_get_regver_def_str(char * regver)
 {
 	strcpy(regver, DM_REGVER_DEFAULT_STR);
-	xy_printf(0,XYAPP, INFO_LOG, "%s",regver);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]get_dm_regver_default_str: %s",regver);
 }
 
 /**
@@ -211,7 +211,7 @@ void dm_get_regver_def_str(char * regver)
 void dm_get_swver_def_str(char *swver)
 {
 	strncpy(swver, g_softap_fac_nv->versionExt, 28); //dm软件版本号
-	xy_printf(0,XYAPP, INFO_LOG, "%s",swver);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_swver_def_str: %s",swver);
 }
 
 /**
@@ -222,7 +222,7 @@ void dm_get_swver_def_str(char *swver)
 void dm_get_modver_def_str(char * modver)
 {
 	strncpy(modver, g_softap_fac_nv->modul_ver, 20); // 模组型号
-	xy_printf(0,XYAPP, INFO_LOG, "%s",modver);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_modver_def_str: %s",modver);
 }
 
 /**
@@ -233,7 +233,7 @@ void dm_get_modver_def_str(char * modver)
 void dm_get_osver_def_str(char *osver)
 {
 	strcpy(osver,DM_UETYPE_DEFAULT_STR);
-	xy_printf(0,XYAPP, INFO_LOG, "%s",osver);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_osver_def_str: %s",osver);
 }
 
 /**
@@ -245,10 +245,10 @@ int32_t dm_get_imei_def_str(char *imei)
 {
 	if(xy_get_IMEI(imei, 16) == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_imei_def_str,get imei err!\n");
 		return DM_PROC_FAILED;
 	}
-	xy_printf(0,XYAPP, INFO_LOG, "%s",imei);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_imei_def_str: %s",imei);
 	return DM_PROC_SUCCESS;
 }
 
@@ -261,7 +261,7 @@ int32_t dm_get_imei_def_str(char *imei)
 void dm_get_uetype_def_str(char *uetype)
 {
 	strcpy(uetype,DM_UETYPE_DEFAULT_STR);
-	xy_printf(0,XYAPP, INFO_LOG, "%s",uetype);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_uetype_def_str,%s!\n",uetype);
 }
 
 
@@ -283,7 +283,7 @@ static int32_t dm_get_key_value_from_jsonstr(const char *jsonstring, const char 
 
 	if(json_object == NULL)//jsonstring不是json字符串
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_key_value_from_jsonstr err,jsonstring no valid!");
 		return DM_PROC_FAILED;
 	}
 
@@ -291,18 +291,18 @@ static int32_t dm_get_key_value_from_jsonstr(const char *jsonstring, const char 
 
 	if(json_item == NULL)//不存在对应键值对
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_key_value_from_jsonstr,no key-key_value");
 		goto exit;
 	}
 
 	if(cJSON_GetStringValue(json_item) != NULL)
 	{
 		strcpy(key_value, cJSON_GetStringValue(json_item));
-		xy_printf(0,XYAPP, INFO_LOG, "%s",key_value);
+		xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_key_value_from_jsonstr,key_value:%s",key_value);
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_key_value_from_jsonstr,no key-key_value");
 		goto exit;
 	}
 	
@@ -324,7 +324,7 @@ int32_t dm_get_imei(char *imei)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "imei",imei) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_imei,dm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -337,7 +337,7 @@ int32_t dm_get_osver(char *osver)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "osver",osver) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_osver,dm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -350,7 +350,7 @@ int32_t dm_get_model(char *model)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "model", model) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_model,dm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -364,7 +364,7 @@ int32_t dm_get_swver(char *swver)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "swver", swver) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_swver,dm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -377,7 +377,7 @@ int32_t dm_get_uetype(char *uetype)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "uetype",uetype) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_uetypedm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -396,7 +396,7 @@ int32_t dm_get_regver(char * regver)
 
 	if(dm_get_key_value_from_jsonstr((const char*)config->json_report_str, "regver",regver) == DM_PROC_FAILED)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_get_regver,dm_get_key_value_from_jsonstr,err");
 		return DM_PROC_FAILED;
 	}
 
@@ -503,7 +503,7 @@ int32_t dm_set_params_to_default(dm_context_t* dm_pcontext, int32_t uicc_type)
 
 	memset(dm_pcontext, 0x00, sizeof(dm_context_t));
 
-	xy_printf(0,XYAPP, INFO_LOG, "%d",uicc_type);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_set_params_to_default,uicc_type:%d!\r\n",uicc_type);
 
 	dm_pcontext->retry_num = uicc_type == UICC_TELECOM ? DM_TELE_RETRY_NUM_DEFAULT : DM_UNI_RETRY_NUM_DEFAULT;
 	dm_pcontext->port = UICC_TELECOM ==  uicc_type ? DM_TELE_PORT_DEFAULT : DM_UNI_PORT_DEFAULT;
@@ -518,7 +518,7 @@ int32_t dm_set_params_to_default(dm_context_t* dm_pcontext, int32_t uicc_type)
 	{
 		strncpy(dm_pcontext->host ,DM_UNI_HOST_DEFAULT, strlen(DM_UNI_HOST_DEFAULT));
 	}
-	xy_printf(0,XYAPP, INFO_LOG, "%s",dm_pcontext->host);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_get_def_host:%s\r\n",dm_pcontext->host);
 
 	dm_pcontext->report_mode = XINYI_MESSAGE_FORMAT;
 	dm_get_regver_def_str(regver);
@@ -529,7 +529,7 @@ int32_t dm_set_params_to_default(dm_context_t* dm_pcontext, int32_t uicc_type)
 
 	if(dm_get_imei_def_str(imei)== DM_PROC_FAILED) 
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_set_params_to_default,dm_get_imei_def_str err\r\n");
 		goto exit;
 	}
 
@@ -580,8 +580,8 @@ void dm_set_params_in_jsonstr_format(char *regver, char *uetype, char *swver, ch
 
 	strcpy(dm_pcontext->json_report_str, buf);
 
-	xy_printf(0,XYAPP, INFO_LOG, "");
-	xy_printf(0,XYAPP, INFO_LOG, "%s",dm_pcontext->json_report_str);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_set_params_in_jsonstr_format:\r\n");
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]%s",dm_pcontext->json_report_str);
 	dm_pcontext->report_mode = XINYI_MESSAGE_FORMAT;
 	dm_save_config_file();
 
@@ -608,7 +608,7 @@ int32_t dm_set_others_json_context(const char * jsonstring)
 	
 	if(json == NULL)//jsonstring不是合法的json字符串
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_set_others_json_context,is not vaild jsonstring");
 		goto exit;
 	}
 
@@ -623,7 +623,7 @@ int32_t dm_set_others_json_context(const char * jsonstring)
 
 	strcpy(dm_pcontext->json_report_str, jsonstring);
 	
-	xy_printf(0,XYAPP, INFO_LOG, "%s",dm_pcontext->json_report_str);
+	xy_printf(0,XYAPP, INFO_LOG, "[TUDM]dm_set_others_json_context,report context:%s!",dm_pcontext->json_report_str);
 
 	dm_pcontext->report_mode = USER_MESSAGE_FORMAT;
 	dm_save_config_file();
@@ -685,17 +685,17 @@ bool dm_check_if_need_execute(uint8_t *nccid_dm, uint32_t *current_time)
 
 	*current_time = dm_get_world_times();
 
-	xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", *current_time, dm_pcontext->last_reg_time, g_dm_timer_flag);
+	xy_printf(0,XYAPP, WARN_LOG, "dm_check_if_need_execute,current_time = %d,last_reg_time = %d,unicom_timer_flag = %d\n", *current_time, dm_pcontext->last_reg_time, g_dm_timer_flag);
 
 	//当前ICCID与存储的ICCID不相等或者注册周期超过30天，均需要dm
 	if(strncmp((const char *)nccid_dm, (const char *)dm_pcontext->ue_iccid,20) != 0 || 
 		((*current_time - dm_pcontext->last_reg_time > dm_pcontext->uni_reg_time) && (dm_pcontext->uicc_type == UICC_UNICOM)))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_check_if_need_execute,need start dm\n");
 		return true;
 	}
 
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_check_if_need_execute,do not need start dm");
 	
 	return false;
 }
@@ -715,7 +715,7 @@ bool dm_check_if_setting_owner_valid(uint8_t setting_uicc_owner)
 	if((setting_uicc_owner == DM_SETTING_TELECOM && dm_pcontext->uicc_type != UICC_TELECOM) || (setting_uicc_owner == DM_SETTING_UNICOM
 	&& dm_pcontext->uicc_type != UICC_UNICOM))//SIM卡类型与用户预设置类型不否，错误
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%d%d", dm_pcontext->uicc_type, setting_uicc_owner);
+		xy_printf(0,XYAPP, WARN_LOG, "[DMTU]dm_check_if_setting_owner_valid,sim type:%d,setting type:%d,no match err", dm_pcontext->uicc_type, setting_uicc_owner);
 		return false;
 	}
 
@@ -735,14 +735,14 @@ bool dm_check_if_cfg_uicc_owner_match_uicc_type()
 
 	if(dm_pcontext->setting_uicc_owner == DM_SETTING_UNKOWN)//用户未设置配置文件所属运营商
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]check_if_setting_uicc_owner_match_uicc_type,setting_uicc_owner unkown!");
 		return false;
 	}
 
 	if((dm_pcontext->setting_uicc_owner == DM_SETTING_TELECOM && dm_pcontext->uicc_type != UICC_TELECOM)
 		|| (dm_pcontext->setting_uicc_owner == DM_SETTING_UNICOM && dm_pcontext->uicc_type != UICC_UNICOM))//当前配置文件所属运营商与当前SIM卡所属运营商不一致，不允许配置DM文件
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%d%d",dm_pcontext->setting_uicc_owner,dm_pcontext->uicc_type);
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]check_if_setting_uicc_owner_match_uicc_type,setting_uicc_owner %d,uicc_type %d no match err!",dm_pcontext->setting_uicc_owner,dm_pcontext->uicc_type);
 		return false;
 	}
 
@@ -762,7 +762,7 @@ static bool dm_check_if_cfg_file_avaliable()
 	//uicc_owner值为DM_SETTING_UNKOWN,用户未通过AT命令进行过参数配置，使用芯翼默认配置，返回当前DM配置信息可用
 	if(dm_pcontext->setting_uicc_owner == DM_SETTING_UNKOWN)
 	{
-		xy_printf(0,XYAPP, INFO_LOG, "");
+		xy_printf(0,XYAPP, INFO_LOG, "[DMTU]dm_check_if_cfg_file_avaliable,user not operation,yes\r\n");
 		return true;
 	}
 	else//用户已使用AT命令对配置文件进行过操作,判断当前配置文件与SIM卡类型是否匹配，匹配则可用,反之不可用
@@ -770,7 +770,7 @@ static bool dm_check_if_cfg_file_avaliable()
 		if((dm_pcontext->setting_uicc_owner == DM_SETTING_TELECOM && dm_pcontext->uicc_type != UICC_TELECOM) || 
 		(dm_pcontext->setting_uicc_owner == DM_SETTING_UNICOM && dm_pcontext->uicc_type != UICC_UNICOM))///
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "%d%d",dm_pcontext->uicc_type,dm_pcontext->setting_uicc_owner);
+			xy_printf(0,XYAPP, WARN_LOG, "[DMTU]dm_check_if_cfg_file_avaliable,uicc_type:%d,setting_uicc_owner:%d,no match!\r\n",dm_pcontext->uicc_type,dm_pcontext->setting_uicc_owner);
 			return false;
 		}
 		return true;
@@ -796,7 +796,7 @@ bool dm_check_if_dm_host_valid(uint8_t *host)
 		//如果当前网络是单栈V4但是入参传入的是V6地址，或者当前网络是单栈v6但是入参传入的是v4地址，或者ip地址非法 则返回错误。
 		if((xy_IpAddr_Check(host, addr.type) == 0) || (netif_iptype == IPV4_TYPE && addr.type != IPADDR_TYPE_V4) || (netif_iptype == IPV6_TYPE && addr.type != IPADDR_TYPE_V6))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "%s%d",host,addr.type);
+			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_set_config_params, ip:%s,type:%d is invalid",host,addr.type);
 			return false;
 		}	
 	}
@@ -804,7 +804,7 @@ bool dm_check_if_dm_host_valid(uint8_t *host)
 	{
 		if(xy_domain_is_valid(host) == 0)//域名检测不合法
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "");
+			xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm_set_config_params,domain is invaild");
 			return false;
 		}
 	}
@@ -825,7 +825,7 @@ int dm_send_process(int sockfd, int req_len, uint8_t *req_buff, int uicc_type)
 
 	if (n < 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]client: server is closed.\n");
 		close(sockfd);
 		return -1;
 	}
@@ -841,7 +841,7 @@ int dm_send_process(int sockfd, int req_len, uint8_t *req_buff, int uicc_type)
 
 	n = recv(sockfd, recv_buf, 512, 0);
 	
-	xy_printf(0,XYAPP, WARN_LOG, "%d", n);
+	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]recv ret %d", n);
 	
 	
 	if(n > 0)//收到下行回复
@@ -878,7 +878,7 @@ int dm_send_process(int sockfd, int req_len, uint8_t *req_buff, int uicc_type)
 	}
 	else//未收到下行回复
 	{
-    	xy_printf(0,XYAPP, WARN_LOG, "%d", sockfd);
+    	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]recv response err,close fd %d", sockfd);
 		ret = -1;
 	}
 
@@ -1141,7 +1141,7 @@ int dm_client(int req_len, uint8_t *req_buff, int uicc_type)
 	
 	if(fd < 0 )
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%d%d",fd,errno);		
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]create socket error,fd=%d, errno=%d\n",fd,errno);		
 	}
 	else
 	{
@@ -1155,7 +1155,7 @@ int dm_client(int req_len, uint8_t *req_buff, int uicc_type)
 void dm_timeout_proc(void)
 {
 	g_dm_timer_flag = 1;
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]start dm again!!!\n");
 	//RTC唤醒后，协议栈可能还处于PSM态，不加锁，业务代码若有delay，则会进入idle，进而可能进入深睡
 	app_delay_lock(1000);
 	tele_uni_dm_task();
@@ -1207,7 +1207,7 @@ int32_t dm_context_init()
 
 		if(uicc_type != UICC_TELECOM && uicc_type != UICC_UNICOM)//当前系统检测SIM不是联通也不是电信
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "%d", uicc_type);
+			xy_printf(0,XYAPP, WARN_LOG, "[DMTU]dm_context_init err,uicc type err%d!\r\n", uicc_type);
 			ret = DM_PROC_FAILED;
 			goto exit;
 		}
@@ -1219,7 +1219,7 @@ int32_t dm_context_init()
 		{
 			if(dm_set_params_to_default(dm_pcontext,uicc_type) !=DM_PROC_SUCCESS)//从文件系统恢复配置参数失败，用默认值进行初始化
 			{
-				xy_printf(0,XYAPP, WARN_LOG, "");
+				xy_printf(0,XYAPP, WARN_LOG, "[DMTU]dm_context_init err,dm_set_params_to_default err\r\n");
 				ret = DM_PROC_FAILED;
 				goto exit;
 			}
@@ -1250,7 +1250,7 @@ void tele_uni_dm_task(void *param)
     /*网络状态检查*/
 	if(!xy_tcpip_is_ok())
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,net is not ok!");
 		goto out;
 	}
 		
@@ -1258,20 +1258,20 @@ void tele_uni_dm_task(void *param)
 	/*DM用户可配置相关参数初始化*/
 	if(dm_context_init() != DM_PROC_SUCCESS)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,dm_context_init is err!");
 		goto out;
 	}
 	
 	//检测当前DM配置是否可用
 	if(dm_check_if_cfg_file_avaliable() == false)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,dm_check_if_cfg_file_avaliable err!");
 		goto out;
 	}
 
 	if(dm_get_nccid(nccid_dm) != DM_PROC_SUCCESS)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,dm get nccid err");
 		goto out;
 	}
 
@@ -1284,7 +1284,7 @@ void tele_uni_dm_task(void *param)
 	/*获取DM自注册上报参数，imsi*/
 	if(dm_get_imsi(imsi)!= DM_PROC_SUCCESS)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,dm_get_imsi err!");
 		goto out;
 	}
 
@@ -1305,7 +1305,7 @@ void tele_uni_dm_task(void *param)
 
 	if(dm_make_packet(uicc_type, nccid_dm ,req_buff, &req_len, MODULE_VER_STR,imsi) != DM_PROC_SUCCESS)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]tele_uni_dm_task,dm_make_packet err!");
 		goto out;
 	}
 		
@@ -1314,7 +1314,7 @@ void tele_uni_dm_task(void *param)
 	
 	if(ret == 0)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm success and store iccid");
 		strncpy((char *)dm_pcontext->ue_iccid,(char *)nccid_dm,20);  //store g_ueiccid,20 byte
         dm_pcontext->have_retry_num = 0;
 #if !VER_BC25
@@ -1330,7 +1330,7 @@ void tele_uni_dm_task(void *param)
 	}
 	else
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM]Register Fail\n");
 		if (dm_pcontext->have_retry_num < dm_pcontext->retry_num)
 		{
 			dm_pcontext->have_retry_num++;
@@ -1360,7 +1360,7 @@ out:
 		g_dm_timer_flag = 0;
 	}
 
-	xy_printf(0,XYAPP, WARN_LOG, "");
+	xy_printf(0,XYAPP, WARN_LOG, "[TUDM]dm thread exit\n");
 	g_dm_TskHandle = NULL;
 	osThreadExit();
 }
@@ -1369,7 +1369,7 @@ void tele_uni_dm_start_task(int uicc_type)
 {		
 	if(g_dm_TskHandle != NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "[TUDM] dm aready running\n");
 		return;
 	}
 	

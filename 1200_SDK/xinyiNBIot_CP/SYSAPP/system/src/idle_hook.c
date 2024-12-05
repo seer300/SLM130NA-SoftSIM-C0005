@@ -48,7 +48,7 @@ void __RAM_FUNC vApplicationIdleHook( void )
 	//打印bbpll lock lose count
 	if((g_idle_tick - g_idle_tick_old) > 2000)
 	{
-		xy_printf(0,PLATFORM, DEBUG_LOG, "%d", (uint8_t)(HWREGB(0x4000483D) >> 4));
+		xy_printf(0,PLATFORM, DEBUG_LOG, "bbpll_lock_lose_count: %d", (uint8_t)(HWREGB(0x4000483D) >> 4));
 		g_idle_tick_old = g_idle_tick;
 	}
 
@@ -66,7 +66,7 @@ void __RAM_FUNC vApplicationIdleHook( void )
                	ret = DeepSleep_Process();
                	if(ret != ALLOW_DEEPSLEEP)
                	{
-    	 			xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d", ret, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+    	 			xy_printf(0,PLATFORM, WARN_LOG, "DeepSleep_Process %d test_rc:%d %d", ret, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
 
 //开启此宏定义时，若由于核间消息未处理完导致深睡失败，打印所有待处理消息，供内部调试查看					
 #if ICM_ZERO_COPY_LIST_ENABLE 
@@ -77,7 +77,7 @@ void __RAM_FUNC vApplicationIdleHook( void )
 				
 						while(num > 0 && pmsg != NULL)
 						{
-							xy_printf(0,PLATFORM,WARN_LOG,"%x%d%s", pmsg->msg_addr, pmsg->msg_len, pmsg->tskName); 
+							xy_printf(0,PLATFORM,WARN_LOG,"ICM_ZERO_COPY_PENDING_LIST, addr:%x, len:%d, current_thread:%s", pmsg->msg_addr, pmsg->msg_len, pmsg->tskName); 
 							pmsg = pmsg->next;
 							num--;
 						}
@@ -93,10 +93,10 @@ void __RAM_FUNC vApplicationIdleHook( void )
                	{
 					standby_degrade_flag = 1;
 					int temp = Lpm_WFI_Process();
-    	 			xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d", ret, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+    	 			xy_printf(0,PLATFORM, WARN_LOG, "StandBy_Process %d test_rc:%d %d", ret, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
 					if(temp != ALLOW_WFI)
 					{
-						xy_printf(0,PLATFORM, WARN_LOG, "%d%d%d", temp, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
+						xy_printf(0,PLATFORM, WARN_LOG, "LPM_WFI_Process %d test_rc:%d %d", temp, HWREGB(BAK_MEM_RC32K_CALI_FLAG),HWREGB(BAK_MEM_RC32K_CALI_PERMIT));
 					}
 				}
 #else
@@ -111,7 +111,7 @@ void __RAM_FUNC vApplicationIdleHook( void )
                 //避免打印太多
 			    if(ret != ALLOW_WFI)
 			    {
-				    xy_printf(0,PLATFORM, WARN_LOG, "%d", ret);
+				    xy_printf(0,PLATFORM, WARN_LOG, "LPM_WFI_Process %d", ret);
 			    }
 			    */
 	 	    break;

@@ -993,7 +993,7 @@ xy_coap_message_handler(struct coap_context_t *ctx,
 
             /* TODO: check if we are looking at the correct fota_block number */
 
-            xy_printf(0,XYAPP, WARN_LOG, "%d", coap_opt_block_num(block_opt));
+            xy_printf(0,XYAPP, WARN_LOG, "[king][coap_opt_block_num]%d\n", coap_opt_block_num(block_opt));
             if (coap_opt_block_num(block_opt) == 0) 
             {
                 /* See if observe is set in first response */
@@ -1196,7 +1196,7 @@ xy_coap_message_handler(struct coap_context_t *ctx,
         /* check if an error was signaled and output payload if so */
         if (COAP_RESPONSE_CLASS(received->code) >= 4) 
         {
-            xy_printf(0,XYAPP, WARN_LOG, "%d%02d", (received->code >> 5), received->code & 0x1F);
+            xy_printf(0,XYAPP, WARN_LOG, "%d.%02d", (received->code >> 5), received->code & 0x1F);
             if (coap_get_data(received, &len, &databuf)) 
             {
                 while(len--)
@@ -1226,7 +1226,7 @@ void xy_log_handler (coap_log_t level, const char *message)
 {
 	(void) level;
 
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "essag");
 }
 
 /*****************************************************************************************************
@@ -1266,7 +1266,7 @@ static void xy_coap_recv(void *arg, struct udp_pcb *upcb, struct pbuf *p, const 
         osMessageQueuePut(xy_coap_recvdata_q, (void *)(&msg), 0, osWaitForever);
 	}
 	else
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "cdp_opencpu_demo_q not create!");
 
     return;
 
@@ -1364,13 +1364,13 @@ coap_context_t *xy_coap_client_create(char *ipaddr,unsigned short port)
 
     coap_context_set_keepalive(ctx, ping_timeout);
 
-    xy_printf(0,XYAPP, WARN_LOG, "%d", dst.port);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]dst.port:%d", dst.port);
 
     session = coap_new_client_session(ctx, &bind_addr, &dst, COAP_PROTO_UDP);
 	
 	if(session == NULL || ctx->sessions == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "xy_coap_client_create session is NULL");
 		goto end;
 	}
     
@@ -1515,13 +1515,13 @@ int xy_coap_create_socket(coap_context_t  *ctx,char *ipaddr,unsigned short port)
     if(rc != 0)
         return XY_ERR;
 
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d", dst.addr, dst.port);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]dst.addr:%d dst.port:%d", dst.addr, dst.port);
 
     session = coap_new_client_session(ctx, &bind_addr, &dst, COAP_PROTO_UDP);
 
 	if(session == NULL || ctx->sessions == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "xy_coap_create_socket session is NULL");
 		return XY_ERR;
 	}
 
@@ -1694,7 +1694,7 @@ int xy_coap_send(coap_context_t *ctx, char *method, char* payload,int payload_le
         coap_show_pdu(LIBCOAP_LOG_INFO, pdu);
 
     
-    xy_printf(0,XYAPP, WARN_LOG, "%x", pdu->pbuf);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]pdu->pbuf:%x", pdu->pbuf);
     coap_send(ctx->sessions, pdu);
 
     g_wait_ms = g_wait_seconds * 1000;
@@ -1730,7 +1730,7 @@ int xy_coap_send(coap_context_t *ctx, char *method, char* payload,int payload_le
         /* FIXME: send back RST? */
         if (pdu) coap_delete_pdu(pdu);
     }
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", g_quit, ready, g_doing_getting_block);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]g_quit:%dready:%d %d", g_quit, ready, g_doing_getting_block);
     
 finish:
     coap_delete_optlist(g_optlist);
@@ -1762,7 +1762,7 @@ int xy_coap_pkt_send(coap_context_t *ctx,char *type, char *method, char* payload
 	
 	if(ctx->sessions == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "xy_coap_pkt_send session is NULL");
 		return -1;
 	}
 
@@ -1806,7 +1806,7 @@ int xy_coap_pkt_send(coap_context_t *ctx,char *type, char *method, char* payload
     if (coap_get_log_level() < LIBCOAP_LOG_DEBUG)
         coap_show_pdu(LIBCOAP_LOG_INFO, pdu);
 
-    xy_printf(0,XYAPP, WARN_LOG, "%x", pdu->pbuf);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]pdu->pbuf:%x", pdu->pbuf);
     coap_send(ctx->sessions, pdu);
 
     if(g_payload.length != 0)
@@ -1814,7 +1814,7 @@ int xy_coap_pkt_send(coap_context_t *ctx,char *type, char *method, char* payload
 
     if(synflag)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[COAP] Semaphore_Take");
         if (osSemaphoreAcquire(coap_pkt_sem, 100000) != osOK)
             return -1;
     }
@@ -1852,10 +1852,10 @@ int xy_coap_pkt_receive(coap_context_t *ctx,int *quitflag,int synflag)
     static coap_pdu_t  *recv_pdu = NULL;
     recvdata_msg_t *temp_msg =NULL;
     coap_tick_t now;
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d%d",g_quit,ready,g_doing_getting_block);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP] receive %d,%d,%d",g_quit,ready,g_doing_getting_block);
     while (*quitflag == 0)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[COAP] loop for receive");
 
         if(xy_coap_recvdata_q != NULL)
         {
@@ -1870,7 +1870,7 @@ int xy_coap_pkt_receive(coap_context_t *ctx,int *quitflag,int synflag)
         if (!recv_pdu)
             continue;
 
-        xy_printf(0,XYAPP, WARN_LOG, "%d",ctx->sessions->proto);
+        xy_printf(0,XYAPP, WARN_LOG, "[COAP] coap protol =%d",ctx->sessions->proto);
 
         if(synflag)
             osSemaphoreRelease(coap_pkt_sem);
@@ -1892,7 +1892,7 @@ int xy_coap_pkt_receive(coap_context_t *ctx,int *quitflag,int synflag)
             temp_msg = NULL;
         }
     }
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d%d", g_quit, ready, g_doing_getting_block);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]g_quit:%dready:%d %d", g_quit, ready, g_doing_getting_block);
 
 exit:
     if(NULL != xy_coap_recvdata_q)
@@ -1988,7 +1988,7 @@ int xy_coap_pkt_send_ec(coap_context_t *ctx,uint8_t type, uint8_t method, char* 
 
 	if(ctx->sessions == NULL)
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "xy_coap_pkt_send_ec session is NULL");
 		return -1;
 	}
 
@@ -2029,7 +2029,7 @@ int xy_coap_pkt_send_ec(coap_context_t *ctx,uint8_t type, uint8_t method, char* 
     if (coap_get_log_level() < LIBCOAP_LOG_DEBUG)
         coap_show_pdu(LIBCOAP_LOG_INFO, pdu);
 
-    xy_printf(0,XYAPP, WARN_LOG, "%x", pdu->pbuf);
+    xy_printf(0,XYAPP, WARN_LOG, "[COAP]pdu->pbuf:%x", pdu->pbuf);
     coap_send(ctx->sessions, pdu);
 
     if(g_payload.length != 0)
@@ -2037,7 +2037,7 @@ int xy_coap_pkt_send_ec(coap_context_t *ctx,uint8_t type, uint8_t method, char* 
 
     if(synflag)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[COAP] Semaphore_Take");
         if (osSemaphoreAcquire(coap_pkt_sem, 100000) != osOK)
             return -1;
     }

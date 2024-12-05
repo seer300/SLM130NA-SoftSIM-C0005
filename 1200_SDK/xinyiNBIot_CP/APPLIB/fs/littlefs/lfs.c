@@ -557,7 +557,7 @@ static int lfs_alloc(lfs_t *lfs, lfs_block_t *block) {
 
         // check if we have looked at all blocks since last ack
         if (lfs->free.ack == 0) {
-			 PrintLog(0, PLATFORM, FATAL_LOG, "%u", lfs->free.i + lfs->free.off);
+			 PrintLog(0, PLATFORM, FATAL_LOG, "No more free space %u", lfs->free.i + lfs->free.off);
             return LFS_ERR_NOSPC;
         }
 
@@ -1065,7 +1065,7 @@ static lfs_stag_t lfs_dir_fetchmatch(lfs_t *lfs,
         lfs_pair_swap(dir->pair);
         dir->rev = revs[(r+1)%2];
     }
-    PrintLog(0, PLATFORM, FATAL_LOG, "%x%x", dir->pair[0], dir->pair[1]);
+    PrintLog(0, PLATFORM, FATAL_LOG, "Corrupted dir pair at {0x%x, 0x%x}", dir->pair[0], dir->pair[1]);
     return LFS_ERR_CORRUPT;
 }
 
@@ -1789,7 +1789,7 @@ relocate:
 
         // can't relocate superblock, filesystem is now frozen
         if (lfs_pair_cmp(dir->pair, (const lfs_block_t[2]){0, 1}) == 0) {
-			 PrintLog(0, PLATFORM, WARN_LOG, "%x", dir->pair[1]);
+			 PrintLog(0, PLATFORM, WARN_LOG, "Superblock 0x%x has become unwritable", dir->pair[1]);
             return LFS_ERR_NOSPC;
         }
 
@@ -3720,7 +3720,7 @@ static int lfs_rawmount(lfs_t *lfs, const struct lfs_config *cfg) {
             uint16_t minor_version = (0xffff & (superblock.version >>  0));
             if ((major_version != LFS_DISK_VERSION_MAJOR ||
                  minor_version > LFS_DISK_VERSION_MINOR)) {
-				PrintLog(0, PLATFORM, FATAL_LOG, "%u%u", major_version, minor_version);
+				PrintLog(0, PLATFORM, FATAL_LOG, "Invalid version v%u.%u", major_version, minor_version);
                 err = LFS_ERR_INVAL;
                 goto cleanup;
             }
@@ -3728,7 +3728,7 @@ static int lfs_rawmount(lfs_t *lfs, const struct lfs_config *cfg) {
             // check superblock configuration
             if (superblock.name_max) {
                 if (superblock.name_max > lfs->name_max) {
-					PrintLog(0, PLATFORM, FATAL_LOG, "%u%u", superblock.name_max, lfs->name_max);
+					PrintLog(0, PLATFORM, FATAL_LOG, "Unsupported name_max (%u > %u)", superblock.name_max, lfs->name_max);
                     err = LFS_ERR_INVAL;
                     goto cleanup;
                 }
@@ -3738,7 +3738,7 @@ static int lfs_rawmount(lfs_t *lfs, const struct lfs_config *cfg) {
 
             if (superblock.file_max) {
                 if (superblock.file_max > lfs->file_max) {
-					PrintLog(0, PLATFORM, FATAL_LOG, "%u%u", superblock.file_max, lfs->file_max);
+					PrintLog(0, PLATFORM, FATAL_LOG, "Unsupported file_max (%u > %u)", superblock.file_max, lfs->file_max);
                     err = LFS_ERR_INVAL;
                     goto cleanup;
                 }
@@ -3748,7 +3748,7 @@ static int lfs_rawmount(lfs_t *lfs, const struct lfs_config *cfg) {
 
             if (superblock.attr_max) {
                 if (superblock.attr_max > lfs->attr_max) {
-					PrintLog(0, PLATFORM, FATAL_LOG, "%u%u", superblock.attr_max, lfs->attr_max);
+					PrintLog(0, PLATFORM, FATAL_LOG, "Unsupported attr_max (%u > %u)", superblock.attr_max, lfs->attr_max);
                     err = LFS_ERR_INVAL;
                     goto cleanup;
                 }
@@ -4450,7 +4450,7 @@ static int lfs1_dir_fetch(lfs_t *lfs,
     }
 
     if (!valid) {
-        PrintLog(0, PLATFORM, FATAL_LOG, "%x%x", tpair[0], tpair[1]);
+        PrintLog(0, PLATFORM, FATAL_LOG, "Corrupted dir pair at {0x%x, 0x%x}", tpair[0], tpair[1]);
         return LFS_ERR_CORRUPT;
     }
 
@@ -4637,7 +4637,7 @@ static int lfs1_mount(lfs_t *lfs, struct lfs1 *lfs1,
         }
 
         if (err || memcmp(superblock.d.magic, "littlefs", 8) != 0) {
-            PrintLog(0, PLATFORM, FATAL_LOG, "%x%x", 0, 1);
+            PrintLog(0, PLATFORM, FATAL_LOG, "Invalid superblock at {0x%x, 0x%x}", 0, 1);
             err = LFS_ERR_CORRUPT;
             goto cleanup;
         }
@@ -4646,7 +4646,7 @@ static int lfs1_mount(lfs_t *lfs, struct lfs1 *lfs1,
         uint16_t minor_version = (0xffff & (superblock.d.version >>  0));
         if ((major_version != LFS1_DISK_VERSION_MAJOR ||
              minor_version > LFS1_DISK_VERSION_MINOR)) {
-            PrintLog(0, PLATFORM, FATAL_LOG, "%d%d", major_version, minor_version);
+            PrintLog(0, PLATFORM, FATAL_LOG, "Invalid version v%d.%d", major_version, minor_version);
             err = LFS_ERR_INVAL;
             goto cleanup;
         }

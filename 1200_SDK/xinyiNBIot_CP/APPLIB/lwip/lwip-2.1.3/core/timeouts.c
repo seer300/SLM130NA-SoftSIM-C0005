@@ -583,7 +583,7 @@ void reset_dns_tmr_interval(u32_t interval_ms)
     /* we have to cast via size_t to get dns_tmr and remove it * */
     if(lwip_cyclic_timers[i].handler == HANDLER(dns_tmr)) 
     {
-      xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+      xy_printf(0,XYAPP, WARN_LOG, "dns i=%d", i);
       sys_untimeout(lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));       
     }
   }
@@ -604,7 +604,7 @@ void restore_default_dns_tmr_interval(void)
       /* we have to cast via size_t to get dns_tmr and remove it * */
       if(lwip_cyclic_timers[i].handler == HANDLER(dns_tmr)) 
       {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", i);
+        xy_printf(0,XYAPP, WARN_LOG, "recovery default dns i=%d", i);
         sys_timeout(lwip_cyclic_timers[i].interval_ms, lwip_cyclic_timer, LWIP_CONST_CAST(void *, &lwip_cyclic_timers[i]));       
       }
     }

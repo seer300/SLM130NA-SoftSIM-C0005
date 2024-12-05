@@ -218,7 +218,7 @@ void query_dns_task(void *param)
 	char* prsp = NULL;
 	if (arg == NULL)
 	{
-		xy_printf(0, XYAPP, WARN_LOG, "");
+		xy_printf(0, XYAPP, WARN_LOG, "async query dns fail arg null");
 		goto NULL_END;
 	}
 	if (arg->type == TCPIP_CMD_QUECTEL)
@@ -269,7 +269,7 @@ void query_dns_task(void *param)
 		send_rsp_at_to_ext(prsp);
 		xy_free(prsp);
 	}
-	xy_printf(0,XYAPP, WARN_LOG, "%d", arg->type);
+	xy_printf(0,XYAPP, WARN_LOG, "async query dns tpye(%d) exit", arg->type);
 	/* 异步线程需要释放内存 */
 	if (arg != NULL && arg->host != NULL)
 		xy_free(arg->host);
@@ -361,14 +361,14 @@ int at_dns_config(dns_cfg_param_t *arg)
 	if (dns_thd_handle != NULL)
 	{
 		/* 有dns查询正在执行不允许操作 */
-		xy_printf(0,XYAPP, WARN_LOG, "");
+		xy_printf(0,XYAPP, WARN_LOG, "at_dns_config but dns query is executing");
 		return ATERR_NOT_ALLOWED;
 	}    
 
 	// 主DNS为必填参数，故此处不再判断主DNS是否为NULL，参数解析时已经保证不为NULL，若为可选参数，请注意！
 	if (!xy_dns_set(arg->pridns, 0, arg->save))
 	{
-		xy_printf(0,XYAPP, WARN_LOG, "%s", arg->pridns);
+		xy_printf(0,XYAPP, WARN_LOG, "at_dns_config set pridns:%s err", arg->pridns);
 		return ATERR_PARAM_INVALID;
 	}
 	// 辅DNS可为NULL，保证主DNS能正常使用即可
@@ -376,7 +376,7 @@ int at_dns_config(dns_cfg_param_t *arg)
 	{
 		if (!xy_dns_set(arg->secdns, 1, arg->save))
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "%s", arg->secdns);
+			xy_printf(0,XYAPP, WARN_LOG, "at_dns_config set secdns:%s err", arg->secdns);
 			return ATERR_PARAM_INVALID;
 		}
 	}
@@ -461,7 +461,7 @@ char *TCPIP_Err_info_build(uint32_t err_no, char *file, uint32_t line)
 		// 只显示ERROR
 		snprintf(outStr, 32, "\r\nERROR\r\n");
 		if (HWREGB(BAK_MEM_XY_DUMP) == 1)
-			xy_printf(0, PLATFORM_AP, WARN_LOG, "%d%s%d", line, file, err_no);
+			xy_printf(0, PLATFORM_AP, WARN_LOG, "socketErr_info_build line:%d,file:%s,err:%d\n", line, file, err_no);
  	}
 
 	//设置错误码，用于QIGETERROR查询使用

@@ -70,7 +70,7 @@ int mqtt_reorganize_message(MQTTClient* c,int length,int mqtt_id)
     else if(c->reorganize_recv_len +length == c->reorganize_len)
     {
         memcpy(&c->reorganizeBuf[c->reorganize_recv_len], c->readbuf,length);
-        xy_printf(0,XYAPP, WARN_LOG,"%d%d",length,c->reorganize_len);
+        xy_printf(0,XYAPP, WARN_LOG,"[MQTT] publish packet reorganize cycle,readbufsize: %d,reorganize_len: %d",length,c->reorganize_len);
 
         memcpy(c->readbuf,c->reorganizeBuf,c->readbuf_size);
 
@@ -198,7 +198,7 @@ int mqtt_keepalive(MQTTClient* c)
             if (len > 0 && (rc = MQTTSendPacket(c, len, &timer)) == SUCCESS) // send the ping packet
                 c->ping_outstanding = 1;
 
-            xy_printf(0,XYAPP, WARN_LOG,"%d%d",len,rc);
+            xy_printf(0,XYAPP, WARN_LOG,"[MQTT]send keeplive pkt len=%d rc=%d",len,rc);
         }
     }
 
@@ -242,12 +242,12 @@ int mqtt_cycle(MQTTClient* c,messageHandler messageHandler,int length,int mqtt_i
         if ((c->keepAliveInterval > 0) && (packet_type >=1 ))
             TimerCountdown(&c->last_received, c->keepAliveInterval); // Calculate the timeout according to the latest message
 
-        xy_printf(0,XYAPP, WARN_LOG,"%d",packet_type);
+        xy_printf(0,XYAPP, WARN_LOG,"[MQTT] cycle packet_type = %d\n",packet_type);
 
         recv_data = c->readbuf + offset;
         if(c->need_reorganize == 1)
         {
-            xy_printf(0,XYAPP, WARN_LOG,"%d%d%d",c->reorganize_recv_len,strlen(c->readbuf),c->reorganize_len);
+            xy_printf(0,XYAPP, WARN_LOG,"[MQTT] publish packet reorganize,before %d,come %d,total %d",c->reorganize_recv_len,strlen(c->readbuf),c->reorganize_len);
             mqtt_reorganize_message(c,length,mqtt_id);
             goto exit;
         }
@@ -436,7 +436,7 @@ int mqtt_cycle(MQTTClient* c,messageHandler messageHandler,int length,int mqtt_i
 					}
                     memcpy(c->reorganizeBuf, recv_data,c->reorganize_len);
                     snprintf(mqtt_rsp,60, "+MQPUB:TCP segmentation,packet reorganize");
-                    xy_printf(0,XYAPP, WARN_LOG,"%d%d",c->reorganize_len,c->reorganize_recv_len);
+                    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] publish reorganize total:%d,rcvbuf:%d\n",c->reorganize_len,c->reorganize_recv_len);
                     send_urc_to_ext(mqtt_rsp, strlen(mqtt_rsp));
                     goto exit;
                 }
@@ -488,7 +488,7 @@ int mqtt_cycle(MQTTClient* c,messageHandler messageHandler,int length,int mqtt_i
                             len = MQTTSerialize_ack(c->buf, c->buf_size, PUBREC, 0, msg.id);
                         if (len <= 0)
                         {
-                            xy_printf(0,XYAPP, WARN_LOG,"");
+                            xy_printf(0,XYAPP, WARN_LOG,"[MQTT] downlink publish Serialize pubreply fail\n");
                             rc = FAILURE;
 							goto publish_exit;
                         }
@@ -563,7 +563,7 @@ int mqtt_cycle(MQTTClient* c,messageHandler messageHandler,int length,int mqtt_i
         recv_data_ptr = recv_data + 1; //recvdata 中remain_len位置
         rem_len = MQTTPacket_decodeBuf(recv_data_ptr, &payload_len);
         offset += 1 + rem_len + payload_len;//HEAD+REAMINLEN+PAYLOADLEN
-        xy_printf(0,XYAPP, WARN_LOG,"%d%d%d%d%p%p",rem_len,payload_len,offset,length,c->readbuf,recv_data);
+        xy_printf(0,XYAPP, WARN_LOG,"[MQTT] rem_len:%d ,pay_len:%d,offset:%d,length:%d,buf:%p,recv:%p\n",rem_len,payload_len,offset,length,c->readbuf,recv_data);
 
     }
 
@@ -634,7 +634,7 @@ void mqtt_buf_recv(char* printstring)
     fd_set read_fds,exceptfds;
 	int timeout = 2000;
 
-    xy_printf(0,XYAPP, WARN_LOG, "%d%d",  mqtt_client_socket(0), mqtt_client_socket(1));
+    xy_printf(0,XYAPP, WARN_LOG, "mqtt_buf_recv s0:%d s1:%d",  mqtt_client_socket(0), mqtt_client_socket(1));
     FD_ZERO(&read_fds);
     FD_ZERO(&exceptfds);
 
@@ -678,13 +678,13 @@ void mqtt_buf_recv(char* printstring)
 
    if (ret == 0)
    {
-        xy_printf(0,XYAPP, WARN_LOG, "%d", maxsocket);
+        xy_printf(0,XYAPP, WARN_LOG, "select NET TIMEOUT maxsocket=%d", maxsocket);
         mqtt_select_timeout_pro(printstring);
         return ;
    }
    else if(ret < 0)
    {
-        xy_printf(0,XYAPP, WARN_LOG, "%d%d", ret, errno);
+        xy_printf(0,XYAPP, WARN_LOG, "select error ret=%d,err %d", ret, errno);
         return ;
    }
 
@@ -753,7 +753,7 @@ void mqtt_downdata_recv(void)
 		
 		if (i == MQTT_NUM)
 		{
-			xy_printf(0,XYAPP, WARN_LOG, "");
+			xy_printf(0,XYAPP, WARN_LOG, "[MQTT] quit process downlink pkt thread");
 			if(linkstate_rsp)
                 xy_free(linkstate_rsp);
             return;	
@@ -782,14 +782,14 @@ void mqtt_downdata_recv(void)
  *******************************************************************************************/
 void mqtt_deal_packet()
 {
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "[MQTT]process downlink pkt thread start");
 
     mqtt_downdata_recv();
 
 	g_mqttpacket_handle = NULL;
 	osThreadExit();
 
-    xy_printf(0,XYAPP, WARN_LOG, "");
+    xy_printf(0,XYAPP, WARN_LOG, "[MQTT]process downlink pkt thread end");
 }
 
 /*******************************************************************************************
@@ -836,7 +836,7 @@ int at_MQNEW_req(char *at_buf, char **prsp_cmd)
 	    int  remote_port = 0;
 	    remote_ip = xy_malloc(strlen(at_buf));
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] NEW BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 			xy_free(remote_ip);
@@ -892,7 +892,7 @@ int at_MQNEW_req(char *at_buf, char **prsp_cmd)
 	    {
 	        if( ipstack != NULL && ipstack->my_socket >= 0)
 	        {
-	            xy_printf(0,XYAPP, WARN_LOG, "%d%d",ipstack->my_socket,client_cfg_id);
+	            xy_printf(0,XYAPP, WARN_LOG, "[MQTT] CLOSE socket %d client id %d\n",ipstack->my_socket,client_cfg_id);
 	            close(ipstack->my_socket);
 	        }
 	        if(ipstack)
@@ -914,7 +914,7 @@ int at_MQNEW_req(char *at_buf, char **prsp_cmd)
 
 	    *prsp_cmd = xy_malloc(30);
 	    snprintf(*prsp_cmd, 30, "+MQNEW:%d", client_cfg_id);
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] NEW END\n");
 
 	    xy_free(remote_ip);
 	    return AT_END;
@@ -955,7 +955,7 @@ int at_MQCON_req(char *at_buf, char **prsp_cmd)
 	    char *willmessage= xy_malloc(strlen(at_buf));
 	    MQTTPacket_connectData data = MQTTPacket_connectData_initializer;
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] CONNECT BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 	        ret = (ATERR_NOT_NET_CONNECT);
@@ -984,7 +984,7 @@ int at_MQCON_req(char *at_buf, char **prsp_cmd)
 	    data.MQTTVersion = version;
 
 	    data.clientID.cstring = client_id;
-	    xy_printf(0,XYAPP, WARN_LOG, "%s",data.clientID.cstring);
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT]connect client=%s",data.clientID.cstring);
 	    if(will_flag)
 	    {
 	        data.will.topicName.cstring = topicName;
@@ -1017,7 +1017,7 @@ int at_MQCON_req(char *at_buf, char **prsp_cmd)
 	    TimerCountdownMS(&pMQTT_client[mqtt_id]->waitflag.waitConAck.timeout, pMQTT_client[mqtt_id]->command_timeout_ms);
 	    pMQTT_client[mqtt_id]->waitflag.waitConAck.flag = 1;
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] CONNECT END\n");
 	ERR_PROC:
 	    if(willmessage)
 	        xy_free(willmessage);
@@ -1054,7 +1054,7 @@ int at_MQDISCON_req(char *at_buf, char **prsp_cmd)
 	    int  ret  = -1;
 	    int  mqtt_id = -1;
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "MQTT DISCONNECT BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 	        return  (ATERR_NOT_NET_CONNECT);
@@ -1075,13 +1075,13 @@ int at_MQDISCON_req(char *at_buf, char **prsp_cmd)
 	    osMutexRelease(g_mqtt_mutex);
 	    if (ret != SUCCESS)
 	    {
-	        xy_printf(0,XYAPP, WARN_LOG, "");
+	        xy_printf(0,XYAPP, WARN_LOG, "MQTT disconnect failed!");
 	        return  (ATERR_NOT_ALLOWED);
 	    }
 
 	    pMQTT_client[mqtt_id]->close_sock = 1;
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "MQTT DISCONNECT END\n");
 
 	    return AT_END;
 	}
@@ -1113,7 +1113,7 @@ int at_MQSUB_req(char *at_buf, char **prsp_cmd)
 			return (ATERR_NO_MEM);
 		}
 
-	    xy_printf(0,XYAPP, WARN_LOG, "");
+	    xy_printf(0,XYAPP, WARN_LOG, "[MQTT] subscribe BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 			xy_free(topic);
@@ -1153,7 +1153,7 @@ int at_MQSUB_req(char *at_buf, char **prsp_cmd)
 	        pMQTT_client[mqtt_id]->waitflag.waitSubAck.flag = 1;
 	    }
 
-	    xy_printf(0,XYAPP, WARN_LOG,"");
+	    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] subscribe END\n");
 
 		xy_free(topic);
 	    return AT_END;
@@ -1185,7 +1185,7 @@ int at_MQUNSUB_req(char *at_buf, char **prsp_cmd)
 			return (ATERR_NO_MEM);
 		}
 		
-	    xy_printf(0,XYAPP, WARN_LOG,"");
+	    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] unsubscribe BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 			xy_free(topic);
@@ -1223,7 +1223,7 @@ int at_MQUNSUB_req(char *at_buf, char **prsp_cmd)
 	    TimerCountdownMS(&pMQTT_client[mqtt_id]->waitflag.waitUnSubAck.timeout, pMQTT_client[mqtt_id]->command_timeout_ms);
 	    pMQTT_client[mqtt_id]->waitflag.waitUnSubAck.flag = 1;
 
-	    xy_printf(0,XYAPP, WARN_LOG,"");
+	    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] unsubscribe END\n");
 
 		xy_free(topic);
 	    return AT_END;
@@ -1268,7 +1268,7 @@ int at_MQPUB_req(char *at_buf, char **prsp_cmd)
 		}
 
 	    memset(&pubmsg, 0, sizeof(pubmsg));
-	    xy_printf(0,XYAPP, WARN_LOG,"");
+	    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] publish BEGIN\n");
 
 	    if (!xy_tcpip_is_ok()) {
 	        ret = (ATERR_NOT_NET_CONNECT);
@@ -1313,7 +1313,7 @@ int at_MQPUB_req(char *at_buf, char **prsp_cmd)
 	    if(qos > 0)
 	        pMQTT_client[mqtt_id]->waitflag.waitPubAck.flag = 1;
 
-	    xy_printf(0,XYAPP, WARN_LOG,"");
+	    xy_printf(0,XYAPP, WARN_LOG,"[MQTT] publish END\n");
 
 	ERR_PROC:
 	    if(topic)

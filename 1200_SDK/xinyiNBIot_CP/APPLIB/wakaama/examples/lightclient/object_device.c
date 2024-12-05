@@ -242,7 +242,7 @@ static uint8_t prv_device_execute(uint16_t instanceId,
 
     if (resourceId == RES_M_REBOOT)
     {
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "\n\t REBOOT\r\n\n");
         return xiny_COAP_204_CHANGED;
     }
 

@@ -430,7 +430,7 @@ int xy_async_socket_api_event(void *arg, int event_id, void *pbuf, u16_t size, s
 	if(conn == NULL || (skt_idx = find_valid_socket_idx_by_fd(conn->socket)) == -1)
 		return err;
 	
-	xy_printf(0,XYAPP, WARN_LOG,"%d%d%d%d",event_id,conn->socket,size,err);
+	xy_printf(0,XYAPP, WARN_LOG,"event_id:%d,socket id:%d, size:%d, err:%d",event_id,conn->socket,size,err);
     switch (event_id)
     {
     case LWIP_EVENT_SENT:
@@ -451,7 +451,7 @@ int xy_async_socket_api_event(void *arg, int event_id, void *pbuf, u16_t size, s
         {
         	int availsize = 0;
     		lwip_ioctl(conn->socket, FIONREAD, &availsize);
-			xy_printf(0,XYAPP, WARN_LOG,"%d",availsize);
+			xy_printf(0,XYAPP, WARN_LOG,"recv availsize:%d",availsize);
 			if(availsize > 0)
             	xy_post_event_to_app(XY_SOCKET_RECV_DATA_IND, conn->socket, availsize, ERR_OK);
         }
