@@ -857,7 +857,7 @@ static void atiny_handle_dtls_reconnect(handle_data_t *handle)
             osDelay(100);
         }while(cdp_dtls_wait_flag == 0);
         
-        xy_printf(0,XYAPP, WARN_LOG, "");
+        xy_printf(0,XYAPP, WARN_LOG, "[king]lwm2m dtls reconnect");
         
         connection_free(connp);
         
@@ -984,7 +984,7 @@ int atiny_bind(void *phandle)
 		if(cdp_resume_session_info(handle->lwm2m_context))
         {
             atiny_mark_deinit(handle);
-            xy_printf(0,XYAPP, WARN_LOG, "");
+            xy_printf(0,XYAPP, WARN_LOG, "cdp_resume_session_info fail");
         }
 	}
 
