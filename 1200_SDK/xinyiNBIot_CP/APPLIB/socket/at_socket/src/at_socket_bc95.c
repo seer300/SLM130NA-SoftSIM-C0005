@@ -772,9 +772,8 @@ int at_SOCKCLZ_BC95_URC(int id, bool isquit)
 	char *report_buf = xy_malloc(32);
 	if (isquit)
 	{
-		// 该socket需要被关闭 by:MQ-PZQ 2024年12月17日
-		snprintf(report_buf, 32, "+NSOCLI:%d", id);
-		send_urc_to_ext(report_buf, strlen(report_buf));
+		snprintf(report_buf, 32, "\r\nOK\r\n");
+		send_rsp_at_to_ext(report_buf);
 	}
 	else if (get_socket_net_type(id) == 0)
 	{
