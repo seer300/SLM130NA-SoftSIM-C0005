@@ -728,6 +728,9 @@ int at_SOCKNMI_Default_URC(int id, uint32_t read_len, char *buf, void *remoteinf
     char *temp_buf = NULL;
     struct sockaddr_storage* remote_info = (struct sockaddr_storage*)remoteinfo;
 
+	// 收取到数据 移除添加的socket计时器
+	del_socket_timeout(id);
+
     if (g_at_sck_report_mode == HINT_WITH_REMOTE_INFO)
     {
         char *remote_ip = xy_malloc(40);

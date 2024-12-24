@@ -643,7 +643,7 @@ int at_SOCKSENTEX_BC95_req(char *at_buf, char **prsp_cmd)
 		param.udp_connectd = 0;
 		
 		if (param.sequence != 0) {
-			call_socket_delay(SOCK_TCP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
+			call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
 		}
 
         /* 透传模式 */
@@ -731,7 +731,7 @@ int at_SOCKSENTFEX_BC95_req(char *at_buf, char **prsp_cmd)
 		param.udp_connectd = 0;
 
 		if (param.sequence != 0) {
-			call_socket_delay(SOCK_TCP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
+			call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
 		}
 
 		/* 透传模式 */
@@ -775,7 +775,8 @@ int at_SOCKCLZ_BC95_URC(int id, bool isquit)
 		snprintf(report_buf, 32, "\r\nOK\r\n");
 		send_rsp_at_to_ext(report_buf);
 	}
-	else if (get_socket_net_type(id) == 0)
+	// else if (get_socket_net_type(id) == 0)
+	else  // 不管是TCP 还是 UDP 连接，都需要上报连接断开
 	{
 		snprintf(report_buf, 32, "+NSOCLI:%d", id);
 		send_urc_to_ext(report_buf, strlen(report_buf));

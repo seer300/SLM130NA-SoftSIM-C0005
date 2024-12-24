@@ -416,12 +416,13 @@ void socket_timer_calback(void)
         // socket_close(g_socket_id);
         del_socket_ctx_by_index(g_socket_id, false);
     } else if (g_socket_timeout_status == SOCK_UDP_CTL_TIMEOUT) {
-        char *report_buf = xy_malloc(32);
+        // char *report_buf = xy_malloc(32);
         
-        snprintf(report_buf, 32, "+NSOSTR:%d,%d,0", g_socket_id,g_sequence);
-        send_urc_to_ext(report_buf, strlen(report_buf));
+        // snprintf(report_buf, 32, "+NSOSTR:%d,%d,0", g_socket_id,g_sequence);
+        // send_urc_to_ext(report_buf, strlen(report_buf));
  
-        xy_free(report_buf);
+        // xy_free(report_buf);
+        del_socket_ctx_by_index(g_socket_id, false);
 
     } else if (g_socket_timeout_status == SOCK_HTTP_CTL_TIMEOUT) {
         http_ctl_timeout_callback(g_socket_id);
@@ -522,6 +523,10 @@ void init_socket_timeout(void)
         
         g_socket_timeout_handle= osThreadNew ((osThreadFunc_t)(socket_conn_timeout_task),NULL,&thread_attr);
     }
+}
+
+void del_socket_timeout(int id){
+    call_socket_delay(SOCK_CANCEL_CHECK,id,SOCKT_TIMEOUT_30S,0);
 }
 
 //------------------------------------------------------------------------------

@@ -200,3 +200,4 @@ struct sock_tm_msg {
 
 void call_socket_delay(SOCK_TIMEOUT_STATUS msg_type, int sockid,int delay_ms,int sequence);
 void init_socket_timeout(void);
+void del_socket_timeout(int id);
