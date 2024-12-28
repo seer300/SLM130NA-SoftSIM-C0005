@@ -678,6 +678,11 @@ int at_SOCKSTR_Default_URC(int id, uint16_t seqno, int8_t state)
     snprintf(report, 32, "+NSOSTR:%d,%d,%d", id, seqno, state);
     send_urc_to_ext(report, strlen(report));
     xy_free(report);
+
+	if (state == 1) {
+		// 收取到数据 移除添加的socket计时器
+    	del_socket_timeout(id);
+	}
     return XY_OK;
 }
 
@@ -728,8 +733,6 @@ int at_SOCKNMI_Default_URC(int id, uint32_t read_len, char *buf, void *remoteinf
     char *temp_buf = NULL;
     struct sockaddr_storage* remote_info = (struct sockaddr_storage*)remoteinfo;
 
-	// 收取到数据 移除添加的socket计时器
-	del_socket_timeout(id);
 
     if (g_at_sck_report_mode == HINT_WITH_REMOTE_INFO)
     {
