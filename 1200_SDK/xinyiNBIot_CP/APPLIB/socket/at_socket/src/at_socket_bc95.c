@@ -225,7 +225,7 @@ int at_SOCKSENT_BC95_req(char *at_buf, char **prsp_cmd)
 		param.remote_ip = remote_addr;
 		param.udp_connectd = 0;
 		if (param.sequence != 0) {
-			//call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
+			call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
 		}
 		if (socket_send(&param) != XY_OK)
 		{
@@ -276,7 +276,7 @@ int at_SOCKSENTF_BC95_req(char *at_buf, char **prsp_cmd)
 		param.udp_connectd = 0;
 
 		if (param.sequence != 0) {
-			//call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
+			call_socket_delay(SOCK_UDP_CTL_TIMEOUT,param.id,SOCKT_TIMEOUT_30S,param.sequence);
 		}
 		if (socket_send(&param) != XY_OK)
 		{
